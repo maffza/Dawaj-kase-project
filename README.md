@@ -11,9 +11,9 @@ the one you configured while setting up the database.
 ## Launching
 Open a terminal, navigate to the main directory and execute the following commands:
 >1. python -m venv env
-2. env\Scripts\activate
+>2. env\Scripts\activate
 
 (Ensure that (env) appears at the beginning of your command prompt)
 >3. pip install -r requirements.txt
-4. cd DawajKase
-5. python manage.py runserver
+>4. cd DawajKase
+>5. python manage.py runserver
