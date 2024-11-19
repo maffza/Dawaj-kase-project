@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Title - Crowdfunding Template</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+<body>
+    <!-- Header (Same as main page) -->
+    <header>
+        <div class="container">
+            <div class="logo">Logo</div>
+            <nav class="navigation">
+                <ul>
+                    <li><a href="#">Discover</a></li>
+                    <li><a href="#">Start a project</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="auth"><button>Login</button></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Project Content -->
+    <main>
+        <div class="container">
+            <div class="project-details">
+                <div class="project-image">
+                    <!-- Placeholder for project image -->
+                    <div class="image-placeholder">Project Image</div>
+                </div>
+                <div class="project-info">
+                    <h1>Project Title</h1>
+                    <p>by <a href="#">Project Creator</a></p>
+                    <p>Project short description goes here. It provides a brief overview of the project.</p>
+                    <div class="funding-info">
+                        <p><strong>$0 pledged</strong> of $10,000 goal</p>
+                        <p><strong>0 backers</strong></p>
+                        <p><strong>30 days</strong> to go</p>
+                    </div>
+                    <button>Back this project</button>
+                </div>
+            </div>
+            <div class="project-description">
+                <h2>About</h2>
+                <p>Detailed project description goes here...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (Same as main page) -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

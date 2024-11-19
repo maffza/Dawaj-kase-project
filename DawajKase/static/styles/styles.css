@@ -1,0 +1,268 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Wrapper to make footer stick to bottom */
+.wrapper {
+    min-height: calc(100% - 100px); /* Adjust based on footer height */
+}
+
+/* Links */
+a {
+    color: #bb86fc;
+    text-decoration: none;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #333;
+    padding: 20px 0;
+}
+
+header .container {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo */
+.logo {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #bb86fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    flex: 1;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bb86fc;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Navigation */
+.navigation ul {
+    list-style: none;
+    display: flex;
+}
+
+.navigation li {
+    margin-right: 20px;
+}
+
+.navigation a {
+    color: #e0e0e0;
+    border: 1px solid #bb86fc;
+    padding: 10px;
+}
+
+/* Auth Buttons */
+.auth-buttons a {
+    margin-left: 10px;
+}
+
+.auth-buttons button {
+    padding: 10px 15px;
+    border: 1px solid #bb86fc;
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+/* Main Content */
+main {
+    padding: 30px 0;
+}
+
+main .featured-projects {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.project-box {
+    flex: 1;
+    margin: 0 10px;
+    height: 200px;
+    border: 1px solid #bb86fc;
+    text-align: center;
+    padding-top: 80px;
+}
+
+main .other-projects {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+main .other-projects .project-box {
+    width: 30%;
+    margin-bottom: 20px;
+}
+
+/* Footer */
+footer {
+    background-color: #1f1f1f;
+    border-top: 1px solid #333;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-links a {
+    margin: 0 10px;
+    color: #e0e0e0;
+    border: 1px solid #bb86fc;
+    padding: 5px 10px;
+}
+
+/* Auth Page */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100% - 100px); /* Adjust based on footer height */
+}
+
+.auth-page .form-container {
+    background-color: #1f1f1f;
+    padding: 40px;
+    border: 1px solid #bb86fc;
+    width: 400px;
+    text-align: center;
+}
+
+.auth-page h2 {
+    margin-bottom: 20px;
+}
+
+.auth-page .tab-buttons {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.auth-page .tab-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    cursor: pointer;
+    border-bottom: 2px solid #bb86fc;
+}
+
+.auth-page .tab-buttons button.active {
+    background-color: #121212;
+}
+
+.auth-page form {
+    display: none;
+}
+
+.auth-page form.active {
+    display: block;
+}
+
+.auth-page input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #bb86fc;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.auth-page button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bb86fc;
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+/* Project Page */
+.project-details {
+    display: flex;
+    margin: 30px 0;
+}
+
+.project-image {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 300px;
+    border: 1px solid #bb86fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e0e0e0;
+}
+
+.project-info {
+    flex: 1;
+    border: 1px solid #bb86fc;
+    padding: 20px;
+}
+
+.project-info h1 {
+    margin-bottom: 10px;
+}
+
+.project-info p {
+    margin-bottom: 15px;
+}
+
+.project-info .funding-info p {
+    margin-bottom: 10px;
+}
+
+.project-info button {
+    padding: 10px 20px;
+    border: 1px solid #bb86fc;
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+.project-description {
+    margin-top: 40px;
+}
+
+.project-description h2 {
+    margin-bottom: 20px;
+}
+
+.project-description p {
+    line-height: 1.6;
+}
