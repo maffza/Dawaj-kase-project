@@ -6,7 +6,9 @@ from .ManagerFactory import ManagerFactory
 
 # Create your views here.
 def index(request):
-    return render(request, 'DawajKase/index.html')
+    userData = request.session.get('userData', None)
+
+    return render(request, 'DawajKase/index.html', {'userData': userData})
 
 def auth(request):
     register = request.GET.get('register', None)
@@ -22,8 +24,8 @@ def login(request):
         ret = UserManager.log_user_in(email, password)
         
         if ret[0] == "OK":
-            request.session['user_first_name'] = ret[1].name
-            request.session['user_email'] = ret[1].email
+            user = ret[1]
+            request.session['userData'] = user.to_json()
             return redirect('index')
         elif ret[0] == "InvalidPassword":
             messages.error(request, "Invalid password.")
@@ -48,20 +50,14 @@ def register(request):
         if password != confirmPassword:
             messages.error(request, "Passwords are not the same.")
             return redirect('/auth?register=1')
-        
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT email FROM users WHERE email=%s", [email])
-            row = cursor.fetchone()
 
-        if row:
+        UserManager = ManagerFactory.get_user_manager()
+
+        if UserManager.check_if_user_exists(email):
             messages.error(request, "The email address is already in use.")
-            return redirect('/auth?register=1')  
+            return redirect('/auth?register=1')
 
-        hashedPassword = hashlib.sha256(password.encode()).hexdigest()
-
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO users(first_name, last_name, address, city, email, password_hash, role) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
-                           [firstName, lastName, address, city, email, hashedPassword, "Supporter"])
+        UserManager.register_user(firstName, lastName, email, password, city, address)
 
     else:
         pass
