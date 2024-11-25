@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from django.contrib import messages
 import hashlib
+from .ManagerFactory import ManagerFactory
 
 # Create your views here.
 def index(request):
@@ -16,23 +17,19 @@ def login(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT email, password_hash, first_name FROM users WHERE email=%s", [email])
-            row = cursor.fetchone()
+        UserManager = ManagerFactory.get_user_manager()
 
-        if row:
-            userEmail, userPasswordHash, userFirstName = row[0], row[1], row[2]
-
-            hashedPassword = hashlib.sha256(password.encode()).hexdigest()
-
-            if hashedPassword == userPasswordHash:
-                request.session['user_email'] = userEmail
-                request.session['user_first_name'] = userFirstName
-                return redirect('index')
-            else:
-                messages.error(request, "Invalid password.")
-        else:
+        ret = UserManager.log_user_in(email, password)
+        
+        if ret[0] == "OK":
+            request.session['user_first_name'] = ret[1].name
+            request.session['user_email'] = ret[1].email
+            return redirect('index')
+        elif ret[0] == "InvalidPassword":
+            messages.error(request, "Invalid password.")
+        elif ret[0] == "InvalidEmail":
             messages.error(request, "Invalid email.")
+        
     else:
         pass                  
 
