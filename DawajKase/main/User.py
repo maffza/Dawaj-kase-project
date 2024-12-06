@@ -8,3 +8,8 @@ class User:
             'firstName': self.firstName,
             'email': self.email,
         }
+
+    def validate_user(self):
+        # put validation logic here like fields lengths etc.
+        pass
+        

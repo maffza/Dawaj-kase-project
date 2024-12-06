@@ -1,6 +1,6 @@
 from django.db import connection
 import hashlib
-from .User import User
+from ..User import User
 
 class UserManager:
     @staticmethod
