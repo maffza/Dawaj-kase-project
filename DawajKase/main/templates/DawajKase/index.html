@@ -41,27 +41,10 @@
             <div class="container">
                 {% if campaigns %}
                     <div class="featured-projects">
-                        {% for campaign in campaigns|slice:":3" %}
-                            {% if campaign.imageURL %}
-                                <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
-                            {% else %}
-                                <div class="project-box">
-                            {% endif%}
-                            <a href="project">{{ campaign.title }}</a><br/>
-                            <p>{{ campaign.description }}</p>
-                            </div>
-                        {% endfor %}
+                        {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:":3" showDescription=True %}
                     </div>
                     <div class="other-projects">
-                        {% for campaign in campaigns|slice:"3:9" %}
-                            {% if campaign.imageURL %}
-                                <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
-                            {% else %}
-                                <div class="project-box">
-                            {% endif%}
-                            <a href="project">{{ campaign.title }}</a>
-                            </div>
-                        {% endfor %}
+                        {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:"3:9" showDescription=False %}
                     </div>
                 {% else %}
                     <p>There are no campaigns.</p>
