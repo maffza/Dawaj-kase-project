@@ -6,16 +6,21 @@ class UserManager:
     @staticmethod
     def log_user_in(email, password):
         with connection.cursor() as cursor:
-            cursor.execute("SELECT email, password_hash, first_name FROM users WHERE email=%s", [email])
+            cursor.execute("SELECT password_hash FROM users WHERE email=%s", [email])
             row = cursor.fetchone()
 
         if row:
-            userEmail, userPasswordHash, userFirstName = row[0], row[1], row[2]
+            userPasswordHash = row[0]
 
             hashedPassword = hashlib.sha256(password.encode()).hexdigest()
 
             if hashedPassword == userPasswordHash:
-                return ("OK", User(userFirstName, userEmail))
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT first_name, last_name, email, profile_picture_url, role FROM users WHERE email=%s", [email])
+                    row = cursor.fetchone()
+                    
+                userFirstName, userLastName, userEmail, pfpURL, role = row[0], row[1], row[2], row[3], row[4]
+                return ("OK", User(userFirstName, userLastName, userEmail, pfpURL, role))
             else:
                 return ("InvalidPassword", None)
         else:
