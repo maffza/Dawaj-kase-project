@@ -3,12 +3,21 @@ from django.db import connection
 from django.contrib import messages
 import hashlib
 from .Managers.ManagerFactory import ManagerFactory
+from .Campaign import Campaign
+import json
 
 # Create your views here.
 def index(request):
-    userData = request.session.get('userData', None)
+    campaignsResult = None
 
-    return render(request, 'DawajKase/index.html', {'userData': userData})
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM CAMPAIGNS")
+        campaigns = cursor.fetchall()
+
+        campaignsResult = [Campaign(*c).to_json() for c in campaigns]
+
+    userData = request.session.get('userData', None)
+    return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaignsResult})
 
 def auth(request):
     register = request.GET.get('register', None)

@@ -39,37 +39,25 @@
         <!-- Main Content -->
         <main>
             <div class="container">
-                <div class="featured-projects">
-                    <div class="project-box">
-                        <a href="project">Featured Project 1</a>
+                {% if campaigns %}
+                    <div class="featured-projects">
+                        {% for campaign in campaigns|slice:":3" %}
+                            <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
+                            <a href="project">{{ campaign.title }}</a><br/>
+                            <p>{{ campaign.description }}</p>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <div class="project-box">
-                        <a href="project">Featured Project 2</a>
+                    <div class="other-projects">
+                        {% for campaign in campaigns|slice:"3:9" %}
+                            <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
+                            <a href="project">{{ campaign.title }}</a>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <div class="project-box">
-                        <a href="project">Featured Project 3</a>
-                    </div>
-                </div>
-                <div class="other-projects">
-                    <div class="project-box">
-                        <a href="project">Project 4</a>
-                    </div>
-                    <div class="project-box">
-                        <a href="project">Project 5</a>
-                    </div>
-                    <div class="project-box">
-                        <a href="project">Project 6</a>
-                    </div>
-                    <div class="project-box">
-                        <a href="project">Project 7</a>
-                    </div>
-                    <div class="project-box">
-                        <a href="project">Project 8</a>
-                    </div>
-                    <div class="project-box">
-                        <a href="project">Project 9</a>
-                    </div>
-                </div>
+                {% else %}
+                    <p>There are no campaigns.</p>
+                {% endif %}
             </div>
         </main>
     </div>
