@@ -3,8 +3,14 @@
 
 # How to set up the project
 ## Update the database password
-In the file *DawajKase/DawajKase/settings.py* replace the database password with
-the one you configured while setting up the database.
+Create a file named *"secrets.json"* in the directory *DawajKase/DawajKase/*, and put the following content inside:
+```
+{
+    "DATABASE_PASSWORD": "YOUR_PASSWORD"
+}
+```
+
+Replace *YOUR_PASSWORD* with the password that you configured while setting up the database.
 
 (This project is supposed to run only on a local machine.)
 
