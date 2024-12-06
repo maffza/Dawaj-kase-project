@@ -3,7 +3,7 @@
 
 # How to set up the project
 ## Update the database password
-Create a file named *"secrets.json"* in the directory *DawajKase/DawajKase/*, and put the following content inside:
+Create a file named *"secrets.json"* in the directory *DawajKase/DawajKase/*, and put the following content inside it:
 ```
 {
     "DATABASE_PASSWORD": "YOUR_PASSWORD"
