@@ -42,7 +42,11 @@
                 {% if campaigns %}
                     <div class="featured-projects">
                         {% for campaign in campaigns|slice:":3" %}
-                            <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
+                            {% if campaign.imageURL %}
+                                <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
+                            {% else %}
+                                <div class="project-box">
+                            {% endif%}
                             <a href="project">{{ campaign.title }}</a><br/>
                             <p>{{ campaign.description }}</p>
                             </div>
@@ -50,7 +54,11 @@
                     </div>
                     <div class="other-projects">
                         {% for campaign in campaigns|slice:"3:9" %}
-                            <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
+                            {% if campaign.imageURL %}
+                                <div class="project-box" style="background-image: url({% static campaign.imageURL %}); background-size: cover;">
+                            {% else %}
+                                <div class="project-box">
+                            {% endif%}
                             <a href="project">{{ campaign.title }}</a>
                             </div>
                         {% endfor %}

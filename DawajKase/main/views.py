@@ -1,23 +1,14 @@
 from django.shortcuts import render, redirect
 from django.db import connection
 from django.contrib import messages
-import hashlib
 from .Managers.ManagerFactory import ManagerFactory
-from .Campaign import Campaign
 import json
 
 # Create your views here.
 def index(request):
-    campaignsResult = None
-
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM CAMPAIGNS")
-        campaigns = cursor.fetchall()
-
-        campaignsResult = [Campaign(*c).to_json() for c in campaigns]
-
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     userData = request.session.get('userData', None)
-    return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaignsResult})
+    return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaigns})
 
 def auth(request):
     register = request.GET.get('register', None)
