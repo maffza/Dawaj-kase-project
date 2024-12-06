@@ -3,14 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Project Title - Crowdfunding Template</title>
+    <title>{{ campaign.title }} project</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
 </head>
 <body>
     <!-- Header (Same as main page) -->
     <header>
         <div class="container">
-            <div class="logo">Logo</div>
+            <a href="/"><div class="logo">Logo</div></a>
             <nav class="navigation">
                 <ul>
                     <li><a href="#">Discover</a></li>
@@ -28,13 +28,16 @@
         <div class="container">
             <div class="project-details">
                 <div class="project-image">
-                    <!-- Placeholder for project image -->
-                    <div class="image-placeholder">Project Image</div>
+                    <div class="image-placeholder">
+                        {% if campaign.imageURL %}
+                            <img style="object-fit: cover; object-position: center; width: 100%; height: 100%;" src={% static campaign.imageURL %}/>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="project-info">
-                    <h1>Project Title</h1>
+                    <h1>{{ campaign.title }}</h1>
                     <p>by <a href="#">Project Creator</a></p>
-                    <p>Project short description goes here. It provides a brief overview of the project.</p>
+                    <p>No short description field in the database so far.</p>
                     <div class="funding-info">
                         <p><strong>$0 pledged</strong> of $10,000 goal</p>
                         <p><strong>0 backers</strong></p>
@@ -45,7 +48,7 @@
             </div>
             <div class="project-description">
                 <h2>About</h2>
-                <p>Detailed project description goes here...</p>
+                <p>{{ campaign.description }}</p>
             </div>
         </div>
     </main>

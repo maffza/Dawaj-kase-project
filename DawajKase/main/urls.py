@@ -3,7 +3,7 @@ from .views import index, project, login, logout, auth, register
 
 urlpatterns = [
     path("", index, name="index"),
-    path("project", project, name="project"),
+    path("project/<slug>", project, name="project"),
     path("logout", logout, name="logout"),
     path("auth", auth, name="auth"),
     path("login", login, name="login"),
