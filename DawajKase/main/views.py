@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from django.contrib import messages
 from .Managers.ManagerFactory import ManagerFactory
-import json
 
 # Create your views here.
 def index(request):
@@ -70,7 +69,14 @@ def logout(request):
 
 def project(request, slug):
     campaign = ManagerFactory.get_campaign_manager().get_campaigns_by_id(slug)
-    if campaign:
-        return render(request, 'DawajKase/project.html', {'campaign': campaign})
-    else:
+
+    if not campaign:
         return render(request, 'DawajKase/404.html')
+    
+    creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
+
+    if not creator:
+        return render(request, 'DawajKase/404.html')
+
+    return render(request, 'DawajKase/project.html', {'campaign': campaign.to_json(), 'creator': creator.to_json()})
+        

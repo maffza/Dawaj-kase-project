@@ -18,9 +18,11 @@ class UserManager:
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT first_name, last_name, email, profile_picture_url, role FROM users WHERE email=%s", [email])
                     row = cursor.fetchone()
-                    
-                userFirstName, userLastName, userEmail, pfpURL, role = row[0], row[1], row[2], row[3], row[4]
-                return ("OK", User(userFirstName, userLastName, userEmail, pfpURL, role))
+                
+                if row:
+                    return ("OK", User(*row))
+                else:
+                    return ("UnexpectedError", None)
             else:
                 return ("InvalidPassword", None)
         else:
@@ -44,3 +46,16 @@ class UserManager:
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO users(first_name, last_name, address, city, email, password_hash, role) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
                            [firstName, lastName, address, city, email, hashedPassword, "Supporter"])
+            
+    @staticmethod
+    def get_user_by_id(id):
+        user = None
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT first_name, last_name, email, profile_picture_url, role FROM users WHERE id=%s", [id])
+            userResult = cursor.fetchone()
+
+            if userResult:
+                user = User(*userResult)
+
+        return user

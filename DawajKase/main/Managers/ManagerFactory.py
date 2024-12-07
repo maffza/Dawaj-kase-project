@@ -9,3 +9,5 @@ class ManagerFactory:
     @staticmethod
     def get_campaign_manager():
         return CampaignManager()
+
+    

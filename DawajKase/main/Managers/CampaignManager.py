@@ -19,14 +19,11 @@ class CampaignManager:
     def get_campaigns_by_id(id):
         campaign = None
 
-        if not id.isnumeric():
-            return campaign
-
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM campaigns WHERE id=%s", [id])
             campaignResult = cursor.fetchone()
 
             if campaignResult:
-                campaign = Campaign(*campaignResult).to_json()
+                campaign = Campaign(*campaignResult)
 
         return campaign
