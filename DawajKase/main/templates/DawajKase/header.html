@@ -4,7 +4,7 @@
         <!-- Search Bar -->
         <div class="search-bar">
             <form method="GET" action="/search">
-                <input type="text" name="q" placeholder="Search projects..." style="float:left; width: 90%;" />
+                <input type="text" name="q" placeholder="Search projects..." style="float:left; width: 90%;" value="{% if query %}{{query}}{% endif %}" />
                 <button type="submit" style="float: left; color: #e0e0e0; border: 1px solid #bb86fc; padding: 10px;background-color:#1f1f1f;">Discover</button>
             </form>
         </div>

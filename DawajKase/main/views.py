@@ -7,7 +7,8 @@ from .Managers.ManagerFactory import ManagerFactory
 def index(request):
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     userData = request.session.get('userData', None)
-    return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaigns})
+    query = request.session.get('query', None)
+    return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
 
 def auth(request):
     userData = request.session.get('userData', None)
@@ -15,7 +16,8 @@ def auth(request):
         return redirect('index')
     
     register = request.GET.get('register', None)
-    return render(request, 'DawajKase/auth.html', {'register': register})
+    query = request.session.get('query', None)
+    return render(request, 'DawajKase/auth.html', {'register': register, 'query': query})
 
 def login(request):
     if request.method == 'POST':
@@ -94,5 +96,7 @@ def search(request):
         campaigns = None
     else:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
+
+    request.session['query'] = query
 
     return render(request, 'DawajKase/search.html', {'campaigns': campaigns})
