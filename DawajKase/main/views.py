@@ -87,4 +87,12 @@ def project(request, slug):
     userData = request.session.get('userData', None)
 
     return render(request, 'DawajKase/project.html', {'userData': userData, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
-        
+
+def search(request):
+    query = request.GET.get('q', None)
+    if query == "":
+        campaigns = None
+    else:
+        campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
+
+    return render(request, 'DawajKase/search.html', {'campaigns': campaigns})

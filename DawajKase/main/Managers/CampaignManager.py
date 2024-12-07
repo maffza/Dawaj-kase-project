@@ -27,3 +27,19 @@ class CampaignManager:
                 campaign = Campaign(*campaignResult)
 
         return campaign
+    
+    @staticmethod
+    def search_campaigns(query):
+        campaigns = None
+
+        if query is None:
+            return campaigns
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM campaigns c WHERE LOWER(c.title) LIKE LOWER(%s) ORDER BY c.id DESC", [f"%{query}%"])
+            campaignsResult = cursor.fetchall()
+
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+
+        return campaigns

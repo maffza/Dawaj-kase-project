@@ -1,0 +1,9 @@
+<h1>Search results</h1>
+<a href="/">[back]</a><br/><br/>
+{% if campaigns %}
+    {% for campaign in campaigns %}
+        <a href="project/{{campaign.id}}">{{ campaign.title }}</a><p>{{ campaign.description }}</p>
+    {% endfor %}
+{% else %}
+    <p>No campaigns found.</p>
+{% endif %}
