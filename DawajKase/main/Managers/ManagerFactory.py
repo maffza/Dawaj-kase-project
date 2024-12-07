@@ -1,5 +1,6 @@
 from .UserManager import UserManager
 from .CampaignManager import CampaignManager
+from .CommentManager import CommentManager
 
 class ManagerFactory:
     @staticmethod
@@ -10,4 +11,6 @@ class ManagerFactory:
     def get_campaign_manager():
         return CampaignManager()
 
-    
+    @staticmethod
+    def get_comment_manager():
+        return CommentManager()

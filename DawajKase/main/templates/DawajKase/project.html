@@ -50,6 +50,12 @@
                 <h2>About</h2>
                 <p>{{ campaign.description }}</p>
             </div>
+
+            <br/><br/>
+            {% for comment in comments %}
+                <strong>{{comment.username}}</strong>
+                <p>{{comment.commentText}}</p><br/>
+            {% endfor %}
         </div>
     </main>
 

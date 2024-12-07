@@ -77,6 +77,8 @@ def project(request, slug):
 
     if not creator:
         return render(request, 'DawajKase/404.html')
+    
+    comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
 
-    return render(request, 'DawajKase/project.html', {'campaign': campaign.to_json(), 'creator': creator.to_json()})
+    return render(request, 'DawajKase/project.html', {'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
         
