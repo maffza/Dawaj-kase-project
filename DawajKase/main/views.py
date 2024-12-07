@@ -10,6 +10,10 @@ def index(request):
     return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaigns})
 
 def auth(request):
+    userData = request.session.get('userData', None)
+    if userData:
+        return redirect('index')
+    
     register = request.GET.get('register', None)
     return render(request, 'DawajKase/auth.html', {'register': register})
 
@@ -80,5 +84,7 @@ def project(request, slug):
     
     comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
 
-    return render(request, 'DawajKase/project.html', {'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
+    userData = request.session.get('userData', None)
+
+    return render(request, 'DawajKase/project.html', {'userData': userData, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
         

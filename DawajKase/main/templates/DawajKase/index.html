@@ -10,31 +10,7 @@
     <!-- Wrapper to make footer stay at the bottom -->
     <div class="wrapper">
         <!-- Header -->
-        <header>
-            <div class="container">
-                <div class="logo">Logo</div>
-                <!-- Search Bar -->
-                <div class="search-bar">
-                    <input type="text" placeholder="Search projects...">
-                </div>
-                <nav class="navigation">
-                    <ul>
-                        <li><a href="#">Discover</a></li>
-                        {% if userData %}
-                            <li><a href="#">Start a project</a></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                <div class="auth-buttons">
-                    {% if userData %}
-                        Welcome, {{ userData.firstName }}!
-                        <a href="logout"><button>Log out</button></a>
-                    {% else %}
-                        <a href="auth"><button>Login/Register</button></a>
-                    {% endif %}
-                </div>
-            </div>
-        </header>
+        {% include 'DawajKase/header.html' %}
 
         <!-- Main Content -->
         <main>
