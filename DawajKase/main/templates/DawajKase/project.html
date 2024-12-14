@@ -24,7 +24,7 @@
                 <div class="project-info">
                     <h1>{{ campaign.title }}</h1>
                     <p>by <a href="#">{% if creator %} {{creator.firstName}} {{creator.lastName}} {% endif %}</a></p>
-                    <p>No short description field in the database so far :(</p>
+                    <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
                         <p><strong>${{campaign.currentMoneyAmount}} pledged</strong> of ${{campaign.targetMoneyAmount}} goal</p>
                         <p><strong>0 backers</strong></p>
