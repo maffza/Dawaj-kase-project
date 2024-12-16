@@ -91,12 +91,13 @@ def project(request, slug):
     return render(request, 'DawajKase/project.html', {'userData': userData, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
 
 def search(request):
-    query = request.GET.get('q', None)
-    if query == "":
-        campaigns = None
+    query = request.GET.get('q', '').strip()
+
+    if query == '':
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     else:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
 
     request.session['query'] = query
 
-    return render(request, 'DawajKase/search.html', {'campaigns': campaigns})
+    return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
