@@ -107,6 +107,9 @@ def search(request):
 
 
 def campaign_create(request):
-    return render(request, 'DawajKase/campaign_create.html')
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+    userData = request.session.get('userData', None)
+    query = request.session.get('query', None)
+    return render(request, 'DawajKase/campaign_create.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
 
 
