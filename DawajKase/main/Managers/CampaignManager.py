@@ -47,5 +47,5 @@ class CampaignManager:
     @staticmethod
     def insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID):
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO campaigns(title, short_description, description, target_money_amount, end_date, image_url, organizer_id, category_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
-                        [title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID])
+            cursor.execute("INSERT INTO campaigns(title, short_description, description, current_money_amount, target_money_amount, end_date, image_url, organizer_id, category_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+                        [title, shortDescription, description, 0, targetMoneyAmount, endDate, imageURL, organizerID, categoryID])
