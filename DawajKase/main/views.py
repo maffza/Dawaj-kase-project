@@ -92,12 +92,15 @@ def project(request, slug):
 
 def search(request):
     query = request.GET.get('q', '').strip()
+    reset = request.GET.get('reset', False)
 
-    if query == '':
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
-    else:
+    if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
+    else:
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
 
-    request.session['query'] = query
+    if reset:
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+        return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
 
     return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
