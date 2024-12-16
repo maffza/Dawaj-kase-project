@@ -279,3 +279,30 @@ footer {
 .project-description p {
     line-height: 1.6;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: #1f1f1f;
+    padding: 20px;
+    border: 1px solid #bb86fc;
+    border-radius: 5px;
+}
+
+form label {
+    color: #e0e0e0;
+    font-weight: bold;
+}
+
+form input, form textarea, form button {
+    padding: 10px;
+    border: 1px solid #bb86fc;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+form button {
+    cursor: pointer;
+    font-size: 16px;
+}
