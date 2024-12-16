@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a Campaign</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    {% include 'DawajKase/header.html' %}
+    
+    <!-- Main Form -->
+    <main>
+        <div class="container">
+            <h1>Start a New Campaign</h1>
+            <form id="createCampaignForm" method="POST" action="/create_campaign" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required maxlength="50">
+
+                <label for="short_description">Short Description:</label>
+                <input type="text" id="short_description" name="short_description" required maxlength="500">
+
+                <label for="description">Full Description:</label>
+                <textarea id="description" name="description" rows="5" required></textarea>
+
+                <label for="target_money_amount">Target Amount:</label>
+                <input type="number" id="target_money_amount" name="target_money_amount" required min="0">
+
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required>
+
+                <label for="image">Campaign Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+
+                <label for="status">Status:</label>
+                <input type="text" id="status" name="status" maxlength="30">
+
+                <button id="createCampaignBtn" type="submit">Create Campaign</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

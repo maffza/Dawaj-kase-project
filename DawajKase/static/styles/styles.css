@@ -279,3 +279,38 @@ footer {
 .project-description p {
     line-height: 1.6;
 }
+
+#createCampaignForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: #1f1f1f;
+    padding: 20px;
+    border: 1px solid #bb86fc;
+    border-radius: 5px;
+}
+
+#createCampaignForm label {
+    color: #e0e0e0;
+    font-weight: bold;
+}
+
+#createCampaignForm input, #createCampaignForm textarea, #createCampaignBtn {
+    padding: 10px;
+    border: 1px solid #bb86fc;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+#createCampaignBtn {
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#discoverBtn{
+float: left;
+color: #e0e0e0;
+border: 1px solid #bb86fc;
+padding: 10px;
+background-color:#1f1f1f;
+}
