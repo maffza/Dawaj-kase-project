@@ -28,41 +28,39 @@
                  <!-- Nowy kontener na  wyszukiwania -->
                 <div id="search-results" style="display: none;"></div>
                 {% else %}
-                    <p>There are no campaigns!.</p>
+                    <p>There are no campaigns!</p>
                 {% endif %}
             </div>
         </main>
     </div>
 
    <script>
-    document.getElementById('q').addEventListener('input', function () {
-    const query = this.value.trim();
-    const featured = document.querySelector('.featured-projects');
-    const other = document.querySelector('.other-projects');
-    const searchResults = document.getElementById('search-results');
+        document.getElementById('q').addEventListener('input', function () {
+            const query = this.value.trim();
+            const featured = document.querySelector('.featured-projects');
+            const other = document.querySelector('.other-projects');
+            const searchResults = document.getElementById('search-results');
 
-    if (query) {
-        fetch(`/search?q=${encodeURIComponent(query)}`)
-            .then(response => response.text())
-            .then(data => {
-                searchResults.style.display = 'block';
-                searchResults.innerHTML = data;
+            if (query) {
+                fetch(`/search?q=${encodeURIComponent(query)}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        searchResults.style.display = 'block';
+                        searchResults.innerHTML = data;
 
-                featured.style.display = 'none';
-                other.style.display = 'none';
-            })
-            .catch(error => console.error('Error fetching campaigns:', error));
-    } else {
+                        featured.style.display = 'none';
+                        other.style.display = 'none';
+                    })
+                    .catch(error => console.error('Error fetching campaigns:', error));
+            } else {
+                searchResults.style.display = 'none';
+                searchResults.innerHTML = '';
 
-        searchResults.style.display = 'none';
-        searchResults.innerHTML = '';
-
-        featured.style.display = 'flex';
-        other.style.display = 'flex';
-    }
-});
-</script>
-
+                featured.style.display = 'flex';
+                other.style.display = 'flex';
+            }
+        });
+    </script>
     <!-- Footer -->
     <footer>
         <div class="container">
