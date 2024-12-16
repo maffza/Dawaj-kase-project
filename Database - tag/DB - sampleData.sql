@@ -12,9 +12,9 @@ INSERT INTO categories (name, description)
 VALUES ('Community', 'Campaigns to support local community projects and social initiatives');
 
 INSERT INTO users (first_name, last_name, address, city, email, password_hash, role) 
-VALUES ('John', 'Doe', '123 Maple Street', 'Springfield', 'john.doe@example.com', 'ha665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Organizer');
+VALUES ('John', 'Doe', '123 Maple Street', 'Springfield', 'john.doe@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Organizer');
 INSERT INTO users (first_name, last_name, address, city, email, password_hash, role) 
-VALUES ('Erwin', 'Schulz', '135 Antoniusstraße', 'Magdeburg', 'erwin.schulz@example.com', 'ha665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Organizer');
+VALUES ('Erwin', 'Schulz', '135 Antoniusstraße', 'Magdeburg', 'erwin.schulz@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Organizer');
 INSERT INTO users (first_name, last_name, address, city, email, password_hash, role) 
 VALUES ('Jane', 'Smith', '456 Oak Avenue', 'Springfield', 'jane.smith@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Supporter');
 INSERT INTO users (first_name, last_name, address, city, email, password_hash, role) 
