@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, project, login, logout, auth, register, search
+from .views import index, project, login, logout, auth, register, search,campaign_create
 
 urlpatterns = [
     path("", index, name="index"),
@@ -9,4 +9,5 @@ urlpatterns = [
     path("login", login, name="login"),
     path("register", register, name="register"),
     path("search", search, name="search"),
+    path("campaign_create", campaign_create, name="campaign_create"),
 ]

@@ -104,3 +104,9 @@ def search(request):
         return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
 
     return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
+
+
+def campaign_create(request):
+    return render(request, 'DawajKase/campaign_create.html')
+
+
