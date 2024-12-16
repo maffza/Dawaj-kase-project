@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from django.contrib import messages
 from .Managers.ManagerFactory import ManagerFactory
+from .Campaign import Campaign
 
 # Create your views here.
 def index(request):
@@ -81,6 +82,8 @@ def project(request, slug):
     
     creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
 
+    print(creator)
+
     if not creator:
         return render(request, 'DawajKase/404.html')
     
@@ -112,4 +115,24 @@ def campaign_create(request):
     query = request.session.get('query', None)
     return render(request, 'DawajKase/campaign_create.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
 
+def insert_campaign(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        shortDescription = request.POST.get('shortDescription')
+        description = request.POST.get('description')
+        targetMoneyAmount = request.POST.get('targetMoneyAmount')
+        endDate = request.POST.get('endDate')
+        userData = request.session.get('userData', None)
 
+        campaignManager = ManagerFactory.get_campaign_manager()
+
+        if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, '', userData['id'], 0):
+            pass
+        else:
+            pass
+
+    else:
+        pass
+
+    return redirect('index')
+    

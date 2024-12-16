@@ -16,7 +16,7 @@ class UserManager:
 
             if hashedPassword == userPasswordHash:
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT first_name, last_name, email, profile_picture_url, role FROM users WHERE email=%s", [email])
+                    cursor.execute("SELECT id, first_name, last_name, email, profile_picture_url, role FROM users WHERE email=%s", [email])
                     row = cursor.fetchone()
                 
                 if row:
@@ -52,7 +52,7 @@ class UserManager:
         user = None
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT first_name, last_name, email, profile_picture_url, role FROM users WHERE id=%s", [id])
+            cursor.execute("SELECT id, first_name, last_name, email, profile_picture_url, role FROM users WHERE id=%s", [id])
             userResult = cursor.fetchone()
 
             if userResult:

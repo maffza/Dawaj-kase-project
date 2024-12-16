@@ -1,5 +1,6 @@
 class User:
-    def __init__(self, firstName, lastName, email, pfpURL, role):
+    def __init__(self, id, firstName, lastName, email, pfpURL, role):
+        self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
@@ -8,6 +9,7 @@ class User:
     
     def to_json(self):
         return {
+            'id': self.id,
             'firstName': self.firstName,
             'lastName': self.lastName,
             'email': self.email,

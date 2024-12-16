@@ -1,4 +1,7 @@
 class Campaign:
+    def __init(eslf):
+        pass
+    
     def __init__(self, id, title, description, shortDescription,
                  targetMoneyAmount, currentMoneyAmount, startDate, endDate,
                  status, imageURL, organizerID, categoryID,

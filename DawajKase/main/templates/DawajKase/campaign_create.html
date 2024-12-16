@@ -14,28 +14,25 @@
     <main>
         <div class="container">
             <h1>Start a New Campaign</h1>
-            <form id="createCampaignForm" method="POST" action="/create_campaign" enctype="multipart/form-data">
+            <form id="createCampaignForm" method="POST" action="/insert_campaign" enctype="multipart/form-data">
                 {% csrf_token %}
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" required maxlength="50">
 
                 <label for="short_description">Short Description:</label>
-                <input type="text" id="short_description" name="short_description" required maxlength="500">
+                <input type="text" id="short_description" name="shortDescription" required maxlength="500">
 
                 <label for="description">Full Description:</label>
                 <textarea id="description" name="description" rows="5" required></textarea>
 
                 <label for="target_money_amount">Target Amount:</label>
-                <input type="number" id="target_money_amount" name="target_money_amount" required min="0">
+                <input type="number" id="target_money_amount" name="targetMoneyAmount" required min="0">
 
                 <label for="end_date">End Date:</label>
-                <input type="date" id="end_date" name="end_date" required>
+                <input type="date" id="endDate" name="endDate" required>
 
                 <label for="image">Campaign Image:</label>
                 <input type="file" id="image" name="image" accept="image/*" required>
-
-                <label for="status">Status:</label>
-                <input type="text" id="status" name="status" maxlength="30">
 
                 <button id="createCampaignBtn" type="submit">Create Campaign</button>
             </form>
