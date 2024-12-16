@@ -34,6 +34,16 @@
                 <label for="image">Campaign Image:</label>
                 <input type="file" id="image" name="image" accept="image/*" required>
 
+                <label for="category">Category:</label>
+    <select id="category" name="category" required>
+        <option value="" disabled selected>Select a category</option>
+        <option value="Technology">Technology</option>
+        <option value="Health">Health</option>
+    </select>
+
+                <label for="status">Status:</label>
+                <input type="text" id="status" name="status" maxlength="30">
+
                 <button id="createCampaignBtn" type="submit">Create Campaign</button>
             </form>
         </div>

@@ -314,3 +314,11 @@ border: 1px solid #bb86fc;
 padding: 10px;
 background-color:#1f1f1f;
 }
+
+#createCampaignForm #category {
+    padding: 10px;
+    border: 1px solid #bb86fc;
+    background-color: #121212;
+    color: #e0e0e0;
+    width: 100%;
+}
