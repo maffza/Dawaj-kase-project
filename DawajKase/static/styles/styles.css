@@ -280,7 +280,7 @@ footer {
     line-height: 1.6;
 }
 
-form {
+#createCampaignForm {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -290,19 +290,27 @@ form {
     border-radius: 5px;
 }
 
-form label {
+#createCampaignForm label {
     color: #e0e0e0;
     font-weight: bold;
 }
 
-form input, form textarea, form button {
+#createCampaignForm input, #createCampaignForm textarea, #createCampaignBtn {
     padding: 10px;
     border: 1px solid #bb86fc;
     background-color: #121212;
     color: #e0e0e0;
 }
 
-form button {
+#createCampaignBtn {
     cursor: pointer;
     font-size: 16px;
+}
+
+#discoverBtn{
+float: left;
+color: #e0e0e0;
+border: 1px solid #bb86fc;
+padding: 10px;
+background-color:#1f1f1f;
 }
