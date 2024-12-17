@@ -13,7 +13,9 @@
         <nav class="navigation">
             <ul>
                 {% if userData %}
-                    <li><a href="/campaign_create">Start a project</a></li>
+                    {% if userData.role == 'Organizer' %}
+                        <li><a href="/campaign_create">Start a project</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </nav>
