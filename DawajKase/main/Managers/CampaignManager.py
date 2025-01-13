@@ -1,5 +1,6 @@
 from django.db import connection
 from ..Campaign import Campaign
+import oracledb
 
 class CampaignManager:
     @staticmethod
@@ -16,15 +17,13 @@ class CampaignManager:
         return campaigns
     
     @staticmethod
-    def get_campaigns_by_id(id):
+    def get_campaign_by_id(id):
         campaign = None
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM campaigns WHERE id=%s", [id])
-            campaignResult = cursor.fetchone()
-
-            if campaignResult:
-                campaign = Campaign(*campaignResult)
+            ref_cursor = cursor.callfunc("get_campaigns_by_id", oracledb.CURSOR, [int(id)])
+            campaignResult = ref_cursor.fetchone()
+            campaign = Campaign(*campaignResult)
 
         return campaign
     

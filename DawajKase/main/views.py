@@ -76,7 +76,7 @@ def logout(request):
     return redirect('index')
 
 def project(request, slug):
-    campaign = ManagerFactory.get_campaign_manager().get_campaigns_by_id(slug)
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(slug)
 
     if not campaign:
         return render(request, 'DawajKase/404.html')
