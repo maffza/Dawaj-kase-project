@@ -3,6 +3,7 @@ from django.db import connection
 from django.contrib import messages
 from .Managers.ManagerFactory import ManagerFactory
 from .Campaign import Campaign
+from .Util import generate_random_string
 
 # Create your views here.
 def index(request):
@@ -122,12 +123,22 @@ def insert_campaign(request):
         description = request.POST.get('description')
         targetMoneyAmount = request.POST.get('targetMoneyAmount')
         endDate = request.POST.get('endDate')
-        userData = request.session.get('userData', None)
+        image = request.FILES['image']
 
-        campaignManager = ManagerFactory.get_campaign_manager()
+        if image:
+            imagePath = f'media/campaign_thumbnails/' + generate_random_string(16)
+            with open(f'static/{imagePath}', 'wb+') as destination:
+                for chunk in image.chunks():
+                    destination.write(chunk)
+        
+            userData = request.session.get('userData', None)
+            campaignManager = ManagerFactory.get_campaign_manager()
 
-        if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, '', userData['id'], 0):
-            pass
+            if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], 0):
+                pass
+            else:
+                pass
+
         else:
             pass
 
