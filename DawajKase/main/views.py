@@ -83,8 +83,6 @@ def project(request, slug):
     
     creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
 
-    print(creator)
-
     if not creator:
         return render(request, 'DawajKase/404.html')
     

@@ -21,7 +21,7 @@ class CampaignManager:
         campaign = None
 
         with connection.cursor() as cursor:
-            ref_cursor = cursor.callfunc("get_campaigns_by_id", oracledb.CURSOR, [int(id)])
+            ref_cursor = cursor.callfunc("get_campaign_by_id", oracledb.CURSOR, [int(id)])
             campaignResult = ref_cursor.fetchone()
             campaign = Campaign(*campaignResult)
 
