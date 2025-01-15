@@ -6,18 +6,21 @@
 }
 
 html, body {
-    height: 100%;
+
 }
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #121212;
+    background-color: #111220;
     color: #e0e0e0;
+
 }
 
 /* Wrapper to make footer stick to bottom */
 .wrapper {
     min-height: calc(100% - 100px); /* Adjust based on footer height */
+    margin-bottom: 400px;
+
 }
 
 /* Links */
@@ -34,9 +37,12 @@ a {
 
 /* Header */
 header {
-    background-color: #1f1f1f;
-    border-bottom: 1px solid #333;
-    padding: 20px 0;
+    height: 70px;
+    background-color: #111220;
+    border-bottom: 1px solid #383B4B;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
 }
 
 header .container {
@@ -48,7 +54,7 @@ header .container {
 .logo {
     width: 60px;
     height: 60px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,14 +64,16 @@ header .container {
 /* Search Bar */
 .search-bar {
     flex: 1;
+    border-radius: 20px;
 }
 
 .search-bar input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #bb86fc;
-    background-color: #121212;
+    border: 1px solid #383B4B;
+    background-color: #111220;
     color: #e0e0e0;
+    border-radius: 5px;
 }
 
 /* Navigation */
@@ -80,7 +88,7 @@ header .container {
 
 .navigation a {
     color: #e0e0e0;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     padding: 10px;
 }
 
@@ -91,10 +99,11 @@ header .container {
 
 .auth-buttons button {
     padding: 10px 15px;
-    border: 1px solid #bb86fc;
-    background-color: #1f1f1f;
+    border: 1px solid #383B4B;
+    background-color: #5E66D6;
     color: #e0e0e0;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 /* Main Content */
@@ -112,9 +121,26 @@ main .featured-projects {
     flex: 1;
     margin: 0 10px;
     height: 200px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     text-align: center;
     padding-top: 80px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+    background-color: #11111B;
+}
+
+.project-box {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-box:hover {
+  transform: scale(1.04);
+  border-radius: 5px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.project-box a{
+    color: #6E66D6
 }
 
 main .other-projects {
@@ -130,46 +156,60 @@ main .other-projects .project-box {
 
 #search-results {
     margin-top: 20px;
-    border: 1px solid #bb86fc;
+    margin: 0 auto;
+    border: 1px solid #383B4B;
     background-color: #1f1f1f;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 20px;
+    width: 70%;
 }
 
-#search-results .project-box {
-    margin-bottom: 15px;
-}
 
 
 /* Footer */
 footer {
-    background-color: #1f1f1f;
-    border-top: 1px solid #333;
+    background-color: #111220;
+    border-top: 1px solid #383B4B;
     padding: 20px 0;
     text-align: center;
+    position: relative;
+    bottom: 0;
+    width:100%;
+    height: 100px;
+
+   left: 0;
+   width: 100%;
+   color: white;
+   text-align: center;
 }
 
 .footer-links a {
     margin: 0 10px;
     color: #e0e0e0;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     padding: 5px 10px;
+    border-radius: 5px;
 }
 
 /* Auth Page */
+
 .auth-page {
     display: flex;
+    width: 100%;
+    height: 100%;
     justify-content: center;
     align-items: center;
     min-height: calc(100% - 100px); /* Adjust based on footer height */
 }
 
 .auth-page .form-container {
+    margin-top: 3%;
     background-color: #1f1f1f;
     padding: 40px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     width: 400px;
     text-align: center;
+    border-radius: 7px;
 }
 
 .auth-page h2 {
@@ -188,7 +228,7 @@ footer {
     background-color: #1f1f1f;
     color: #e0e0e0;
     cursor: pointer;
-    border-bottom: 2px solid #bb86fc;
+    border-bottom: 2px solid #383B4B;
 }
 
 .auth-page .tab-buttons button.active {
@@ -207,19 +247,26 @@ footer {
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     background-color: #121212;
     color: #e0e0e0;
+    border-radius: 7px;
+}
+
+.auth-page input:focus {
+    outline: 1px solid #5E66D6
 }
 
 .auth-page button[type="submit"] {
     width: 100%;
     padding: 12px;
-    border: 1px solid #bb86fc;
-    background-color: #1f1f1f;
+    border: 1px solid #5E66D6;
+    background-color:#5E66D6;
     color: #e0e0e0;
     cursor: pointer;
+    border-radius: 7px;
 }
+
 
 /* Project Page */
 .project-details {
@@ -235,17 +282,22 @@ footer {
 .image-placeholder {
     width: 100%;
     height: 300px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     display: flex;
     justify-content: center;
     align-items: center;
     color: #e0e0e0;
+    border-radius: 7px;
 }
 
 .project-info {
     flex: 1;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     padding: 20px;
+    border-radius: 7px;
+}
+.project-info button{
+    border-radius: 7px;
 }
 
 .project-info h1 {
@@ -262,7 +314,7 @@ footer {
 
 .project-info button {
     padding: 10px 20px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     background-color: #1f1f1f;
     color: #e0e0e0;
     cursor: pointer;
@@ -286,7 +338,7 @@ footer {
     gap: 15px;
     background-color: #1f1f1f;
     padding: 20px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     border-radius: 5px;
 }
 
@@ -297,7 +349,7 @@ footer {
 
 #createCampaignForm input, #createCampaignForm textarea, #createCampaignBtn {
     padding: 10px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     background-color: #121212;
     color: #e0e0e0;
 }
@@ -308,16 +360,17 @@ footer {
 }
 
 #discoverBtn{
-float: left;
-color: #e0e0e0;
-border: 1px solid #bb86fc;
-padding: 10px;
-background-color:#1f1f1f;
+    float: left;
+    color: #e0e0e0;
+    border: 1px solid #383B4B;
+    padding: 10px;
+    background-color:#1f1f1f;
+    border-radius-right: 10px;
 }
 
 #createCampaignForm #category {
     padding: 10px;
-    border: 1px solid #bb86fc;
+    border: 1px solid #383B4B;
     background-color: #121212;
     color: #e0e0e0;
     width: 100%;

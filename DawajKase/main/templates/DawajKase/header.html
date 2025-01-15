@@ -1,11 +1,11 @@
 <header>
     <div class="container">
-        <a href="/"><div class="logo">Logo</div></a>
+        <a href="/"><img src="/static/images/logo.png" style="width:50px; height:50px; margin-right: 5px"></a>
         <!-- Search Bar -->
         <div class="search-bar">
             <form method="GET" action="/search">
-                <input type="text" id="q" name="q" placeholder="Search projects..." style="float:left; width: 90%;" value="{% if query %}{{query}}{% endif %}" />
-                <button type="submit" id = "discoverBtn" >Discover</button>
+                <input type="text" id="q" name="q" placeholder="Search projects..." style="float:left; width: 100%;" value="{% if query %}{{query}}{% endif %}" />
+
             </form>
         </div>
 
@@ -24,7 +24,7 @@
                 Welcome, {{ userData.firstName }}!
                 <a href="/logout"><button>Log out</button></a>
             {% else %}
-                <a href="/auth"><button>Login/Register</button></a>
+                <a href="/auth"><button><b>Login / Register</b></button></a>
             {% endif %}
         </div>
     </div>
