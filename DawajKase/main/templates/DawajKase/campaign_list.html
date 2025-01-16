@@ -1,9 +1,16 @@
 {% load static %}
 {% for campaign in campaigns %}
-    <div class="project-box" {% if campaign.imageURL %} style="background-image: url({% static campaign.imageURL %}) ;background-size: cover;" {% endif %}>
-        <h2><a href="project/{{campaign.id}}">{{ campaign.title }}</a></h2><br/>
-        {% if showDescription and campaign.description %}
-            <p>{{ campaign.description }}</p>
+<a href="project/{{campaign.id}}">
+    <div class="project-box">
+        {% if campaign.imageURL %}
+            <img src="{% static campaign.imageURL %}" alt="{{ campaign.title }}">
         {% endif %}
+        <div class="campaign-content">
+            <h2>{{ campaign.title }}</h2>
+            {% if showDescription and campaign.description %}
+                <p>{{ campaign.description }}</p>
+            {% endif %}
+        </div>
     </div>
+</a>
 {% endfor %}

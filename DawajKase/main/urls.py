@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import index, project, login, logout, auth, register, search, campaign_create, insert_campaign
 
+
 urlpatterns = [
     path("", index, name="index"),
     path("project/<slug>", project, name="project"),

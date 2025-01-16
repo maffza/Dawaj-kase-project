@@ -1,3 +1,4 @@
+
 from django.db import connection
 from ..Campaign import Campaign
 import oracledb
