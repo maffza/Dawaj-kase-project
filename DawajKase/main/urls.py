@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, project, login, logout, auth, register, search, campaign_create, insert_campaign
+from .views import *
 
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path("search", search, name="search"),
     path("campaign_create", campaign_create, name="campaign_create"),
     path("insert_campaign", insert_campaign, name="insert_campaign"),
+    path("favourite/<id>", favourite_campaign, name="favourite_campaign"),
 ]

@@ -89,8 +89,9 @@ def project(request, slug):
     comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
 
     userData = request.session.get('userData', None)
+    isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
 
-    return render(request, 'DawajKase/project.html', {'userData': userData, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
+    return render(request, 'DawajKase/project.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
 
 def search(request):
     query = request.GET.get('q', '').strip()
@@ -145,3 +146,13 @@ def insert_campaign(request):
 
     return redirect('index')
     
+def favourite_campaign(request, id):
+    userData = request.session.get('userData', None)
+    if userData:
+        isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(id, userData['id'])
+        if isFavourited:
+            ManagerFactory.get_campaign_manager().remove_campaign_from_favourites(id, userData['id'])
+        else:
+            ManagerFactory.get_campaign_manager().add_campaign_to_favourites(id, userData['id'])
+    
+    return redirect('/project/' + id)
