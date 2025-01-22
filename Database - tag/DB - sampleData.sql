@@ -20,6 +20,10 @@ VALUES ('Jane', 'Smith', '456 Oak Avenue', 'Springfield', 'jane.smith@example.co
 INSERT INTO users (first_name, last_name, address, city, email, password_hash, role) 
 VALUES ('Alice', 'Johnson', '789 Pine Road', 'Metropolis', 'alice.johnson@example.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'Supporter');
 
+INSERT INTO users (first_name, last_name, address, city, email, password_hash, role) 
+VALUES ('---ANONIM', '---ANONIM', '---ANONIM', '---ANONIM', '---ANONIM', ' ', '---ANONIM');
+UPDATE users SET id = 999999999 WHERE first_name LIKE '---ANONIM';
+
 INSERT INTO campaigns (title, description, short_description, target_money_amount, current_money_amount, start_date, end_date, status, image_url, organizer_id, category_id) 
 VALUES ('Tech for All', 'A campaign to provide tech resources to underprivileged students', 'Providing laptops to schools', 10000, 2500, SYSDATE, SYSDATE + 30, 'Active', '', 1, 1);
 INSERT INTO campaigns (title, description, short_description, target_money_amount, current_money_amount, start_date, end_date, status, image_url, organizer_id, category_id) 

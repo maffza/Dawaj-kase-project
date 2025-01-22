@@ -87,11 +87,11 @@ def project(request, slug):
         return render(request, 'DawajKase/404.html')
     
     comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
-
     userData = request.session.get('userData', None)
     isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
+    donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
 
-    return render(request, 'DawajKase/project.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments})
+    return render(request, 'DawajKase/project.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
 
 def search(request):
     query = request.GET.get('q', '').strip()
@@ -156,3 +156,38 @@ def favourite_campaign(request, id):
             ManagerFactory.get_campaign_manager().add_campaign_to_favourites(id, userData['id'])
     
     return redirect('/project/' + id)
+
+def donate(request, id):
+    userData = request.session.get('userData', None)
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(id).to_json()
+
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
+        message = request.POST.get('message')
+
+        error = None
+        if len(amount) == 0:
+            error = "Enter value"
+
+        if not error:
+            amount = int(amount)
+            if amount <= 0:
+                error = "The amount must be greater than 0"
+
+        if not message:
+            message = " "
+
+        if error:
+            return render(request, 'DawajKase/donate.html', {'userData': userData, 'campaign': campaign, 'error': error})
+        else:
+            if userData:
+                ManagerFactory.get_payment_manager().donate(campaign['id'], userData['id'], amount, message)
+            else:
+                ManagerFactory.get_payment_manager().donate_anonymously(campaign['id'], amount, message)
+
+        return redirect('/project/' + id)
+    else:
+        if not campaign:
+            return render(request, 'DawajKase/404.html')
+        
+        return render(request, 'DawajKase/donate.html', {'userData': userData, 'campaign': campaign})

@@ -30,8 +30,9 @@
                         <p><strong>0 backers</strong></p>
                         <p><strong id="daysLeft"></strong> to go</p>
                     </div>
-                    <button class="back-project">Back this project</button>
-                    <!-- TEMPORARY -->
+                    <a href="/donate/{{campaign.id}}">
+                        <button class="back-project">Back this project</button>
+                    </a>
                     {% if userData %}
                     <a href="/favourite/{{campaign.id}}">
                         <button class="back-project">
@@ -47,7 +48,14 @@
             </div>
 
             <br/><br/>
+            <h2>Donations</h2>
+            <br/>
+            {% for donation in donations %}
+                <strong>{{donation.username}}</strong>
+                <p>{{donation.message}}</p><br/>
+            {% endfor %}
             <h2>Comments</h2>
+            <br/><br/>
             <br/>
             {% for comment in comments %}
                 <strong>{{comment.username}}</strong>

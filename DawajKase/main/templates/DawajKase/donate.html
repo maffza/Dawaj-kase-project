@@ -1,0 +1,12 @@
+{% load static %}
+Donate to {{campaign.title}}
+
+<form action="/donate/{{campaign.id}}" method="POST" style="display: flex; width: 50%; flex-direction: column;">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Enter the message (optional)">
+    <input type="number" name="amount" placeholder="Enter the amount">
+    <button type="submit">Pay now</button>
+</form>
+{% if error %}
+    {{error}}
+{% endif %}

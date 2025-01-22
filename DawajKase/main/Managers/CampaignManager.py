@@ -1,6 +1,7 @@
 
 from django.db import connection
 from ..Campaign import Campaign
+from ..Donation import Donation
 import oracledb
 
 class CampaignManager:
@@ -72,4 +73,16 @@ class CampaignManager:
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM favourites WHERE user_id=%s AND campaign_id=%s", 
                     [userID, campaignID])
+            
+    @staticmethod
+    def get_donations(campaignID):
+        donations = None
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT d.id, d.amount, d.message, CASE WHEN d.user_id = 999999999 THEN 'Anonymous' ELSE u.first_name || ' ' || u.last_name END as username, d.creation_date FROM donations d JOIN users u ON d.user_id=u.id WHERE campaign_id=%s ORDER BY d.id DESC", 
+                    [campaignID])
+            donationsResult = cursor.fetchall()
+            if donationsResult:
+                donations = [Donation(*d).to_json() for d in donationsResult]
+
+        return donations
         
