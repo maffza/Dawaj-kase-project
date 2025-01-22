@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>{{ campaign.title }} project</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 </head>
 <body>
     <!-- Header (Same as main page) -->
@@ -22,6 +23,7 @@
                     </div>
                 </div>
                 <div class="project-info">
+                    <div id="qrcode" style="float: right;"></div>
                     <h1>{{ campaign.title }}</h1>
                     <p>by <a href="#">{% if creator %} {{creator.firstName}} {{creator.lastName}} {% endif %}</a></p>
                     <p>{{ campaign.shortDescription }}</p>
@@ -84,6 +86,15 @@
         const daysRemaining = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
         document.getElementById("daysLeft").textContent = daysRemaining + " days"
+
+        new QRCode(document.getElementById("qrcode"), {
+            text: "https://dawajkase.net/project/{{campaign.id}}",
+            width: 128,
+            height: 128,
+            colorDark: "#000000",
+            colorLight: "#ffffff",       
+            correctLevel: QRCode.CorrectLevel.H
+          });
     </script>
 </body>
 </html>
