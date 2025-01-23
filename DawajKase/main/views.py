@@ -108,6 +108,12 @@ def search(request):
 
     return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
 
+def search_bar(request):
+    query = request.GET.get('q', '').strip()
+    reset = request.GET.get('reset', False)
+    if query:
+        campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
+    return render(request, 'DawajKase/search.html', {'campaigns': campaigns, 'showDescription': True})
 
 def campaign_create(request):
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)

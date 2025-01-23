@@ -1,9 +1,55 @@
-<h1>Search results</h1>
-<a href="/">[index]</a><br/><br/>
-{% if campaigns %}
-    {% for campaign in campaigns %}
-        <a href="project/{{campaign.id}}">{{ campaign.title }}</a><p>{{ campaign.description }}</p>
-    {% endfor %}
-{% else %}
-    <p>No campaigns found!!!</p>
-{% endif %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crowdfunding</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
+
+</head>
+<body>
+    <div class="wrapper">
+        {% include 'DawajKase/header.html' %}
+        <main>
+            <div class="container">
+                <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+                <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png"> 
+                
+                
+                {% for campaign in campaigns %}
+                <a class="project-link" href="project/{{campaign.id}}">
+                    <div id="search-results">
+                    <div class="project-box">
+                        {% if campaign.imageURL %}
+                        <img src="{% static campaign.imageURL %}" alt="{{ campaign.title }}">
+                        {% endif %}
+                        <div class="campaign-content">
+                            <h2>{{ campaign.title }}</h2>
+                            {% if showDescription and campaign.description %}
+                            <p>{{ campaign.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </div>
+                </a>
+                {% empty %}
+                <center><p id="search-results">There is no such a campaign!</p></center>
+                {% endfor %}
+            </div>
+            <!-- TODO: Fajne wyszukiwanie na search.html -->
+        </main>
+    </div>
+    
+     <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

@@ -1,16 +1,22 @@
 {% load static %}
 {% for campaign in campaigns %}
-<a href="project/{{campaign.id}}">
-    <div class="project-box">
-        {% if campaign.imageURL %}
+<link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+<link rel="icon" href="{% static 'media/logo.png' %}" type="image/png"> 
+
+
+    <a class="project-link" href="project/{{campaign.id}}">
+        <div class="project-box">
+            {% if campaign.imageURL %}
             <img src="{% static campaign.imageURL %}" alt="{{ campaign.title }}">
-        {% endif %}
-        <div class="campaign-content">
-            <h2>{{ campaign.title }}</h2>
-            {% if showDescription and campaign.description %}
-                <p>{{ campaign.description }}</p>
             {% endif %}
+            <div class="campaign-content">
+                <h2>{{ campaign.title }}</h2>
+                {% if showDescription and campaign.description %}
+                <p>{{ campaign.description }}</p>
+                {% endif %}
+            </div>
         </div>
-    </div>
 </a>
-{% endfor %}
+{% empty %}
+<center>There is no such a campaign!</center>
+ {% endfor %}

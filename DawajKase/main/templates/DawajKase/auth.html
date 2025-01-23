@@ -3,8 +3,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login/Register - Crowdfunding Template</title>
+    <title>Login / Register - Crowdfunding </title>
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
+ 
 </head>
 <body>
     <!-- Wrapper to make footer stay at the bottom -->
@@ -41,7 +43,7 @@
                     <button type="submit">Register</button>
                     {% if register %}
                     {% for message in messages %}
-                        <p>{{ message }}</p>
+                        <p class="registerReturnMessage">{{ message }}</p>
                     {% endfor %}
                     {% endif%}
                 </form>
