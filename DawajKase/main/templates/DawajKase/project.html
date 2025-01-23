@@ -31,8 +31,8 @@
                     <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
                         <p><strong>${{campaign.currentMoneyAmount}} pledged</strong> of ${{campaign.targetMoneyAmount}} goal</p>
-                        <p><strong>0 backers</strong></p>
-                        <p><strong id="daysLeft"></strong> to go</p>
+                        <p><strong>3 backers</strong></p>
+                        <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     <a href="/donate/{{campaign.id}}">
                         <button class="back-project">Back this project</button>
@@ -85,9 +85,30 @@
         const today = new Date();
         const timeDifference = endDate - today;
 
+        const currentAmount = "{{campaign.currentMoneyAmount}}";
+        const targetAmount = "{{campaign.targetMoneyAmount}}";
+    
         const daysRemaining = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
         document.getElementById("daysLeft").textContent = daysRemaining + " days"
+        if (timeDifference < 0) {
+            document.getElementById("daysLeft").textContent = "Campaign has ended! ";
+            document.getElementById("clear").textContent = "";
+            document.querySelector(".back-project").disabled = true;
+    const buttons = document.querySelectorAll(".back-project");
+        buttons.forEach(button => {
+            button.style.display = "none";
+    });
+        }
+        if( currentAmount >= targetAmount){
+            document.getElementById("daysLeft").textContent = "Campaign has reached its goal! ";
+            document.getElementById("clear").textContent = "";
+            document.querySelector(".back-project").disabled = true;
+    const buttons = document.querySelectorAll(".back-project");
+        buttons.forEach(button => {
+            button.style.display = "none";
+    });
+        }
 
         new QRCode(document.getElementById("qrcode"), {
             text: "https://dawajkase.net/project/{{campaign.id}}",

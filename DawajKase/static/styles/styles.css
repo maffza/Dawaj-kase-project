@@ -47,6 +47,7 @@ header {
     padding: 10px 0;
     position: sticky;
     top: 0;
+    z-index: 1000; 
 }
 
 header .container {
@@ -121,7 +122,7 @@ main .featured-projects {
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
-    /* flex: 1 0 auto;  */
+    flex: 1 0 auto;  
 }
 
 .project-box {
@@ -439,3 +440,117 @@ h1 {
     color: #e0e0e0;
     width: 100%;
 }
+
+
+/* Sort */
+/* Styl dla sekcji sortowania */
+.sort {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-bottom: 20px;
+}
+
+/* Dropdown menu sort*/
+.dropdown {
+    position: relative;
+    margin-left: 10px;
+}
+
+.dropdown-button {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border: 1px solid #383B4B;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-button:hover {
+    background-color: #383B4B;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #1f1f1f;
+    border: 1px solid #383B4B;
+    border-radius: 5px;
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    z-index: 1000;
+    width: 150px;
+}
+
+.dropdown-menu li {
+    padding: 10px 15px;
+}
+
+.dropdown-menu li a {
+    color: #e0e0e0;
+    text-decoration: none;
+}
+
+.dropdown-menu li:hover {
+    background-color: #383B4B;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Donate */
+.donation-form {
+    display: flex;
+    width: 35%;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: #383B4B;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.donation-input {
+    padding: 12px;
+    border: 1px solid #383B4B;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    background-color: #121212b6;
+    color: #e0e0e0;
+}
+
+#message{
+    height: 80px;
+}
+
+.donation-input:focus {
+    outline: none;
+    border-color: #4A46D6;
+    box-shadow: 0 0 5px rgba(47, 74, 196, 0.2);
+}
+
+.donation-button {
+    padding: 12px 24px;
+    background-color: #5E66D6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.donation-button:hover {
+    background-color: #4A46D6;
+}
+
+

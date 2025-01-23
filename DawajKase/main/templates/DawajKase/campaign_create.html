@@ -16,7 +16,7 @@
     <!-- Main Form -->
     <main>
         <div class="container">
-            <h1 class="pageTitle">Start a New Campaign</h1>
+            <center style="margin-bottom: 10px;"><h1 class="pageTitle">Start a New Campaign</h1></center>
             <form id="createCampaignForm" method="POST" action="/insert_campaign" enctype="multipart/form-data">
                 {% csrf_token %}
                 <label for="title">Title:</label>
@@ -42,6 +42,12 @@
         <option value="" disabled selected>Select a category</option>
         <option value="Technology">Technology</option>
         <option value="Health">Health</option>
+        <option value="Technology">Education</option>
+        <option value="Health">Animals</option>
+        <option value="Health">Community</option>
+        <option value="Health">Environment</option>
+
+
     </select>
 
                 

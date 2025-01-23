@@ -103,7 +103,7 @@ def search(request):
         campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
 
     if reset:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(150)
         return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
 
     return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
@@ -113,8 +113,13 @@ def search_bar(request):
     reset = request.GET.get('reset', False)
     if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
+    else:
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(150)
     return render(request, 'DawajKase/search.html', {'campaigns': campaigns, 'showDescription': True})
 
+
+
+    
 def campaign_create(request):
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     userData = request.session.get('userData', None)
@@ -173,12 +178,12 @@ def donate(request, id):
 
         error = None
         if len(amount) == 0:
-            error = "Enter value"
+            error = "Enter a value!"
 
         if not error:
             amount = int(amount)
             if amount <= 0:
-                error = "The amount must be greater than 0"
+                error = "The amount must be greater than 0!"
 
         if not message:
             message = " "

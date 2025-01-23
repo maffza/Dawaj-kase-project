@@ -18,7 +18,20 @@
         <main>
             <div class="container">
                 {% if campaigns %}
-
+               <div class="sort">
+                    <p>Sort by:</p>
+                    <div class="dropdown">
+                        <button class="dropdown-button">Pick</button>
+                        <ul class="dropdown-menu">
+                            <li><a >Technology</a></li>
+                            <li><a >Health</a></li>
+                            <li><a >Education</a></li>
+                            <li><a >Animals</a></li>
+                            <li><a >Community</a></li>
+                            <li><a >Environment</a></li>
+                        </ul>
+                    </div>
+                </div>
                     <div class="featured-projects">
                         {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:":3" showDescription=True %}
 
@@ -62,6 +75,7 @@
                 other.style.display = 'flex';
             }
         });
+                
     </script>
     <!-- Footer -->
     <footer>

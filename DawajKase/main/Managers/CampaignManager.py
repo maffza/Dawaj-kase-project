@@ -44,6 +44,9 @@ class CampaignManager:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
 
         return campaigns
+
+
+
     
     @staticmethod
     def insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID):
@@ -85,4 +88,4 @@ class CampaignManager:
                 donations = [Donation(*d).to_json() for d in donationsResult]
 
         return donations
-        
+

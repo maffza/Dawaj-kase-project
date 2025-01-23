@@ -1,12 +1,33 @@
 {% load static %}
-Donate to {{campaign.title}}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crowdfunding - Donate</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
+</head>
+<body>
+    <div class="wrapper">
 
-<form action="/donate/{{campaign.id}}" method="POST" style="display: flex; width: 50%; flex-direction: column;">
-    {% csrf_token %}
-    <input type="text" name="message" placeholder="Enter the message (optional)">
-    <input type="number" name="amount" placeholder="Enter the amount">
-    <button type="submit">Pay now</button>
-</form>
-{% if error %}
-    {{error}}
-{% endif %}
+        {% include 'DawajKase/header.html' %}
+        <main>
+            <div class="container">
+        <center style="font-size: 20px;">
+            Donate to <b>{{campaign.title}}</b>
+        </center>
+        
+         <form action="/donate/{{campaign.id}}" method="POST" class="donation-form">
+            {% csrf_token %}
+            <input type="text" name="message" placeholder="Enter the message (optional)" class="donation-input" id="message">
+            <input type="number" name="amount" placeholder="Enter the amount" class="donation-input">
+            <button type="submit" class="donation-button">Pay now</button>
+         </form>
+        {% if error %}
+          <center>
+            {{error}}
+        </center>
+        {% endif %}
+            </div>
+        </main>
+    </div>
+</body>
