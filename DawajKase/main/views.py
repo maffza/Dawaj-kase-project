@@ -115,11 +115,22 @@ def project_adm(request, slug):
     return render(request, 'DawajKase/project_adm.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
 
 def confirmation_tab(request):
-    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_to_be_approved()
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
     users = ManagerFactory.get_user_manager().get_all_users()
     return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query, 'users': users})
+
+def approve_campaign(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        campaignID = data.get('campaign_id')
+
+        ManagerFactory.get_campaign_manager().approve_campaign(campaignID)
+
+        return HttpResponse("OK", status=200)
+    else:
+        return render(request, 'DawajKase/404.html')
 
 def change_role(request):
     if request.method == 'POST':

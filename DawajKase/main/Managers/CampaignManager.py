@@ -44,9 +44,6 @@ class CampaignManager:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
 
         return campaigns
-
-
-
     
     @staticmethod
     def insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID):
@@ -88,4 +85,22 @@ class CampaignManager:
                 donations = [Donation(*d).to_json() for d in donationsResult]
 
         return donations
+    
+    @staticmethod
+    def get_campaigns_to_be_approved():
+        campaigns = None
 
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM campaigns WHERE status LIKE 'ToApprove'")
+            campaignsResult = cursor.fetchall()
+
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+
+        return campaigns
+    
+    @staticmethod
+    def approve_campaign(campaignID):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE campaigns SET status='Active' WHERE id = %s", 
+                    [campaignID])

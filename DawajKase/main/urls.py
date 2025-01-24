@@ -18,4 +18,5 @@ urlpatterns = [
     path("confirmation_tab", confirmation_tab, name="confirmation_tab"),
     path("become_creator", become_creator, name="become_creator"),
     path("change_role", change_role, name="change_role"),
+    path("approve_campaign", approve_campaign, name="approve_campaign"),
 ]

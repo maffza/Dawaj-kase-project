@@ -97,21 +97,15 @@
             <button class="active" onclick="showTab('approvals')">Approve Campaigns</button>
             <button onclick="showTab('user-management')">Manage Users</button>
         </div>
-        <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after capaign name for visuals)-->
+        <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after capaign name for visuals [bro, margin-right exists XD])-->
         <div id="approvals" class="tab-content active">
             <h2>Approve Campaigns</h2>
+            {% for campaign in campaigns %}
             <div class="approval-item">
-                <span>Campaign 1 - Help the Planet</span>
-                <button onclick="approveCampaign(this)">Approve</button>
+                <span>{{campaign.title}}</span>
+                <button onclick="approveCampaign(this, {{campaign.id}})">Approve</button>
             </div>
-            <div class="approval-item">
-                <span>Campaign 2 - Save the Animals</span>
-                <button onclick="approveCampaign(this)">Approve</button>
-            </div>
-            <div class="approval-item">
-                <span>Campaign 3 - Build a School</span>
-                <button onclick="approveCampaign(this)">Approve</button>
-            </div>
+            {% endfor %}
         </div>
         <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after user name for visuals [bro, margin-right exists XD])-->
         <div id="user-management" class="tab-content">
@@ -137,10 +131,25 @@
             document.querySelector(`#tabs button[onclick="showTab('${tabId}')"]`).classList.add('active');
         }
 
-        function approveCampaign(button) {
-            button.textContent = 'Approved';
-            button.classList.add('approved');
-            button.disabled = true;
+        function approveCampaign(button, campaignID) {
+            fetch('/approve_campaign', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ campaign_id: campaignID })
+            })
+            .then(response => {
+                if (response.ok) {
+                    button.textContent = 'Approved';
+                    button.classList.add('approved');
+                    button.disabled = true;
+                } else {
+                    button.textContent = 'Error';
+                    button.disabled = true;
+                }
+            });
         }
         function getCookie(name) {
             let cookieValue = null;
