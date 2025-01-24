@@ -31,6 +31,9 @@
                     <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
                         <p><strong>${{campaign.currentMoneyAmount}} pledged</strong> of ${{campaign.targetMoneyAmount}} goal</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: {% widthratio campaign.currentMoneyAmount campaign.targetMoneyAmount 100 %}%"></div>
+                        </div>
                         <p><strong>{{ donors_count }} backers</strong></p>
                         <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>

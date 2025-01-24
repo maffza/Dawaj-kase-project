@@ -37,7 +37,7 @@
                         {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:":3" showDescription=True %}
                     </div>
                     <div class="other-projects">
-                        {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:"3:9" showDescription=False %}
+                        {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:"3:" showDescription=True %}
                     </div>
                     <div id="search-results" style="display: none;"></div>
                 {% else %}
