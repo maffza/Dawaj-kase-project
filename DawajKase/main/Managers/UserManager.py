@@ -65,3 +65,22 @@ class UserManager:
         with connection.cursor() as cursor:
             cursor.execute("UPDATE users SET phone=%s, bank_account=%s, document_photo=%s, role='ToVerify' WHERE id = %s", 
                                 [phoneNumber, bankNumber, documentPhoto, userID])
+
+    @staticmethod
+    def get_all_users():
+        users = None
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id, first_name, last_name, email, profile_picture_url, role FROM users WHERE id != 999999999 ORDER BY id")
+            usersResult = cursor.fetchall()
+
+            if usersResult:
+                users = [User(*d).to_json() for d in usersResult]
+
+        return users
+    
+    @staticmethod
+    def change_role(userID, role):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE users SET role=%s WHERE id = %s", 
+                                [role, userID])

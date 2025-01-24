@@ -17,4 +17,5 @@ urlpatterns = [
     path("project_adm/<slug>", project_adm, name="project_adm"),
     path("confirmation_tab", confirmation_tab, name="confirmation_tab"),
     path("become_creator", become_creator, name="become_creator"),
+    path("change_role", change_role, name="change_role"),
 ]

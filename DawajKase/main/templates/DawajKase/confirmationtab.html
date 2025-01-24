@@ -105,7 +105,7 @@
                 <button onclick="approveCampaign(this)">Approve</button>
             </div>
             <div class="approval-item">
-                <span>Campaign 2 - Save the Animalsasgasga</span>
+                <span>Campaign 2 - Save the Animals</span>
                 <button onclick="approveCampaign(this)">Approve</button>
             </div>
             <div class="approval-item">
@@ -113,30 +113,18 @@
                 <button onclick="approveCampaign(this)">Approve</button>
             </div>
         </div>
-        <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after user name for visuals) -->
+        <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after user name for visuals [bro, margin-right exists XD])-->
         <div id="user-management" class="tab-content">
             <h2>Manage Users</h2>
+            {% for user in users %}
             <div class="user-status">
-                <span>John Doe</span>
-                <select onchange="changeUserStatus(this)">
-                    <option value="supporter">Supporter</option>
-                    <option value="creator">Creator</option>
+                <span>{{user.firstName}} {{user.lastName}} {% if user.role == 'ToVerify' %}[verify me]{% endif %}</span>
+                <select onchange="changeUserStatus(this, {{user.id}})">
+                    <option value="1" {% if user.role == 'Supporter' or user.role == 'ToVerify' %}selected{% endif %}>Supporter</option>
+                    <option value="2" {% if user.role == 'Organizer' %}selected{% endif %}>Organizer</option>
                 </select>
             </div>
-            <div class="user-status">
-                <span>Jane Smith</span>
-                <select onchange="changeUserStatus(this)">
-                    <option value="creator">Creator</option>
-                    <option value="supporter">Supporter</option>
-                </select>
-            </div>
-            <div class="user-status">
-                <span>Emily Davis</span>
-                <select onchange="changeUserStatus(this)">
-                    <option value="supporter">Supporter</option>
-                    <option value="creator">Creator</option>
-                </select>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -154,22 +142,43 @@
             button.classList.add('approved');
             button.disabled = true;
         }
-        // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
-        function changeUserStatus(select) {
-            alert(`User status changed to: ${select.value}`);
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function changeUserStatus(select, userId) {
+            const selectedRole = select.value;
+
+            fetch('/change_role', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ user_id: userId, role: selectedRole })
+            })
+            .then(response => {
+                // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
+                if (response.ok) {
+                    const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
+                    alert(`User status changed to: ${roleName}`);
+                } else {
+                    alert("Failed to update user role.");
+                }
+            });
         }
     </script>
 
-    <!-- Footer (Same as main page) -->
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Help</a>
-                <a href="#">Terms</a>
-                <a href="#">Privacy</a>
-            </div>
-        </div>
-    </footer>
+    {% include 'DawajKase/footer.html' %}
 </body>
 </html>

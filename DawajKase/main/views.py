@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.db import connection
+from django.http import HttpResponse
 from django.contrib import messages
 from .Managers.ManagerFactory import ManagerFactory
 from .Campaign import Campaign
 from .Util import generate_random_string
+import json
 
 # Create your views here.
 def index(request):
@@ -116,7 +118,27 @@ def confirmation_tab(request):
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
-    return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
+    users = ManagerFactory.get_user_manager().get_all_users()
+    return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query, 'users': users})
+
+def change_role(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        userID = data.get('user_id')
+        role = data.get('role')
+
+        print(role)
+
+        if role == '2':
+            role = 'Organizer'
+        else:
+            role = 'Supporter'
+
+        ManagerFactory.get_user_manager().change_role(userID, role)
+
+        return HttpResponse("OK", status=200)
+    else:
+        return render(request, 'DawajKase/404.html')
 
 def become_creator(request):
     userData = request.session.get('userData', None)
