@@ -32,7 +32,7 @@
                 <input type="number" id="target_money_amount" name="targetMoneyAmount" required min="0">
 
                 <label for="end_date">End Date:</label>
-                <input type="date" id="endDate" name="endDate" required>
+    <input type="date" id="endDate" name="endDate" required min="{{ tomorrow }}">
 
                 <label for="image">Campaign Image:</label>
                 <input type="file" id="image" name="image" accept="image/*" required>

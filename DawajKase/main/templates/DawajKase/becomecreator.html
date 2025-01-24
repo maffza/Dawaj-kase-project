@@ -16,25 +16,24 @@
     <!-- Main Form -->
     <main>
         <div class="container">
-            <center style="margin-bottom: 10px;"><h1 class="pageTitle">Become Creator</h1></center> <!-- <center> is deprecated -->
-            <form id="becomeCreatorForm" action="/become_creator" method="POST">
+            <center style="margin-bottom: 10px;"><h1 class="pageTitle">Become Creator</h1></center>
+            <form id="becomeCreatorForm" method="POST" action="/become_creator" style="display: flex; flex-direction: column; gap: 20px; background-color: rgba(31, 31, 31, 0.95); padding: 30px; border: 1px solid rgba(56, 59, 75, 0.3); border-radius: 12px; margin: 0 auto; width: 70%; max-width: 800px; backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);">
                 {% csrf_token %}
-                <label for="phone">Phone number:</label>
-                <input type="text" id="phone" name="phone" required maxlength="15">
+                <label for="phone" style="color: #e0e0e0; font-weight: 600; font-size: 14px; margin-bottom: 5px;">Phone number:</label>
+                <input type="text" id="phone" name="phone" required maxlength="15" style="padding: 12px; border: 1px solid rgba(56, 59, 75, 0.5); border-radius: 8px; background-color: rgba(18, 18, 18, 0.9); color: #e0e0e0; font-size: 14px; transition: all 0.3s ease;">
 
-
-                <label for="bank">Bank number:</label>
-                <input type="number" id="bank" name="bank" required >
+                <label for="bank" style="color: #e0e0e0; font-weight: 600; font-size: 14px; margin-bottom: 5px;">Bank number:</label>
+                <input type="number" id="bank" name="bank" required style="padding: 12px; border: 1px solid rgba(56, 59, 75, 0.5); border-radius: 8px; background-color: rgba(18, 18, 18, 0.9); color: #e0e0e0; font-size: 14px; transition: all 0.3s ease;">
 
                 <!-- Disabled to not enter a file each time during the development -->
                 <!--<label for="image">Documents to verify identity</label>
-                <input type="file" id="image" name="image" accept="image/*" required>--> 
+                <input type="file" id="image" name="image" accept="image/*" required>-->
 
-                <button id="createCampaignBtn" type="submit">Send verification form</button>
+                <button type="submit" style="cursor: pointer; font-size: 16px; font-weight: 600; padding: 14px; background-color: #5E66D6; border: none; border-radius: 8px; color: white; transition: all 0.3s ease; margin-top: 10px;">Send verification form</button>
             </form>
             {% if messages %}
                 {% for message in messages|slice:":1" %}
-                    <center><label>{{message}}</label></center> <!-- <center> is deprecated -->
+                    <center><label>{{message}}</label></center>
                 {% endfor %}
             {% endif %}
         </div>

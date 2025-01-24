@@ -217,10 +217,17 @@ def search_bar(request):
     return render(request, 'DawajKase/search.html', {'campaigns': campaigns, 'showDescription': True, 'query': query})
     
 def campaign_create(request):
+    from datetime import date, timedelta
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
-    return render(request, 'DawajKase/campaign_create.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
+    tomorrow = date.today() + timedelta(days=1)
+    return render(request, 'DawajKase/campaign_create.html', {
+        'userData': userData,
+        'campaigns': campaigns,
+        'query': query,
+        'tomorrow': tomorrow.isoformat()
+    })
 
 def insert_campaign(request):
     if request.method == 'POST':
