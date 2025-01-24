@@ -31,7 +31,7 @@
                     <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
                         <p><strong>${{campaign.currentMoneyAmount}} pledged</strong> of ${{campaign.targetMoneyAmount}} goal</p>
-                        <p><strong>3 backers</strong></p>
+                        <p><strong>{{ donors_count }} backers</strong></p>
                         <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     <a href="/donate/{{campaign.id}}">
@@ -55,15 +55,19 @@
             <h2>Donations</h2>
             <br/>
             {% for donation in donations %}
-                <strong>{{donation.username}}</strong>
-                <p>{{donation.message}}</p><br/>
+                <div class="donation-card">
+                    <strong class="donation-username">{{donation.username}}</strong>
+                    <p class="donation-message">{{donation.message}}</p>
+                </div>
             {% endfor %}
             <h2>Comments</h2>
             <br/><br/>
             <br/>
             {% for comment in comments %}
-                <strong>{{comment.username}}</strong>
-                <p>{{comment.commentText}}</p><br/>
+                <div class="comment-card">
+                    <strong class="comment-username">{{comment.username}}</strong>
+                    <p class="comment-text">{{comment.commentText}}</p>
+                </div>
             {% endfor %}
         </div>
     </main>
@@ -100,7 +104,7 @@
             button.style.display = "none";
     });
         }
-        if( currentAmount >= targetAmount){
+        if( parseFloat(currentAmount) >= parseFloat(targetAmount)){
             document.getElementById("daysLeft").textContent = "Campaign has reached its goal! ";
             document.getElementById("clear").textContent = "";
             document.querySelector(".back-project").disabled = true;

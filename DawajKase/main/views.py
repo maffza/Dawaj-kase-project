@@ -102,8 +102,17 @@ def project(request, slug):
     userData = request.session.get('userData', None)
     isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
     donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
+    donors_count = ManagerFactory.get_campaign_manager().count_unique_donors(campaign.id)
 
-    return render(request, 'DawajKase/project.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
+    return render(request, 'DawajKase/project.html', {
+        'userData': userData,
+        'isFavourited': isFavourited,
+        'campaign': campaign.to_json(),
+        'creator': creator.to_json(),
+        'comments': comments,
+        'donations': donations,
+        'donors_count': donors_count
+    })
 
 #MESJASZA BZDETY, TE CHYBA PRAWIDLOWE
 def project_adm(request, slug):

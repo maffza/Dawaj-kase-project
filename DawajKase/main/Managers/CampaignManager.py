@@ -127,3 +127,14 @@ class CampaignManager:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
                 
         return campaigns
+
+    @staticmethod
+    def count_unique_donors(campaign_id):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT COUNT(DISTINCT user_id) 
+                FROM donations 
+                WHERE campaign_id = %s AND user_id != 999999999
+            """, [campaign_id])
+            result = cursor.fetchone()
+            return result[0] if result else 0
