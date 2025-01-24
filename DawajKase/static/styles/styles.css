@@ -366,8 +366,6 @@ footer .container {
     align-items: center;
     color: #e0e0e0;
     border-radius: 7px;
-
-
 }
 
 .project-info {
@@ -400,7 +398,6 @@ footer .container {
   transform: scale(1.01);
   border-radius: 7px;
   box-shadow: 0 2px 10px rgba(94, 102, 214, 0.5);
-  
 }
 
 .project-info button {
@@ -427,7 +424,6 @@ h1 {
     margin: 0 auto;
     width: 100%;
 }
-
 
 #createCampaignForm {
     display: flex;
@@ -477,9 +473,7 @@ h1 {
     width: 100%;
 }
 
-
 /* Sort */
-
 .filter {
     display: flex;
     align-items: center;
@@ -536,10 +530,6 @@ h1 {
 .dropdown-menu li a.active-category {
     color: #5E66D6;
     font-weight: bold;
-}
-
-.dropdown-menu li a {
-    color: #e0e0e0;
 }
 
 .dropdown-menu li:hover {
@@ -690,9 +680,9 @@ h1 {
     cursor: pointer;
 }
 
-    .dropdown-btn_adm:hover {
-        color: #bb86fc;
-    }
+.dropdown-btn_adm:hover {
+    color: #bb86fc;
+}
 
 .dropdown-menu_adm {
     display: none;
@@ -700,44 +690,3 @@ h1 {
     background-color: #1f1f1f;
     border: 1px solid #383B4B;
     z-index: 1;
-    margin-top: 5px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.dropdown_adm:hover .dropdown-menu_adm {
-    display: block;
-}
-
-.dropdown-menu_adm button {
-    background-color: #1f1f1f;
-    color: #e0e0e0;
-    border: none;
-    padding: 10px;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 3px;
-    width: 100%;
-}
-
-    .dropdown-menu_adm button:hover {
-        background-color: #383B4B;
-    }
-
-#becomeCreatorForm {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    background-color: #1f1f1f;
-    padding: 20px;
-    border: 1px solid #383B4B;
-    border-radius: 5px;
-    margin: 0 auto;
-    width: 30%;
-}
-
-    #becomeCreatorForm label {
-        color: #e0e0e0;
-        font-weight: bold;
-        color: #e0e0e0;
-    }

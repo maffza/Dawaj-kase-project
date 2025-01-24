@@ -88,33 +88,45 @@
     </footer>
 
     <script>
-        const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}");
-        const today = new Date();
-        const timeDifference = endDate - today;
-
+        const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}T12:00:00");
         const currentAmount = "{{campaign.currentMoneyAmount}}";
         const targetAmount = "{{campaign.targetMoneyAmount}}";
-    
-        const daysRemaining = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
-        document.getElementById("daysLeft").textContent = daysRemaining + " days"
-        if (timeDifference < 0) {
-            document.getElementById("daysLeft").textContent = "Campaign has ended! ";
-            document.getElementById("clear").textContent = "";
-            document.querySelector(".back-project").disabled = true;
-    const buttons = document.querySelectorAll(".back-project");
-        buttons.forEach(button => {
-            button.style.display = "none";
-    });
+        function updateTimer() {
+            const now = new Date();
+            const timeDifference = endDate - now;
+
+            if (timeDifference <= 0) {
+                document.getElementById("daysLeft").textContent = "Campaign has ended! ";
+                document.getElementById("clear").textContent = "";
+                document.querySelector(".back-project").disabled = true;
+                const buttons = document.querySelectorAll(".back-project");
+                buttons.forEach(button => {
+                    button.style.display = "none";
+                });
+                return;
+            }
+
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+            document.getElementById("daysLeft").textContent = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+
         if( parseFloat(currentAmount) >= parseFloat(targetAmount)){
             document.getElementById("daysLeft").textContent = "Campaign has reached its goal! ";
             document.getElementById("clear").textContent = "";
             document.querySelector(".back-project").disabled = true;
-    const buttons = document.querySelectorAll(".back-project");
-        buttons.forEach(button => {
-            button.style.display = "none";
-    });
+            const buttons = document.querySelectorAll(".back-project");
+            buttons.forEach(button => {
+                button.style.display = "none";
+            });
         }
 
         new QRCode(document.getElementById("qrcode"), {
