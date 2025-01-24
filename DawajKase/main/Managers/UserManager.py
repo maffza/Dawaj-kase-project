@@ -59,3 +59,9 @@ class UserManager:
                 user = User(*userResult)
 
         return user
+    
+    @staticmethod
+    def send_verification_request(userID, phoneNumber, bankNumber, documentPhoto):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE users SET phone=%s, bank_account=%s, document_photo=%s, role='ToVerify' WHERE id = %s", 
+                                [phoneNumber, bankNumber, documentPhoto, userID])

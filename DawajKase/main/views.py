@@ -128,10 +128,9 @@ def become_creator(request):
     if request.method == 'POST':
         phoneNumber = request.POST.get('phone')
         bankNumber = request.POST.get('bank')
-        # sigmaPhoto = request.FILES['image'] # Disabled to not enter a file each time the during development
+        # documentPhoto = request.FILES['image'] # Disabled to not enter a file each time the during development
 
-        # ManagerFactory().get_user_manager().send_verification_request()
-        # will do after we settle on the method.
+        ManagerFactory().get_user_manager().send_verification_request(userData['id'], phoneNumber, bankNumber, '')
 
         messages.success(request, 'Your request has been sent')
         return redirect('become_creator')
