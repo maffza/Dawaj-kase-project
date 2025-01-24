@@ -690,3 +690,7 @@ h1 {
     background-color: #1f1f1f;
     border: 1px solid #383B4B;
     z-index: 1;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}

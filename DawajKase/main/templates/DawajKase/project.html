@@ -93,6 +93,9 @@
         const targetAmount = "{{campaign.targetMoneyAmount}}";
 
         function updateTimer() {
+            if (parseFloat(currentAmount) >= parseFloat(targetAmount)) {
+                return;
+            }
             const now = new Date();
             const timeDifference = endDate - now;
 
@@ -120,7 +123,7 @@
         setInterval(updateTimer, 1000);
 
         if( parseFloat(currentAmount) >= parseFloat(targetAmount)){
-            document.getElementById("daysLeft").textContent = "Campaign has reached its goal! ";
+            document.getElementById("daysLeft").textContent = "All funds collected"; 
             document.getElementById("clear").textContent = "";
             document.querySelector(".back-project").disabled = true;
             const buttons = document.querySelectorAll(".back-project");
