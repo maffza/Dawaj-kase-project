@@ -15,7 +15,6 @@ urlpatterns = [
     path("favourite/<id>", favourite_campaign, name="favourite_campaign"),
     path("donate/<id>", donate, name="donate"),
     path("project_adm/<slug>", project_adm, name="project_adm"),
-    path("confirmationtab", confirmationtab, name="confirmationtab"),
-    path("becomecreator", becomecreator, name="becomecreator"),
-
+    path("confirmation_tab", confirmation_tab, name="confirmation_tab"),
+    path("become_creator", become_creator, name="become_creator"),
 ]

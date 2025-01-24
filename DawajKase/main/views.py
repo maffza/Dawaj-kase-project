@@ -112,23 +112,31 @@ def project_adm(request, slug):
 
     return render(request, 'DawajKase/project_adm.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
 
-
-#MESJASZA BZDETY, DO NAPRAWY BY POBIERALO PRAWIDLOWE
-
-def confirmationtab(request):
+def confirmation_tab(request):
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
     return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
 
-#MESJASZA BZDETY, DO NAPRAWY BY POBIERALO PRAWIDLOWE
-
-def becomecreator(request):
-    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+def become_creator(request):
     userData = request.session.get('userData', None)
+    if not userData or userData['role'] == 'Organizer':
+        return redirect('index')
+    
     query = request.session.get('query', None)
-    return render(request, 'DawajKase/becomecreator.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
 
+    if request.method == 'POST':
+        phoneNumber = request.POST.get('phone')
+        bankNumber = request.POST.get('bank')
+        # sigmaPhoto = request.FILES['image'] # Disabled to not enter a file each time the during development
+
+        # ManagerFactory().get_user_manager().send_verification_request()
+        # will do after we settle on the method.
+
+        messages.success(request, 'Your request has been sent')
+        return redirect('become_creator')
+
+    return render(request, 'DawajKase/becomecreator.html', {'userData': userData, 'query': query})
 
 def search(request):
     query = request.GET.get('q', '').strip()
@@ -147,15 +155,15 @@ def search(request):
 
 def search_bar(request):
     query = request.GET.get('q', '').strip()
-    reset = request.GET.get('reset', False)
+    reset = request.GET.get('reset', False) # What is its purpose?
+    request.session['query'] = query
+
     if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
     else:
         campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(150)
-    return render(request, 'DawajKase/search.html', {'campaigns': campaigns, 'showDescription': True})
-
-
-
+    
+    return render(request, 'DawajKase/search.html', {'campaigns': campaigns, 'showDescription': True, 'query': query})
     
 def campaign_create(request):
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)

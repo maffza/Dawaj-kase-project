@@ -6,19 +6,26 @@
         <div class="search-bar">
             <form method="GET" action="/search_bar">
                 <input type="text" id="q" name="q" placeholder="Search projects..." style="float:left; width: 90%;" value="{% if query %}{{query}}{% endif %}" />
-
             </form>
         </div>
 
 
         <nav class="navigation">
             <ul>
-                {% if userData %}
-                <!-- TODO: Organizer zakomentowany do destow-->
-                    {% if true == true %}<!-- userData.role == 'Organizer' -->
-                        <li><a href="/campaign_create">Start a project</a></li>
+                {% with test=True %} <!-- Set to True to display both buttons -->
+                {% if test == True %}
+                    <li><a href="/campaign_create">Start a project</a></li>
+                    <li><a href="/become_creator">Become a creator</a></li>
+                {% else %}
+                    {% if userData %}
+                        {% if userData.role == 'Organizer' %}<!--  -->
+                            <li><a href="/campaign_create">Start a project</a></li>
+                        {% else %}
+                            <li><a href="/become_creator">Become a creator</a></li>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
+                {% endwith %}
             </ul>
         </nav>
         <div class="auth-buttons">

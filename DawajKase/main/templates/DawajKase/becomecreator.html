@@ -16,10 +16,9 @@
     <!-- Main Form -->
     <main>
         <div class="container">
-            <!-- Add Backend (this is just remodeled create campaing site btw) -->
-            <center style="margin-bottom: 10px;"><h1 class="pageTitle">Become Creator</h1></center>
-            <form id="becomeCreatorForm" method="POST">
-
+            <center style="margin-bottom: 10px;"><h1 class="pageTitle">Become Creator</h1></center> <!-- <center> is deprecated -->
+            <form id="becomeCreatorForm" action="/become_creator" method="POST">
+                {% csrf_token %}
                 <label for="phone">Phone number:</label>
                 <input type="text" id="phone" name="phone" required maxlength="15">
 
@@ -27,12 +26,17 @@
                 <label for="bank">Bank number:</label>
                 <input type="number" id="bank" name="bank" required >
 
-                <label for="image">Documents to verify identity</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-
+                <!-- Disabled to not enter a file each time during the development -->
+                <!--<label for="image">Documents to verify identity</label>
+                <input type="file" id="image" name="image" accept="image/*" required>--> 
 
                 <button id="createCampaignBtn" type="submit">Send verification form</button>
             </form>
+            {% if messages %}
+                {% for message in messages|slice:":1" %}
+                    <center><label>{{message}}</label></center> <!-- <center> is deprecated -->
+                {% endfor %}
+            {% endif %}
         </div>
     </main>
 
