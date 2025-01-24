@@ -93,6 +93,43 @@ def project(request, slug):
 
     return render(request, 'DawajKase/project.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
 
+#MESJASZA BZDETY, TE CHYBA PRAWIDLOWE
+def project_adm(request, slug):
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(slug)
+
+    if not campaign:
+        return render(request, 'DawajKase/404.html')
+    
+    creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
+
+    if not creator:
+        return render(request, 'DawajKase/404.html')
+    
+    comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
+    userData = request.session.get('userData', None)
+    isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
+    donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
+
+    return render(request, 'DawajKase/project_adm.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
+
+
+#MESJASZA BZDETY, DO NAPRAWY BY POBIERALO PRAWIDLOWE
+
+def confirmationtab(request):
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+    userData = request.session.get('userData', None)
+    query = request.session.get('query', None)
+    return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
+
+#MESJASZA BZDETY, DO NAPRAWY BY POBIERALO PRAWIDLOWE
+
+def becomecreator(request):
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+    userData = request.session.get('userData', None)
+    query = request.session.get('query', None)
+    return render(request, 'DawajKase/becomecreator.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
+
+
 def search(request):
     query = request.GET.get('q', '').strip()
     reset = request.GET.get('reset', False)
@@ -168,6 +205,12 @@ def favourite_campaign(request, id):
     
     return redirect('/project/' + id)
 
+
+
+
+
+
+
 def donate(request, id):
     userData = request.session.get('userData', None)
     campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(id).to_json()
@@ -202,3 +245,9 @@ def donate(request, id):
             return render(request, 'DawajKase/404.html')
         
         return render(request, 'DawajKase/donate.html', {'userData': userData, 'campaign': campaign})
+
+
+
+
+
+    

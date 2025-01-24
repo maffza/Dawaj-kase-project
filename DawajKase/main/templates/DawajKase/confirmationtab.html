@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
+    <style>
+        /* Additional styles for the admin panel */
+        #admin-panel {
+            margin: 30px auto;
+            max-width: 1200px;
+            background-color: #1f1f1f;
+            border: 1px solid #383B4B;
+            padding: 20px;
+            border-radius: 7px;
+        }
+
+        #tabs {
+            display: flex;
+            border-bottom: 2px solid #383B4B;
+        }
+
+            #tabs button {
+                flex: 1;
+                padding: 15px;
+                background-color: #1f1f1f;
+                color: #e0e0e0;
+                border: none;
+                cursor: pointer;
+            }
+
+                #tabs button.active {
+                    background-color: #383B4B;
+                }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        .approval-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111220;
+            border: 1px solid #383B4B;
+            padding: 15px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+        }
+
+            .approval-item button {
+                background-color: #5E66D6;
+                color: #e0e0e0;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+                .approval-item button.approved {
+                    background-color: #4CAF50;
+                }
+
+        .user-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111220;
+            border: 1px solid #383B4B;
+            padding: 15px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+        }
+
+            .user-status select {
+                background-color: #1f1f1f;
+                color: #e0e0e0;
+                border: 1px solid #383B4B;
+                padding: 10px;
+                border-radius: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    {% include 'DawajKase/header.html' %}
+    <div id="admin-panel">
+        <div id="tabs">
+            <button class="active" onclick="showTab('approvals')">Approve Campaigns</button>
+            <button onclick="showTab('user-management')">Manage Users</button>
+        </div>
+        <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after capaign name for visuals)-->
+        <div id="approvals" class="tab-content active">
+            <h2>Approve Campaigns</h2>
+            <div class="approval-item">
+                <span>Campaign 1 - Help the Planet</span>
+                <button onclick="approveCampaign(this)">Approve</button>
+            </div>
+            <div class="approval-item">
+                <span>Campaign 2 - Save the Animalsasgasga</span>
+                <button onclick="approveCampaign(this)">Approve</button>
+            </div>
+            <div class="approval-item">
+                <span>Campaign 3 - Build a School</span>
+                <button onclick="approveCampaign(this)">Approve</button>
+            </div>
+        </div>
+        <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after user name for visuals) -->
+        <div id="user-management" class="tab-content">
+            <h2>Manage Users</h2>
+            <div class="user-status">
+                <span>John Doe</span>
+                <select onchange="changeUserStatus(this)">
+                    <option value="supporter">Supporter</option>
+                    <option value="creator">Creator</option>
+                </select>
+            </div>
+            <div class="user-status">
+                <span>Jane Smith</span>
+                <select onchange="changeUserStatus(this)">
+                    <option value="creator">Creator</option>
+                    <option value="supporter">Supporter</option>
+                </select>
+            </div>
+            <div class="user-status">
+                <span>Emily Davis</span>
+                <select onchange="changeUserStatus(this)">
+                    <option value="supporter">Supporter</option>
+                    <option value="creator">Creator</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('#tabs button').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`#tabs button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function approveCampaign(button) {
+            button.textContent = 'Approved';
+            button.classList.add('approved');
+            button.disabled = true;
+        }
+        // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
+        function changeUserStatus(select) {
+            alert(`User status changed to: ${select.value}`);
+        }
+    </script>
+
+    <!-- Footer (Same as main page) -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

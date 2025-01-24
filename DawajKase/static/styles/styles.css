@@ -364,7 +364,7 @@ footer {
   transform: scale(1.01);
   border-radius: 7px;
   box-shadow: 0 2px 10px rgba(94, 102, 214, 0.5);
-  #5E66D6
+  
 }
 
 .project-info button {
@@ -554,3 +554,85 @@ h1 {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+.dropdown_adm {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn_adm {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+    .dropdown-btn_adm:hover {
+        color: #bb86fc;
+    }
+
+.dropdown-menu_adm {
+    display: none;
+    position: absolute;
+    background-color: #1f1f1f;
+    border: 1px solid #383B4B;
+    z-index: 1;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropdown_adm:hover .dropdown-menu_adm {
+    display: block;
+}
+
+.dropdown-menu_adm button {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border: none;
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 3px;
+    width: 100%;
+}
+
+    .dropdown-menu_adm button:hover {
+        background-color: #383B4B;
+    }
+
+#becomeCreatorForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: #1f1f1f;
+    padding: 20px;
+    border: 1px solid #383B4B;
+    border-radius: 5px;
+    margin: 0 auto;
+    width: 30%;
+}
+
+    #becomeCreatorForm label {
+        color: #e0e0e0;
+        font-weight: bold;
+    }
+
+    #becomeCreatorForm input, #becomeCreatorForm textarea, #createCampaignBtn {
+        padding: 10px;
+        margin-bottom: 5px;
+        border: 1px solid #383B4B;
+        border-radius: 7px;
+        background-color: #121212;
+        color: #e0e0e0;
+    }

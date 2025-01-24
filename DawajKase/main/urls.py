@@ -14,4 +14,8 @@ urlpatterns = [
     path("insert_campaign", insert_campaign, name="insert_campaign"),
     path("favourite/<id>", favourite_campaign, name="favourite_campaign"),
     path("donate/<id>", donate, name="donate"),
+    path("project_adm/<slug>", project_adm, name="project_adm"),
+    path("confirmationtab", confirmationtab, name="confirmationtab"),
+    path("becomecreator", becomecreator, name="becomecreator"),
+
 ]
