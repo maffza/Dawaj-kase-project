@@ -9,10 +9,20 @@ import json
 
 # Create your views here.
 def index(request):
-    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+    category_id = request.GET.get('category', None)
+    if category_id:
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_category(int(category_id))
+    else:
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+        
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
-    return render(request, 'DawajKase/index.html', {'userData': userData, 'campaigns': campaigns, 'query': query})
+    return render(request, 'DawajKase/index.html', {
+        'userData': userData,
+        'campaigns': campaigns,
+        'query': query,
+        'selected_category': category_id
+    })
 
 def auth(request):
     userData = request.session.get('userData', None)
@@ -220,8 +230,10 @@ def insert_campaign(request):
         
             userData = request.session.get('userData', None)
             campaignManager = ManagerFactory.get_campaign_manager()
+            category_name = request.POST.get('category')
+            category_id = campaignManager.get_category_id_by_name(category_name)
 
-            if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], 0):
+            if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id):
                 pass
             else:
                 pass
@@ -285,9 +297,3 @@ def donate(request, id):
             return render(request, 'DawajKase/404.html')
         
         return render(request, 'DawajKase/donate.html', {'userData': userData, 'campaign': campaign})
-
-
-
-
-
-    

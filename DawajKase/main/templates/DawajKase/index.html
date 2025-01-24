@@ -17,33 +17,31 @@
         <!-- Main Content -->
         <main>
             <div class="container">
-                {% if campaigns %}
                <div class="sort">
-                    <p>Sort by:</p>
+                    <p>Filter by:</p>
                     <div class="dropdown">
                         <button class="dropdown-button">Pick</button>
                         <ul class="dropdown-menu">
-                            <li><a >Technology</a></li>
-                            <li><a >Health</a></li>
-                            <li><a >Education</a></li>
-                            <li><a >Animals</a></li>
-                            <li><a >Community</a></li>
-                            <li><a >Environment</a></li>
+                            <li><a href="?category=49" class="{% if selected_category == '49' %}active-category{% endif %}">Technology</a></li>
+                            <li><a href="?category=50" class="{% if selected_category == '50' %}active-category{% endif %}">Health</a></li>
+                            <li><a href="?category=45" class="{% if selected_category == '45' %}active-category{% endif %}">Education</a></li>
+                            <li><a href="?category=47" class="{% if selected_category == '47' %}active-category{% endif %}">Animals</a></li>
+                            <li><a href="?category=54" class="{% if selected_category == '54' %}active-category{% endif %}">Community</a></li>
+                            <li><a href="?category=40" class="{% if selected_category == '40' %}active-category{% endif %}">Environment</a></li>
                         </ul>
                     </div>
                 </div>
+                
+                {% if campaigns %}
                     <div class="featured-projects">
                         {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:":3" showDescription=True %}
-
                     </div>
                     <div class="other-projects">
                         {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:"3:9" showDescription=False %}
                     </div>
-
-                 <!-- Nowy kontener na  wyszukiwania -->
-                <div id="search-results" style="display: none;"></div>
+                    <div id="search-results" style="display: none;"></div>
                 {% else %}
-                    <p>There are no campaigns!</p>
+                    <p></p>
                 {% endif %}
             </div>
         </main>

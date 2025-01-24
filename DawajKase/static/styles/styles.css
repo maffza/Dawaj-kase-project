@@ -443,8 +443,8 @@ h1 {
 
 
 /* Sort */
-/* Styl dla sekcji sortowania */
-.sort {
+
+.filter {
     display: flex;
     align-items: center;
     font-size: 16px;
@@ -494,6 +494,12 @@ h1 {
 .dropdown-menu li a {
     color: #e0e0e0;
     text-decoration: none;
+}
+
+/* Styl dla aktywnej kategorii */
+.dropdown-menu li a.active-category {
+    color: #5E66D6;
+    font-weight: bold;
 }
 
 .dropdown-menu li:hover {
@@ -552,17 +558,6 @@ h1 {
 .donation-button:hover {
     background-color: #4A46D6;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 .dropdown_adm {
     position: relative;
