@@ -50,7 +50,7 @@ header {
     padding: 10px 0;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 9998;
     transition: all 0.3s ease;
 }
 
@@ -532,19 +532,16 @@ h1 {
     width: 100%;
 }
 
-/* Sort */
-.filter {
+/* Sort Controls */
+.sort-controls {
     display: flex;
-    align-items: center;
-    font-size: 16px;
-    color: #e0e0e0;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
-/* Dropdown menu sort*/
+/* Dropdown menu sort */
 .dropdown {
     position: relative;
-    margin-left: 10px;
 }
 
 .dropdown-button {
@@ -572,7 +569,7 @@ h1 {
     list-style: none;
     padding: 10px 0;
     margin: 0;
-    z-index: 1000;
+    z-index: 9999;
     width: 150px;
 }
 

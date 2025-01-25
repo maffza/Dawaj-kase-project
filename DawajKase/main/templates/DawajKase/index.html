@@ -17,17 +17,26 @@
         <!-- Main Content -->
         <main>
             <div class="container">
-               <div class="filter">
-                    <p>Filter by:</p>
+               
+                <div class="sort-controls">
                     <div class="dropdown">
-                        <button class="dropdown-button">Pick</button>
+                        <button class="dropdown-button">Filter by ...</button>
                         <ul class="dropdown-menu">
-                            <li><a href="?category=49" class="{% if selected_category == '49' %}active-category{% endif %}">Technology</a></li>
-                            <li><a href="?category=50" class="{% if selected_category == '50' %}active-category{% endif %}">Health</a></li>
-                            <li><a href="?category=45" class="{% if selected_category == '45' %}active-category{% endif %}">Education</a></li>
-                            <li><a href="?category=47" class="{% if selected_category == '47' %}active-category{% endif %}">Animals</a></li>
-                            <li><a href="?category=54" class="{% if selected_category == '54' %}active-category{% endif %}">Community</a></li>
-                            <li><a href="?category=40" class="{% if selected_category == '40' %}active-category{% endif %}">Environment</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '49')" class="{% if selected_category == '49' %}active-category{% endif %}">Technology</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '50')" class="{% if selected_category == '50' %}active-category{% endif %}">Health</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '45')" class="{% if selected_category == '45' %}active-category{% endif %}">Education</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '47')" class="{% if selected_category == '47' %}active-category{% endif %}">Animals</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '54')" class="{% if selected_category == '54' %}active-category{% endif %}">Community</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '40')" class="{% if selected_category == '40' %}active-category{% endif %}">Environment</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="dropdown-button">Sort by...</button>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'amount')" class="{% if sort_by == 'amount' %}active-category{% endif %}">Most funded</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'time')" class="{% if sort_by == 'time' %}active-category{% endif %}">Ending soonest</a></li>
+                            <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'newest')" class="{% if sort_by == 'newest' %}active-category{% endif %}">Newest first</a></li>
                         </ul>
                     </div>
                 </div>
@@ -47,7 +56,13 @@
         </main>
     </div>
 
-   <script>
+    <script>
+        function updateQueryParam(param, value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(param, value);
+            window.location.href = url.toString();
+        }
+
         document.getElementById('q').addEventListener('input', function () {
             const query = this.value.trim();
             const featured = document.querySelector('.featured-projects');

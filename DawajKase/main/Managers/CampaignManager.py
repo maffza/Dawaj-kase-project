@@ -6,11 +6,21 @@ import oracledb
 
 class CampaignManager:
     @staticmethod
-    def get_campaigns_by_limit(amount):
+    def get_campaigns_by_limit(amount, sort_by=None):
         campaigns = None
+        query = "SELECT * FROM campaigns"
+        
+        if sort_by == 'amount':
+            query += " ORDER BY current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY end_date ASC"
+        else:
+            query += " ORDER BY id DESC"
+            
+        query += " FETCH FIRST %s ROWS ONLY"
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM campaigns FETCH FIRST %s ROWS ONLY", [amount])
+            cursor.execute(query, [amount])
             campaignsResult = cursor.fetchall()
 
             if campaignsResult:
@@ -114,14 +124,39 @@ class CampaignManager:
         return None
 
     @staticmethod
-    def get_campaigns_by_category(category_id):
+    def get_campaigns_by_category(category_id, sort_by=None):
         campaigns = []
+        query = """
+            SELECT c.* 
+            FROM campaigns c
+            WHERE c.category_id = %s
+        """
+        
+        if sort_by == 'amount':
+            query += " ORDER BY c.current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY c.end_date ASC"
+            
         with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT c.* 
-                FROM campaigns c
-                WHERE c.category_id = %s
-            """, [category_id])
+            cursor.execute(query, [category_id])
+            campaignsResult = cursor.fetchall()
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+                
+        return campaigns
+
+    @staticmethod
+    def get_campaigns_sorted(sort_by=None):
+        campaigns = []
+        query = "SELECT c.* FROM campaigns c"
+        
+        if sort_by == 'amount':
+            query += " ORDER BY c.current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY c.end_date ASC"
+            
+        with connection.cursor() as cursor:
+            cursor.execute(query)
             campaignsResult = cursor.fetchall()
             if campaignsResult:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]

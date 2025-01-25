@@ -10,10 +10,17 @@ import json
 # Create your views here.
 def index(request):
     category_id = request.GET.get('category', None)
+    sort_by = request.GET.get('sort', None)
+    
     if category_id:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_category(int(category_id))
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_category(
+            int(category_id), 
+            sort_by=sort_by
+        )
     else:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(
+            sort_by=sort_by
+        )
         
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
@@ -21,7 +28,8 @@ def index(request):
         'userData': userData,
         'campaigns': campaigns,
         'query': query,
-        'selected_category': category_id
+        'selected_category': category_id,
+        'sort_by': sort_by
     })
 
 def auth(request):
@@ -192,29 +200,44 @@ def become_creator(request):
 def search(request):
     query = request.GET.get('q', '').strip()
     reset = request.GET.get('reset', False)
+    sort_by = request.GET.get('sort', None)
 
     if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
     else:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9)
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(sort_by=sort_by)
 
     if reset:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(150)
-        return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(sort_by=sort_by)
+        return render(request, 'DawajKase/campaign_list.html', {
+            'campaigns': campaigns, 
+            'showDescription': True,
+            'sort_by': sort_by
+        })
 
-    return render(request, 'DawajKase/campaign_list.html', {'campaigns': campaigns, 'showDescription': True})
+    return render(request, 'DawajKase/campaign_list.html', {
+        'campaigns': campaigns, 
+        'showDescription': True,
+        'sort_by': sort_by
+    })
 
 def search_bar(request):
     query = request.GET.get('q', '').strip()
-    reset = request.GET.get('reset', False) # What is its purpose?
+    reset = request.GET.get('reset', False)
+    sort_by = request.GET.get('sort', None)
     request.session['query'] = query
 
     if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
     else:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(150)
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(sort_by=sort_by)
     
-    return render(request, 'DawajKase/search.html', {'campaigns': campaigns, 'showDescription': True, 'query': query})
+    return render(request, 'DawajKase/search.html', {
+        'campaigns': campaigns, 
+        'showDescription': True, 
+        'query': query,
+        'sort_by': sort_by
+    })
     
 def campaign_create(request):
     from datetime import date, timedelta
