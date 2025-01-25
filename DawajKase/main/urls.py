@@ -19,4 +19,5 @@ urlpatterns = [
     path("become_creator", become_creator, name="become_creator"),
     path("change_role", change_role, name="change_role"),
     path("approve_campaign", approve_campaign, name="approve_campaign"),
+    path("delete_campaign/<id>", delete_campaign, name="delete_campaign"),
 ]
