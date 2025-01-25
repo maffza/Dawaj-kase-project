@@ -41,19 +41,11 @@
                         <button class="back-project">Back this project</button>
                     </a>
                     {% if userData %}
-                        {% if userData.id == campaign.organizerID %}
-                            <a href="/delete_campaign/{{campaign.id}}">
-                                <button class="back-project" style="color:red;">
-                                    Delete campaign
-                                </button>
-                            </a>
-                        {% else %}
-                            <a href="/favourite/{{campaign.id}}">
-                                <button class="back-project">
-                                    {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
-                                </button>
-                            </a>
-                        {% endif%}
+                    <a href="/favourite/{{campaign.id}}">
+                        <button class="back-project">
+                            {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
+                        </button>
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -66,9 +58,14 @@
             <h2>Donations</h2>
             <br/>
             {% for donation in donations %}
-                <div class="donation-card">
-                    <strong class="donation-username">{{donation.username}} ${{donation.amount}}</strong> <!-- ~~Add a rainbow effect to the amount text with a gif of spinning money next to it. Add some fires and fireworks depending on how big the donation is.~~ -->
+                <div class="donation-card 
+                    {% if donation.amount >= 250 %}tier-250
+                    {% elif donation.amount >= 100 %}tier-100
+                    {% elif donation.amount >= 25 %}tier-25
+                    {% else %}tier-1{% endif %}">
+                    <strong class="donation-username">{{donation.username}}</strong>
                     <p class="donation-message">{{donation.message}}</p>
+                    <p class="donation-amount">${{donation.amount}}</p>
                 </div>
             {% endfor %}
             <h2>Comments</h2>
@@ -83,7 +80,17 @@
         </div>
     </main>
 
-    {% include 'DawajKase/footer.html' %}
+    <!-- Footer (Same as main page) -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}T12:00:00");
