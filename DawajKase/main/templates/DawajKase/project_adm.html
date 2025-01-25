@@ -81,17 +81,7 @@
             </div>
 </main>
 
-    <!-- Footer (Same as main page) -->
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Help</a>
-                <a href="#">Terms</a>
-                <a href="#">Privacy</a>
-            </div>
-        </div>
-    </footer>
+    {% include 'DawajKase/footer.html' %}
 
     <script>
         const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}");

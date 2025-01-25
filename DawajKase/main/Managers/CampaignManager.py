@@ -175,3 +175,9 @@ class CampaignManager:
             """, [campaign_id])
             result = cursor.fetchone()
             return result[0] if result else 0
+
+    @staticmethod
+    def delete_campaign(campaign_id):
+        #with connection.cursor() as cursor:
+        #    cursor.execute("DELETE FROM campaigns WHERE id=%s", 
+        #                        [campaign_id])
