@@ -639,6 +639,58 @@ h1 {
 .donation-card {
     background-color: #1a1a2e;
     border-color: #5E66D6;
+    transition: all 0.3s ease;
+}
+
+.donation-card.tier-1 {
+    /* No effects for $1 tier */
+}
+
+.donation-card.tier-25 {
+    border-color: #1b1bb1;
+    box-shadow: 0 0 20px rgba(27, 27, 177, 0.6);
+    animation: glow-blue 2s infinite alternate;
+}
+
+.donation-card.tier-100 {
+    border-color: #bb2121;
+    box-shadow: 0 0 25px rgba(187,33,33, 0.6);
+    animation: glow-red 2s infinite alternate;
+}
+
+.donation-card.tier-250 {
+    border-color: #D4AF37;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+    animation: glow-golden 2s infinite alternate;
+}
+
+@keyframes glow-blue{
+    from {
+        box-shadow: 0 0 20px rgba(27, 27, 177, 0.5);
+    }
+    to {
+        box-shadow: 0 0 30px rgba(27, 27, 177, 0.8);
+    }
+}
+
+
+@keyframes glow-red {
+    from {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+    to {
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+    }
+}
+
+
+@keyframes glow-golden {
+    from {
+        box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+    }
+    to {
+        box-shadow: 0 0 35px rgba(212, 175, 55, 0.8);
+    }
 }
 
 .comment-username, .donation-username {
