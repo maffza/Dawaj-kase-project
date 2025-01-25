@@ -127,6 +127,7 @@ main .featured-projects {
     justify-content: space-between;
     margin-bottom: 30px;
     flex: 1 0 auto;  
+    
 }
 
 .project-box {

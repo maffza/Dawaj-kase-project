@@ -8,12 +8,14 @@ class CampaignManager:
     @staticmethod
     def get_campaigns_by_limit(amount, sort_by=None):
         campaigns = None
-        query = "SELECT * FROM campaigns"
+        query = "SELECT * FROM campaigns WHERE current_money_amount < target_money_amount"
         
         if sort_by == 'amount':
             query += " ORDER BY current_money_amount DESC"
         elif sort_by == 'time':
             query += " ORDER BY end_date ASC"
+        elif sort_by == 'goal':
+            query += " ORDER BY (target_money_amount - current_money_amount) ASC"
         else:
             query += " ORDER BY id DESC"
             
