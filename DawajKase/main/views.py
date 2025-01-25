@@ -11,8 +11,25 @@ import json
 def index(request):
     category_id = request.GET.get('category', None)
     sort_by = request.GET.get('sort', None)
+    favorites = request.GET.get('favorites', None)
+    userData = request.session.get('userData', None)
     
-    if category_id:
+    if favorites and userData:
+        if category_id:
+            campaigns = ManagerFactory.get_campaign_manager().get_favourite_campaigns_by_category(
+                userData['id'],
+                int(category_id),
+                sort_by=sort_by
+            )
+        else:
+            # Dodajemy sprawdzenie czy użytkownik jest zalogowany
+            if not userData:
+                return redirect('auth')
+            campaigns = ManagerFactory.get_campaign_manager().get_favourite_campaigns(
+                userData['id'],
+                sort_by=sort_by
+            )
+    elif category_id:
         campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_category(
             int(category_id), 
             sort_by=sort_by
@@ -29,7 +46,8 @@ def index(request):
         'campaigns': campaigns,
         'query': query,
         'selected_category': category_id,
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'favorites': favorites
     })
 
 def auth(request):

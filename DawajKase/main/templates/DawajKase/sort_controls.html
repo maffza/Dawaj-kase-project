@@ -7,6 +7,9 @@
                 <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '5')" class="{% if selected_category == '5' %}active-category{% endif %}">Animals</a></li>
                  <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '6')" class="{% if selected_category == '6' %}active-category{% endif %}">Community</a></li>
                  <li><a href="javascript:void(0)" onclick="updateQueryParam('category', '4')" class="{% if selected_category == '4' %}active-category{% endif %}">Environment</a></li>
+                 {% if userData %}
+                 <li><a href="javascript:void(0)" onclick="updateQueryParam('favorites', '1')" class="{% if favorites == '1' %}active-category{% endif %}">My Favorites</a></li>
+                 {% endif %}
           </ul>
     </div>
 
@@ -22,6 +25,12 @@
 
     function updateQueryParam(param, value) {
         const url = new URL(window.location.href);
+        if (param === 'favorites') {
+            url.searchParams.delete('category');
+        }
+         if (param === 'category') {
+            url.searchParams.delete('favorites');
+        }
         url.searchParams.set(param, value);
         window.location.href = url.toString();
     }

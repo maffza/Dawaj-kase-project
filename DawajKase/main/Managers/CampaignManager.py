@@ -175,3 +175,49 @@ class CampaignManager:
             """, [campaign_id])
             result = cursor.fetchone()
             return result[0] if result else 0
+
+    @staticmethod
+    def get_favourite_campaigns(user_id, sort_by=None):
+        campaigns = []
+        query = """
+            SELECT c.* 
+            FROM campaigns c
+            JOIN favourites f ON c.id = f.campaign_id
+            WHERE f.user_id = %s
+        """
+        
+        if sort_by == 'amount':
+            query += " ORDER BY c.current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY c.end_date ASC"
+            
+        with connection.cursor() as cursor:
+            cursor.execute(query, [user_id])
+            campaignsResult = cursor.fetchall()
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+                
+        return campaigns
+
+    @staticmethod
+    def get_favourite_campaigns_by_category(user_id, category_id, sort_by=None):
+        campaigns = []
+        query = """
+            SELECT c.* 
+            FROM campaigns c
+            JOIN favourites f ON c.id = f.campaign_id
+            WHERE f.user_id = %s AND c.category_id = %s
+        """
+        
+        if sort_by == 'amount':
+            query += " ORDER BY c.current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY c.end_date ASC"
+            
+        with connection.cursor() as cursor:
+            cursor.execute(query, [user_id, category_id])
+            campaignsResult = cursor.fetchall()
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+                
+        return campaigns
