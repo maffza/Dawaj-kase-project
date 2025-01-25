@@ -64,29 +64,6 @@ class CampaignManager:
                         [title, shortDescription, description, 0, targetMoneyAmount, endDate, imageURL, organizerID, categoryID])
             
     @staticmethod
-    def add_campaign_to_favourites(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO favourites(user_id, campaign_id) VALUES (%s, %s)", 
-                    [userID, campaignID])
-            
-    @staticmethod
-    def is_favourited_by_user_with_id(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
-            result = cursor.fetchall()
-            if result:
-                return True
-            
-        return False
-    
-    @staticmethod
-    def remove_campaign_from_favourites(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
-            
-    @staticmethod
     def get_donations(campaignID):
         donations = None
         with connection.cursor() as cursor:
@@ -116,49 +93,25 @@ class CampaignManager:
         with connection.cursor() as cursor:
             cursor.execute("UPDATE campaigns SET status='Active' WHERE id = %s", 
                     [campaignID])
-    @staticmethod
-    def get_category_id_by_name(category_name):
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM categories WHERE name = %s", [category_name])
-            result = cursor.fetchone()
-            if result:
-                return result[0]
-        return None
 
     @staticmethod
-    def get_campaigns_by_category(category_id, sort_by=None):
-        campaigns = []
-        query = """
-            SELECT c.* 
-            FROM campaigns c
-            WHERE c.category_id = %s
-        """
-        
-        if sort_by == 'amount':
-            query += " ORDER BY c.current_money_amount DESC"
-        elif sort_by == 'time':
-            query += " ORDER BY c.end_date ASC"
-            
-        with connection.cursor() as cursor:
-            cursor.execute(query, [category_id])
-            campaignsResult = cursor.fetchall()
-            if campaignsResult:
-                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
-                
-        return campaigns
-
-    @staticmethod
-    def get_campaigns_sorted(sort_by=None):
+    def get_campaigns_sorted(sort_by=None, category_id=None):
         campaigns = []
         query = "SELECT c.* FROM campaigns c"
-        
+
+        if category_id:
+            query += " WHERE c.category_id = %s"
+
         if sort_by == 'amount':
             query += " ORDER BY c.current_money_amount DESC"
         elif sort_by == 'time':
             query += " ORDER BY c.end_date ASC"
             
         with connection.cursor() as cursor:
-            cursor.execute(query)
+            if category_id:
+                cursor.execute(query, [category_id])
+            else:
+                cursor.execute(query)
             campaignsResult = cursor.fetchall()
             if campaignsResult:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
