@@ -841,6 +841,55 @@ h1 {
     background-color: #4A46D6;
 }
 
+.amount-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.amount-button {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px;
+    background-color: #5E66D6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.amount-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 10.01%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+}
+
+.amount-button:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.amount-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.amount-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
 .dropdown_adm {
     position: relative;
     display: inline-block;
