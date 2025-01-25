@@ -41,19 +41,11 @@
                         <button class="back-project">Back this project</button>
                     </a>
                     {% if userData %}
-                        {% if userData.id == campaign.organizerID %}
-                            <a href="/delete_campaign/{{campaign.id}}">
-                                <button class="back-project" style="color:red;">
-                                    Delete campaign
-                                </button>
-                            </a>
-                        {% else %}
-                            <a href="/favourite/{{campaign.id}}">
-                                <button class="back-project">
-                                    {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
-                                </button>
-                            </a>
-                        {% endif%}
+                    <a href="/favourite/{{campaign.id}}">
+                        <button class="back-project">
+                            {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
+                        </button>
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -88,7 +80,17 @@
         </div>
     </main>
 
-    {% include 'DawajKase/footer.html' %}
+    <!-- Footer (Same as main page) -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}T12:00:00");

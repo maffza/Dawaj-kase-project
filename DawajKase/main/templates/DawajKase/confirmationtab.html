@@ -114,9 +114,9 @@
             <div class="user-status">
                 <span>{{user.firstName}} {{user.lastName}} {% if user.role == 'ToVerify' %}[verify me]{% endif %}</span>
                 <select   onchange="changeUserStatus(this, {{user.id}})">
-                    <option  value="1">Supporter</option>
-                    <option value="2">Organizer</option>
-                    <option value="3">Delete account</option>
+                    <option  value="1" {% if user.role == 'Supporter' or user.role == 'ToVerify' %}selected{% endif %}>Supporter</option>
+                    <option value="2" {% if user.role == 'Organizer' %}selected{% endif %}>Organizer</option>
+                    <option value="3" {% if user.role == 'Organizer' %}selected{% endif %}>Delete account</option>
                     <option value="" selected disabled hidden>Manage user</option>
                 </select>
             </div>
@@ -181,14 +181,8 @@
             .then(response => {
                 // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
                 if (response.ok) {
-                    if(select.value == 1 || select.value == 2){
-                        const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
-                        alert(`User status changed to: ${roleName}`);
-                    } 
-                    else if(select.value == 3){
-                        alert(`User has been removed.`);
-                    }
-                    
+                    const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
+                    alert(`User status changed to: ${roleName}`);
                 } else {
                     alert("Failed to update user role.");
                 }

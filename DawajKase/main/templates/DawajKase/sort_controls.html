@@ -19,9 +19,6 @@
         <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'newest')" class="{% if sort_by == 'newest' %}active-category{% endif %}">Newest first</a></li>
         <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'time')" class="{% if sort_by == 'time' %}active-category{% endif %}">Ending soonest</a></li>
         <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'amount')" class="{% if sort_by == 'amount' %}active-category{% endif %}">Most funded</a></li>
-        {% if userData %}
-        <li><a href="javascript:void(0)" onclick="updateQueryParam('sort', 'favourite')" class="{% if sort_by == 'favourite' %}active-category{% endif %}">Favourite</a></li>
-        {% endif %}
     </ul>
 </div>
 <script>
