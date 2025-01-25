@@ -1,5 +1,6 @@
 from django.db import connection
 from ..Campaign import Campaign
+import oracledb
 
 class FavouriteManager:
     @staticmethod
@@ -11,11 +12,7 @@ class FavouriteManager:
     @staticmethod
     def is_favourited_by_user_with_id(campaignID, userID):
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
-            result = cursor.fetchall()
-            if result:
-                return True
+            return cursor.callfunc("Crowdfunding_pkg.is_favourited_by_user_with_id", oracledb.DB_TYPE_BOOLEAN, [campaignID, userID])
             
         return False
     

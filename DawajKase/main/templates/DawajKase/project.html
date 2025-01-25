@@ -67,7 +67,7 @@
             <br/>
             {% for donation in donations %}
                 <div class="donation-card">
-                    <strong class="donation-username">{{donation.username}}</strong>
+                    <strong class="donation-username">{{donation.username}} ${{donation.amount}}</strong> <!-- ~~Add a rainbow effect to the amount text with a gif of spinning money next to it. Add some fires and fireworks depending on how big the donation is.~~ -->
                     <p class="donation-message">{{donation.message}}</p>
                 </div>
             {% endfor %}

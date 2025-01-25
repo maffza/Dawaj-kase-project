@@ -1,6 +1,7 @@
 from django.db import connection
 import hashlib
 from ..User import User
+import oracledb
 
 class UserManager:
     @staticmethod
@@ -31,12 +32,8 @@ class UserManager:
     @staticmethod
     def check_if_user_exists(email):
         with connection.cursor() as cursor:
-            cursor.execute("SELECT email FROM users WHERE email=%s", [email])
-            row = cursor.fetchone()
-
-        if row:
-            return True
-        
+            return cursor.callfunc("Crowdfunding_pkg.check_if_user_exists", oracledb.DB_TYPE_NUMBER, [email]) == 1 # yes, it's NUMBER in the database
+            
         return False
 
     @staticmethod
@@ -52,8 +49,9 @@ class UserManager:
         user = None
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id, first_name, last_name, email, profile_picture_url, role FROM users WHERE id=%s", [id])
-            userResult = cursor.fetchone()
+            ref_cursor = cursor.callfunc("Crowdfunding_pkg.get_user_by_id", oracledb.CURSOR,
+                                         [int(id)])
+            userResult = ref_cursor.fetchone()
 
             if userResult:
                 user = User(*userResult)
