@@ -82,13 +82,15 @@ class CampaignManager:
         with connection.cursor() as cursor:
             cursor.callproc("Crowdfunding_pkg.approve_campaign", [campaignID])
 
+    # it could be merged together with get_campaigns_sorted, 
+    # to not break the DRY principle. It would also make its usage easier.
     @staticmethod
     def get_campaigns_by_category(category_id, sort_by=None):
         campaigns = []
         query = """
             SELECT c.* 
             FROM campaigns c
-            WHERE c.category_id = %s
+            WHERE c.category_id = %s AND status != 'ToApprove'
         """
         
         if sort_by == 'amount':
@@ -107,7 +109,7 @@ class CampaignManager:
     @staticmethod
     def get_campaigns_sorted(sort_by=None):
         campaigns = []
-        query = "SELECT c.* FROM campaigns c"
+        query = "SELECT c.* FROM campaigns c WHERE status != 'ToApprove'"
         
         if sort_by == 'amount':
             query += " ORDER BY c.current_money_amount DESC"

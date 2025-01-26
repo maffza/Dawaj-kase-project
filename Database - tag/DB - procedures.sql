@@ -66,7 +66,9 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
         FROM 
             campaigns 
         WHERE 
-            id = p_id;
+            id = p_id
+        AND
+            status != 'ToApprove';
       RETURN ref_cursor;
     END get_campaign_by_id;
 
@@ -75,7 +77,7 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
         result_cursor SYS_REFCURSOR;
         v_query       VARCHAR2(4000);
     BEGIN
-        v_query := 'SELECT * FROM campaigns WHERE current_money_amount < target_money_amount';
+        v_query := 'SELECT * FROM campaigns WHERE current_money_amount < target_money_amount AND status != ''ToApprove''';
 
         IF p_sort_by = 'amount' THEN
             v_query := v_query || ' ORDER BY current_money_amount DESC';
@@ -217,18 +219,21 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
                 SELECT c.*
                 FROM campaigns c
                 WHERE c.category_id = p_category_id
+                AND status != 'ToApprove'
                 ORDER BY c.current_money_amount DESC;
         ELSIF p_sort_by = 'time' THEN
             OPEN result_cursor FOR
                 SELECT c.*
                 FROM campaigns c
                 WHERE c.category_id = p_category_id
+                AND status != 'ToApprove'
                 ORDER BY c.end_date ASC;
         ELSE
             OPEN result_cursor FOR
                 SELECT c.*
                 FROM campaigns c
-                WHERE c.category_id = p_category_id;
+                WHERE c.category_id = p_category_id
+                AND status != 'ToApprove';
         END IF;
 
         RETURN result_cursor;
@@ -242,16 +247,19 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
             OPEN result_cursor FOR
                 SELECT c.*
                 FROM campaigns c
+                WHERE c.status != 'ToApprove'
                 ORDER BY c.current_money_amount DESC;
         ELSIF p_sort_by = 'time' THEN
             OPEN result_cursor FOR
                 SELECT c.*
                 FROM campaigns c
+                WHERE c.status != 'ToApprove'
                 ORDER BY c.end_date ASC;
         ELSE
             OPEN result_cursor FOR
                 SELECT c.*
-                FROM campaigns c;
+                FROM campaigns c
+                WHERE c.status != 'ToApprove';
         END IF;
 
         RETURN result_cursor;
