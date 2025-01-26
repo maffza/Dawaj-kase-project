@@ -6,8 +6,7 @@ class FavouriteManager:
     @staticmethod
     def add_campaign_to_favourites(campaignID, userID):
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO favourites(user_id, campaign_id) VALUES (%s, %s)", 
-                    [userID, campaignID])
+            cursor.callproc("Crowdfunding_pkg.add_campaign_to_favourites", [campaignID, userID])
             
     @staticmethod
     def is_favourited_by_user_with_id(campaignID, userID):
@@ -23,7 +22,7 @@ class FavouriteManager:
                     [userID, campaignID])
             
     @staticmethod
-    def get_favourite_campaigns(userID, categoryID=None):
+    def get_favourite_campaigns(userID, categoryID=None): # yeah
         campaigns = []
         query = "SELECT c.* FROM favourites f JOIN users u ON f.user_id=u.id JOIN campaigns c ON c.id=f.campaign_id WHERE u.id=%s"
         if categoryID:

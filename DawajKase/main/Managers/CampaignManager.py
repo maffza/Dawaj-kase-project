@@ -53,29 +53,6 @@ class CampaignManager:
                         [title, shortDescription, description, 0, targetMoneyAmount, endDate, imageURL, organizerID, categoryID])
             
     @staticmethod
-    def add_campaign_to_favourites(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO favourites(user_id, campaign_id) VALUES (%s, %s)", 
-                    [userID, campaignID])
-            
-    @staticmethod
-    def is_favourited_by_user_with_id(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
-            result = cursor.fetchall()
-            if result:
-                return True
-            
-        return False
-    
-    @staticmethod
-    def remove_campaign_from_favourites(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
-            
-    @staticmethod
     def get_donations(campaignID):
         donations = None
         with connection.cursor() as cursor:
