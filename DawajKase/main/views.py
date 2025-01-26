@@ -288,6 +288,7 @@ def insert_campaign(request):
             category_name = request.POST.get('category')
             category_id = ManagerFactory.get_category_manager().get_category_id_by_name(category_name)
 
+            print(userData['id'], category_id)
             if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id):
                 pass
             else:

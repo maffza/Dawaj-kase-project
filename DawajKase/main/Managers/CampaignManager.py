@@ -49,8 +49,8 @@ class CampaignManager:
     @staticmethod
     def insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID):
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO campaigns(title, short_description, description, current_money_amount, target_money_amount, end_date, image_url, organizer_id, category_id, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'ToApprove')", 
-                        [title, shortDescription, description, 0, targetMoneyAmount, endDate, imageURL, organizerID, categoryID])
+            cursor.callproc("Crowdfunding_pkg.insert_campaign",
+                        [title, shortDescription, description, int(targetMoneyAmount), endDate, imageURL, int(organizerID), int(categoryID)])
             
     @staticmethod
     def get_donations(campaignID):
@@ -129,6 +129,8 @@ class CampaignManager:
 
         return 0
 
+    # Try moving it to FavouriteManager, it could be merged together with get_favourite_campaigns_by_category, 
+    # to not break the DRY principle. It would also make its usage easier.
     @staticmethod
     def get_favourite_campaigns(user_id, sort_by=None):
         campaigns = []
@@ -152,6 +154,7 @@ class CampaignManager:
                 
         return campaigns
 
+    # Try moving it to FavouriteManager
     @staticmethod
     def get_favourite_campaigns_by_category(user_id, category_id, sort_by=None):
         campaigns = []

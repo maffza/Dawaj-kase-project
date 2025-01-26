@@ -118,9 +118,9 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
     
     BEGIN
         INSERT INTO campaigns (title, short_description, description, current_money_amount, target_money_amount, 
-        end_date, image_url, organizer_id, category_id) 
+        end_date, image_url, organizer_id, category_id, status) 
         VALUES (p_title, p_short_description, p_description, 0, p_target_money_amount, p_end_date, 
-        p_image_url, p_organizer_id, p_category_id);
+        p_image_url, p_organizer_id, p_category_id, 'ToApprove');
     END insert_campaign;
     
     PROCEDURE add_campaign_to_favourites (p_campaign_id IN NUMBER, p_user_id IN NUMBER)

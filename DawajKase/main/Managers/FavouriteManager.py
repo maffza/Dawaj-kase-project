@@ -21,7 +21,7 @@ class FavouriteManager:
             cursor.callproc("Crowdfunding_pkg.remove_campaign_from_favourites", [campaignID, userID])
             
     @staticmethod
-    def get_favourite_campaigns(userID, categoryID=None): # yeah
+    def get_favourite_campaigns(userID, categoryID=None): # Obsolete by CampaignManager
         campaigns = []
         query = "SELECT c.* FROM favourites f JOIN users u ON f.user_id=u.id JOIN campaigns c ON c.id=f.campaign_id WHERE u.id=%s"
         if categoryID:
