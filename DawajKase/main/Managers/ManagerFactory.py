@@ -3,6 +3,7 @@ from .CampaignManager import CampaignManager
 from .CommentManager import CommentManager
 from .PaymentManager import PaymentManager
 from .FavouriteManager import FavouriteManager
+from .CategoryManager import CategoryManager
 
 class ManagerFactory:
     @staticmethod
@@ -24,3 +25,7 @@ class ManagerFactory:
     @staticmethod
     def get_favourite_manager():
         return FavouriteManager()
+    
+    @staticmethod
+    def get_category_manager():
+        return CategoryManager()
