@@ -32,15 +32,21 @@ class CampaignManager:
     
     @staticmethod
     def search_campaigns(query):
-        campaigns = None
+        campaigns = []
 
         if query is None:
             return campaigns
 
-        with connection.cursor() as cursor:
-            ref_cursor = cursor.callfunc("Crowdfunding_pkg.search_campaigns", oracledb.CURSOR, [query])
-            campaignsResult = ref_cursor.fetchall()
+        query = f"%{query}%"
+        sql = """
+            SELECT * FROM campaigns 
+            WHERE (title LIKE %s OR description LIKE %s)
+            AND status != 'ToApprove'
+        """
 
+        with connection.cursor() as cursor:
+            cursor.execute(sql, [query, query])
+            campaignsResult = cursor.fetchall()
             if campaignsResult:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
 
