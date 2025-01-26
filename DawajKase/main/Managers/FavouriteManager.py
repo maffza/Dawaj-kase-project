@@ -18,8 +18,7 @@ class FavouriteManager:
     @staticmethod
     def remove_campaign_from_favourites(campaignID, userID):
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
+            cursor.callproc("Crowdfunding_pkg.remove_campaign_from_favourites", [campaignID, userID])
             
     @staticmethod
     def get_favourite_campaigns(userID, categoryID=None): # yeah
