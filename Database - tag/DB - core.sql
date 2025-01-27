@@ -80,7 +80,7 @@ CREATE TABLE campaigns (
 /
 ALTER TABLE campaigns
     ADD CONSTRAINT fk_userscampaigns FOREIGN KEY ( organizer_id )
-        REFERENCES users ( id );
+        REFERENCES users ( id ) ON DELETE CASCADE;
 /
 ALTER TABLE campaigns
     ADD CONSTRAINT fk_userscategories FOREIGN KEY ( category_id )
@@ -128,11 +128,11 @@ CREATE TABLE donations (
 /
 ALTER TABLE donations
     ADD CONSTRAINT fk_donationscampaigns FOREIGN KEY ( campaign_id )
-        REFERENCES campaigns ( id );
+        REFERENCES campaigns ( id ) ON DELETE CASCADE;
 /
 ALTER TABLE donations
     ADD CONSTRAINT fk_donationsusers FOREIGN KEY ( user_id )
-        REFERENCES users ( id );
+        REFERENCES users ( id ) ON DELETE CASCADE;
 /
 CREATE OR REPLACE TRIGGER donations_add BEFORE
     INSERT ON donations
@@ -175,11 +175,11 @@ CREATE TABLE comments (
 /
 ALTER TABLE comments
     ADD CONSTRAINT fk_commentscampaigns FOREIGN KEY ( campaign_id )
-        REFERENCES campaigns ( id );
+        REFERENCES campaigns ( id ) ON DELETE CASCADE;
 /
 ALTER TABLE comments
     ADD CONSTRAINT fk_commentsusers FOREIGN KEY ( user_id )
-        REFERENCES users ( id );
+        REFERENCES users ( id ) ON DELETE CASCADE;
 /
 CREATE OR REPLACE TRIGGER comments_add BEFORE
     INSERT ON comments
@@ -222,7 +222,7 @@ CREATE TABLE rewards (
 /
 ALTER TABLE rewards
     ADD CONSTRAINT fk_rewardscampaigns FOREIGN KEY ( campaign_id )
-        REFERENCES campaigns ( id );
+        REFERENCES campaigns ( id ) ON DELETE CASCADE;
 /
 CREATE OR REPLACE TRIGGER rewards_add BEFORE
     INSERT ON rewards
@@ -303,7 +303,7 @@ CREATE TABLE favourites (
 /
 ALTER TABLE favourites
     ADD CONSTRAINT fk_favouritesusers FOREIGN KEY ( user_id )
-        REFERENCES users ( id );
+        REFERENCES users ( id ) ON DELETE CASCADE;
 /
 ALTER TABLE favourites
     ADD CONSTRAINT fk_favouritescampaigns FOREIGN KEY ( campaign_id )
