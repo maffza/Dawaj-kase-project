@@ -85,7 +85,6 @@ class UserManager:
             
     @staticmethod
     def delete_user(userID):
-        pass
-        #with connection.cursor() as cursor:
-        #    cursor.execute("DELETE FROM users WHERE id = %s", 
-        #                        [userID])
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM users WHERE id = %s", 
+                                [userID])

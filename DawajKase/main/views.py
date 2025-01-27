@@ -343,7 +343,7 @@ def delete_campaign(request, id):
     if not campaign:
         return redirect('index')
     
-    if campaign['organizerID'] != userData['id'] or userData['role'] != 'Admin':
+    if campaign['organizerID'] != userData['id'] and userData['role'] != 'Admin':
         return redirect('index')
     
     ManagerFactory.get_campaign_manager().delete_campaign(id)

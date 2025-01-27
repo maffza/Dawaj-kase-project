@@ -188,7 +188,6 @@ class CampaignManager:
     
     @staticmethod
     def delete_campaign(campaign_id):
-        pass
-        #with connection.cursor() as cursor:
-        #    cursor.execute("DELETE FROM campaigns WHERE id=%s", 
-        #                        [campaign_id])
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM campaigns WHERE id=%s", 
+                                [campaign_id])
