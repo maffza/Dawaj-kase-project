@@ -6,24 +6,13 @@ import oracledb
 
 class CampaignManager:
     @staticmethod
-    def get_campaigns_by_limit(amount, sort_by=None):
+    def get_campaigns_by_limit(amount, sort_by=None): # looks like it's an unused function now
         campaigns = None
-        query = "SELECT * FROM campaigns WHERE current_money_amount < target_money_amount"
         
-        if sort_by == 'amount':
-            query += " ORDER BY current_money_amount DESC"
-        elif sort_by == 'time':
-            query += " ORDER BY end_date ASC"
-        elif sort_by == 'goal':
-            query += " ORDER BY (target_money_amount - current_money_amount) ASC"
-        else:
-            query += " ORDER BY id DESC"
-            
-        query += " FETCH FIRST %s ROWS ONLY"
-
         with connection.cursor() as cursor:
-            cursor.execute(query, [amount])
-            campaignsResult = cursor.fetchall()
+            ref_cursor = cursor.callfunc("Crowdfunding_pkg.get_campaigns_by_limit", oracledb.CURSOR,
+                                [amount])
+            campaignsResult = ref_cursor.fetchall()
 
             if campaignsResult:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
@@ -43,15 +32,21 @@ class CampaignManager:
     
     @staticmethod
     def search_campaigns(query):
-        campaigns = None
+        campaigns = []
 
         if query is None:
             return campaigns
 
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM campaigns c WHERE LOWER(c.title) LIKE LOWER(%s) ORDER BY c.id DESC", [f"%{query}%"])
-            campaignsResult = cursor.fetchall()
+        query = f"%{query}%"
+        sql = """
+            SELECT * FROM campaigns 
+            WHERE (title LIKE %s OR description LIKE %s)
+            AND status != 'ToApprove'
+        """
 
+        with connection.cursor() as cursor:
+            cursor.execute(sql, [query, query])
+            campaignsResult = cursor.fetchall()
             if campaignsResult:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
 
@@ -60,39 +55,16 @@ class CampaignManager:
     @staticmethod
     def insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID):
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO campaigns(title, short_description, description, current_money_amount, target_money_amount, end_date, image_url, organizer_id, category_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
-                        [title, shortDescription, description, 0, targetMoneyAmount, endDate, imageURL, organizerID, categoryID])
-            
-    @staticmethod
-    def add_campaign_to_favourites(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO favourites(user_id, campaign_id) VALUES (%s, %s)", 
-                    [userID, campaignID])
-            
-    @staticmethod
-    def is_favourited_by_user_with_id(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
-            result = cursor.fetchall()
-            if result:
-                return True
-            
-        return False
-    
-    @staticmethod
-    def remove_campaign_from_favourites(campaignID, userID):
-        with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM favourites WHERE user_id=%s AND campaign_id=%s", 
-                    [userID, campaignID])
+            cursor.callproc("Crowdfunding_pkg.insert_campaign",
+                        [title, shortDescription, description, int(targetMoneyAmount), endDate, imageURL, int(organizerID), int(categoryID)])
             
     @staticmethod
     def get_donations(campaignID):
         donations = None
         with connection.cursor() as cursor:
-            cursor.execute("SELECT d.id, d.amount, d.message, CASE WHEN d.user_id = 999999999 THEN 'Anonymous' ELSE u.first_name || ' ' || u.last_name END as username, d.creation_date FROM donations d JOIN users u ON d.user_id=u.id WHERE campaign_id=%s ORDER BY d.id DESC", 
-                    [campaignID])
-            donationsResult = cursor.fetchall()
+            ref_cursor = cursor.callfunc("Crowdfunding_pkg.get_donations", oracledb.CURSOR,
+				[campaignID])
+            donationsResult = ref_cursor.fetchall()
             if donationsResult:
                 donations = [Donation(*d).to_json() for d in donationsResult]
 
@@ -103,8 +75,8 @@ class CampaignManager:
         campaigns = None
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM campaigns WHERE status LIKE 'ToApprove'")
-            campaignsResult = cursor.fetchall()
+            ref_cursor = cursor.callfunc("Crowdfunding_pkg.get_campaigns_to_be_approved", oracledb.CURSOR)
+            campaignsResult = ref_cursor.fetchall()
 
             if campaignsResult:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
@@ -114,24 +86,17 @@ class CampaignManager:
     @staticmethod
     def approve_campaign(campaignID):
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE campaigns SET status='Active' WHERE id = %s", 
-                    [campaignID])
-    @staticmethod
-    def get_category_id_by_name(category_name):
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM categories WHERE name = %s", [category_name])
-            result = cursor.fetchone()
-            if result:
-                return result[0]
-        return None
+            cursor.callproc("Crowdfunding_pkg.approve_campaign", [campaignID])
 
+    # it could be merged together with get_campaigns_sorted, 
+    # to not break the DRY principle. It would also make its usage easier.
     @staticmethod
     def get_campaigns_by_category(category_id, sort_by=None):
         campaigns = []
         query = """
             SELECT c.* 
             FROM campaigns c
-            WHERE c.category_id = %s
+            WHERE c.category_id = %s AND status != 'ToApprove'
         """
         
         if sort_by == 'amount':
@@ -150,7 +115,7 @@ class CampaignManager:
     @staticmethod
     def get_campaigns_sorted(sort_by=None):
         campaigns = []
-        query = "SELECT c.* FROM campaigns c"
+        query = "SELECT c.* FROM campaigns c WHERE status != 'ToApprove'"
         
         if sort_by == 'amount':
             query += " ORDER BY c.current_money_amount DESC"
@@ -168,10 +133,61 @@ class CampaignManager:
     @staticmethod
     def count_unique_donors(campaign_id):
         with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT COUNT(DISTINCT user_id) 
-                FROM donations 
-                WHERE campaign_id = %s AND user_id != 999999999
-            """, [campaign_id])
-            result = cursor.fetchone()
-            return result[0] if result else 0
+            return int(cursor.callfunc("Crowdfunding_pkg.count_unique_donors", oracledb.DB_TYPE_NUMBER, [campaign_id]))
+
+        return 0
+
+    # Try moving it to FavouriteManager, it could be merged together with get_favourite_campaigns_by_category, 
+    # to not break the DRY principle. It would also make its usage easier.
+    @staticmethod
+    def get_favourite_campaigns(user_id, sort_by=None):
+        campaigns = []
+        query = """
+            SELECT c.* 
+            FROM campaigns c
+            JOIN favourites f ON c.id = f.campaign_id
+            WHERE f.user_id = %s
+        """
+        
+        if sort_by == 'amount':
+            query += " ORDER BY c.current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY c.end_date ASC"
+            
+        with connection.cursor() as cursor:
+            cursor.execute(query, [user_id])
+            campaignsResult = cursor.fetchall()
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+                
+        return campaigns
+
+    # Try moving it to FavouriteManager
+    @staticmethod
+    def get_favourite_campaigns_by_category(user_id, category_id, sort_by=None):
+        campaigns = []
+        query = """
+            SELECT c.* 
+            FROM campaigns c
+            JOIN favourites f ON c.id = f.campaign_id
+            WHERE f.user_id = %s AND c.category_id = %s
+        """
+        
+        if sort_by == 'amount':
+            query += " ORDER BY c.current_money_amount DESC"
+        elif sort_by == 'time':
+            query += " ORDER BY c.end_date ASC"
+            
+        with connection.cursor() as cursor:
+            cursor.execute(query, [user_id, category_id])
+            campaignsResult = cursor.fetchall()
+            if campaignsResult:
+                campaigns = [Campaign(*c).to_json() for c in campaignsResult]
+                
+        return campaigns
+    
+    @staticmethod
+    def delete_campaign(campaign_id):
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM campaigns WHERE id=%s", 
+                                [campaign_id])

@@ -37,15 +37,27 @@
                         <p><strong>{{ donors_count }} backers</strong></p>
                         <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
-                    <a href="/donate/{{campaign.id}}">
-                        <button class="back-project">Back this project</button>
-                    </a>
                     {% if userData %}
-                    <a href="/favourite/{{campaign.id}}">
-                        <button class="back-project">
-                            {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
-                        </button>
-                    </a>
+                        {% if userData.role != 'Admin' and userData.id != campaign.organizerID %}
+                            <a href="/donate/{{campaign.id}}">
+                                <button class="back-project">Back this project</button>
+                            </a>
+                            <a href="/favourite/{{campaign.id}}">
+                                <button class="back-project">
+                                    {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
+                                </button>
+                            </a>
+                        {% else %}
+                            <a href="/delete_campaign/{{campaign.id}}">
+                                <button class="back-project" style="color:red;">
+                                    Delete campaign
+                                </button>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="/donate/{{campaign.id}}">
+                            <button class="back-project">Back this project</button>
+                        </a>
                     {% endif %}
                 </div>
             </div>
@@ -58,9 +70,14 @@
             <h2>Donations</h2>
             <br/>
             {% for donation in donations %}
-                <div class="donation-card">
+                <div class="donation-card 
+                    {% if donation.amount >= 250 %}tier-250
+                    {% elif donation.amount >= 100 %}tier-100
+                    {% elif donation.amount >= 25 %}tier-25
+                    {% else %}tier-1{% endif %}">
                     <strong class="donation-username">{{donation.username}}</strong>
                     <p class="donation-message">{{donation.message}}</p>
+                    <p class="donation-amount">${{donation.amount}}</p>
                 </div>
             {% endfor %}
             <h2>Comments</h2>

@@ -11,8 +11,25 @@ import json
 def index(request):
     category_id = request.GET.get('category', None)
     sort_by = request.GET.get('sort', None)
+    favorites = request.GET.get('favorites', None)
+    userData = request.session.get('userData', None)
     
-    if category_id:
+    if favorites and userData:
+        if category_id:
+            campaigns = ManagerFactory.get_campaign_manager().get_favourite_campaigns_by_category(
+                userData['id'],
+                int(category_id),
+                sort_by=sort_by
+            )
+        else:
+            # Dodajemy sprawdzenie czy użytkownik jest zalogowany
+            if not userData:
+                return redirect('auth')
+            campaigns = ManagerFactory.get_campaign_manager().get_favourite_campaigns(
+                userData['id'],
+                sort_by=sort_by
+            )
+    elif category_id:
         campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_category(
             int(category_id), 
             sort_by=sort_by
@@ -29,7 +46,8 @@ def index(request):
         'campaigns': campaigns,
         'query': query,
         'selected_category': category_id,
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'favorites': favorites
     })
 
 def auth(request):
@@ -108,7 +126,7 @@ def project(request, slug):
     
     comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
     userData = request.session.get('userData', None)
-    isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
+    isFavourited = ManagerFactory.get_favourite_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
     donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
     donors_count = ManagerFactory.get_campaign_manager().count_unique_donors(campaign.id)
 
@@ -122,28 +140,11 @@ def project(request, slug):
         'donors_count': donors_count
     })
 
-#MESJASZA BZDETY, TE CHYBA PRAWIDLOWE
-def project_adm(request, slug):
-    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(slug)
-
-    if not campaign:
-        return render(request, 'DawajKase/404.html')
-    
-    creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
-
-    if not creator:
-        return render(request, 'DawajKase/404.html')
-    
-    comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
-    userData = request.session.get('userData', None)
-    isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
-    donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
-
-    return render(request, 'DawajKase/project_adm.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
-
 def confirmation_tab(request):
-    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_to_be_approved()
     userData = request.session.get('userData', None)
+    if not userData or userData['role'] != 'Admin':
+        return redirect('index')
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_to_be_approved()
     query = request.session.get('query', None)
     users = ManagerFactory.get_user_manager().get_all_users()
     return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query, 'users': users})
@@ -165,14 +166,11 @@ def change_role(request):
         userID = data.get('user_id')
         role = data.get('role')
 
-        print(role)
-
-        if role == '2':
-            role = 'Organizer'
-        else:
-            role = 'Supporter'
-
-        ManagerFactory.get_user_manager().change_role(userID, role)
+        if role == '1' or role == '2':
+            role = 'Organizer' if role == '2' else 'Supporter'
+            ManagerFactory.get_user_manager().change_role(userID, role)
+        elif role == '3':
+            ManagerFactory.get_user_manager().delete_user(userID)
 
         return HttpResponse("OK", status=200)
     else:
@@ -241,13 +239,11 @@ def search_bar(request):
     
 def campaign_create(request):
     from datetime import date, timedelta
-    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_by_limit(9, sort_by='goal')
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
     tomorrow = date.today() + timedelta(days=1)
     return render(request, 'DawajKase/campaign_create.html', {
         'userData': userData,
-        'campaigns': campaigns,
         'query': query,
         'tomorrow': tomorrow.isoformat()
     })
@@ -270,8 +266,9 @@ def insert_campaign(request):
             userData = request.session.get('userData', None)
             campaignManager = ManagerFactory.get_campaign_manager()
             category_name = request.POST.get('category')
-            category_id = campaignManager.get_category_id_by_name(category_name)
+            category_id = ManagerFactory.get_category_manager().get_category_id_by_name(category_name)
 
+            print(userData['id'], category_id)
             if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id):
                 pass
             else:
@@ -288,11 +285,11 @@ def insert_campaign(request):
 def favourite_campaign(request, id):
     userData = request.session.get('userData', None)
     if userData:
-        isFavourited = ManagerFactory.get_campaign_manager().is_favourited_by_user_with_id(id, userData['id'])
+        isFavourited = ManagerFactory.get_favourite_manager().is_favourited_by_user_with_id(id, userData['id'])
         if isFavourited:
-            ManagerFactory.get_campaign_manager().remove_campaign_from_favourites(id, userData['id'])
+            ManagerFactory.get_favourite_manager().remove_campaign_from_favourites(id, userData['id'])
         else:
-            ManagerFactory.get_campaign_manager().add_campaign_to_favourites(id, userData['id'])
+            ManagerFactory.get_favourite_manager().add_campaign_to_favourites(id, userData['id'])
     
     return redirect('/project/' + id)
 
@@ -336,3 +333,18 @@ def donate(request, id):
             return render(request, 'DawajKase/404.html')
         
         return render(request, 'DawajKase/donate.html', {'userData': userData, 'campaign': campaign})
+
+def delete_campaign(request, id):
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect('index')
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(id).to_json()
+    
+    if not campaign:
+        return redirect('index')
+    
+    if campaign['organizerID'] != userData['id'] and userData['role'] != 'Admin':
+        return redirect('index')
+    
+    ManagerFactory.get_campaign_manager().delete_campaign(id)
+    return redirect('index')

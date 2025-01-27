@@ -19,8 +19,12 @@
          <form action="/donate/{{campaign.id}}" method="POST" class="donation-form">
             {% csrf_token %}
             <input type="text" name="message" placeholder="Enter the message (optional)" class="donation-input" id="message">
-            <input type="number" name="amount" placeholder="Enter the amount" class="donation-input">
-            <button type="submit" class="donation-button">Pay now</button>
+            <div class="amount-buttons">
+                <button type="submit" name="amount" value="1" class="donation-button amount-button">$1</button>
+                <button type="submit" name="amount" value="25" class="donation-button amount-button">$25</button>
+                <button type="submit" name="amount" value="100" class="donation-button amount-button">$100</button>
+                <button type="submit" name="amount" value="250" class="donation-button amount-button">$250</button>
+            </div>
          </form>
         {% if error %}
           <center>
