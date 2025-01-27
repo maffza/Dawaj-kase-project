@@ -140,28 +140,11 @@ def project(request, slug):
         'donors_count': donors_count
     })
 
-#MESJASZA BZDETY, TE CHYBA PRAWIDLOWE
-def project_adm(request, slug):
-    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(slug)
-
-    if not campaign:
-        return render(request, 'DawajKase/404.html')
-    
-    creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
-
-    if not creator:
-        return render(request, 'DawajKase/404.html')
-    
-    comments = ManagerFactory.get_comment_manager().get_comments_by_project_id(campaign.id)
-    userData = request.session.get('userData', None)
-    isFavourited = ManagerFactory.get_favourite_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
-    donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
-
-    return render(request, 'DawajKase/project_adm.html', {'userData': userData, 'isFavourited': isFavourited, 'campaign': campaign.to_json(), 'creator': creator.to_json(), 'comments': comments, 'donations': donations})
-
 def confirmation_tab(request):
-    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_to_be_approved()
     userData = request.session.get('userData', None)
+    if not userData or userData['role'] != 'Admin':
+        return redirect('index')
+    campaigns = ManagerFactory.get_campaign_manager().get_campaigns_to_be_approved()
     query = request.session.get('query', None)
     users = ManagerFactory.get_user_manager().get_all_users()
     return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query, 'users': users})
@@ -183,14 +166,11 @@ def change_role(request):
         userID = data.get('user_id')
         role = data.get('role')
 
-        print(role)
-
-        if role == '2':
-            role = 'Organizer'
-        else:
-            role = 'Supporter'
-
-        ManagerFactory.get_user_manager().change_role(userID, role)
+        if role == '1' or role == '2':
+            role = 'Organizer' if role == '2' else 'Supporter'
+            ManagerFactory.get_user_manager().change_role(userID, role)
+        elif role == '3':
+            ManagerFactory.get_user_manager().delete_user(userID)
 
         return HttpResponse("OK", status=200)
     else:
@@ -353,3 +333,18 @@ def donate(request, id):
             return render(request, 'DawajKase/404.html')
         
         return render(request, 'DawajKase/donate.html', {'userData': userData, 'campaign': campaign})
+
+def delete_campaign(request, id):
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect('index')
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(id).to_json()
+    
+    if not campaign:
+        return redirect('index')
+    
+    if campaign['organizerID'] != userData['id'] or userData['role'] != 'Admin':
+        return redirect('index')
+    
+    ManagerFactory.get_campaign_manager().delete_campaign(id)
+    return redirect('index')

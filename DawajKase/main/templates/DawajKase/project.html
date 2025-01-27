@@ -37,15 +37,30 @@
                         <p><strong>{{ donors_count }} backers</strong></p>
                         <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
-                    <a href="/donate/{{campaign.id}}">
-                        <button class="back-project">Back this project</button>
-                    </a>
                     {% if userData %}
-                    <a href="/favourite/{{campaign.id}}">
-                        <button class="back-project">
-                            {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
-                        </button>
-                    </a>
+                        {% if userData.role != 'Admin' %}
+                            {% if userData.id != campaign.organizerID %}
+                                <a href="/donate/{{campaign.id}}">
+                                    <button class="back-project">Back this project</button>
+                                </a>
+                                <a href="/favourite/{{campaign.id}}">
+                                    <button class="back-project">
+                                        {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
+                                    </button>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        {% if userData.role == 'Admin' or userData.id == campaign.organizerID %}
+                            <a href="/delete_campaign/{{campaign.id}}">
+                                <button class="back-project" style="color:red;">
+                                    Delete campaign
+                                </button>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="/donate/{{campaign.id}}">
+                            <button class="back-project">Back this project</button>
+                        </a>
                     {% endif %}
                 </div>
             </div>

@@ -181,8 +181,13 @@
             .then(response => {
                 // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
                 if (response.ok) {
-                    const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
-                    alert(`User status changed to: ${roleName}`);
+                    if(select.value == 1 || select.value == 2){
+                        const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
+                        alert(`User status changed to: ${roleName}`);
+                    } 
+                    else if(select.value == 3){
+                        alert(`User has been removed.`);
+                    }
                 } else {
                     alert("Failed to update user role.");
                 }

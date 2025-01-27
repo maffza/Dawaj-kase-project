@@ -185,3 +185,10 @@ class CampaignManager:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
                 
         return campaigns
+    
+    @staticmethod
+    def delete_campaign(campaign_id):
+        pass
+        #with connection.cursor() as cursor:
+        #    cursor.execute("DELETE FROM campaigns WHERE id=%s", 
+        #                        [campaign_id])
