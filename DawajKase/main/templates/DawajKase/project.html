@@ -38,19 +38,16 @@
                         <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     {% if userData %}
-                        {% if userData.role != 'Admin' %}
-                            {% if userData.id != campaign.organizerID %}
-                                <a href="/donate/{{campaign.id}}">
-                                    <button class="back-project">Back this project</button>
-                                </a>
-                                <a href="/favourite/{{campaign.id}}">
-                                    <button class="back-project">
-                                        {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
-                                    </button>
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                        {% if userData.role == 'Admin' or userData.id == campaign.organizerID %}
+                        {% if userData.role != 'Admin' and if userData.id != campaign.organizerID %}
+                            <a href="/donate/{{campaign.id}}">
+                                <button class="back-project">Back this project</button>
+                            </a>
+                            <a href="/favourite/{{campaign.id}}">
+                                <button class="back-project">
+                                    {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
+                                </button>
+                            </a>
+                        {% else %}
                             <a href="/delete_campaign/{{campaign.id}}">
                                 <button class="back-project" style="color:red;">
                                     Delete campaign
