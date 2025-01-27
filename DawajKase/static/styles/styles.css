@@ -22,6 +22,9 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+
+
+
 /* Wrapper to make footer stick to bottom */
 .wrapper {
     flex: 1 0 auto;
@@ -95,11 +98,40 @@ header .container {
     margin-right: 20px;
 }
 
+
 .navigation a {
     color: #e0e0e0;
     border: 1px solid #383B4B;
     padding: 10px;
     border-radius: 7px;
+    animation: colorLoop 3s infinite; /* Add animation to loop */
+}
+
+@keyframes colorLoop {
+    0% {
+        color: #e0e0e0;
+        background-color: #383B4B;
+    }
+
+    25% {
+        color: #f54242;
+        background-color: #4a4f66;
+    }
+
+    50% {
+        color: #42f554;
+        background-color: #555970;
+    }
+
+    75% {
+        color: #4287f5;
+        background-color: #666b88;
+    }
+
+    100% {
+        color: #e0e0e0;
+        background-color: #383B4B;
+    }
 }
 
 /* Auth Buttons */
