@@ -38,7 +38,7 @@
                         <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     {% if userData %}
-                        {% if userData.role != 'Admin' and if userData.id != campaign.organizerID %}
+                        {% if userData.role != 'Admin' and userData.id != campaign.organizerID %}
                             <a href="/donate/{{campaign.id}}">
                                 <button class="back-project">Back this project</button>
                             </a>
