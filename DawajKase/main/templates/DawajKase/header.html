@@ -12,16 +12,20 @@
 
         <nav class="navigation">
             <ul>
-                {% with test=True %} <!-- Set to True to display both buttons -->
+                {% with test=False %} <!-- Set to True to display both buttons -->
                 {% if test == True %}  
                     <li><a href="/campaign_create">Start a project</a></li>
                     <li><a href="/become_creator">Become a creator</a></li>
                 {% else %}
                     {% if userData %}
-                        {% if userData.role == 'Organizer' %}<!--  -->
-                            <li><a href="/campaign_create">Start a project</a></li>
+                        {% if userData.role == 'Admin' %}
+                        <li><a href="/confirmation_tab">Admin panel</a></li>
                         {% else %}
-                            <li><a href="/become_creator">Become a creator</a></li>
+                            {% if userData.role == 'Organizer' %}<!--  -->
+                                <li><a href="/campaign_create">Start a project</a></li>
+                            {% else %}
+                                <li><a href="/become_creator">Become a creator</a></li>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 {% endif %}
