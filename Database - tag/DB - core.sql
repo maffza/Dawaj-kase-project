@@ -307,7 +307,7 @@ ALTER TABLE favourites
 /
 ALTER TABLE favourites
     ADD CONSTRAINT fk_favouritescampaigns FOREIGN KEY ( campaign_id )
-        REFERENCES campaigns ( id );
+        REFERENCES campaigns ( id ) ON DELETE CASCADE;
 /
 CREATE OR REPLACE TRIGGER favourites_add BEFORE
     INSERT ON favourites
