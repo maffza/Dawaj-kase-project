@@ -46,6 +46,44 @@ BEGIN
     :new.modify_date := sysdate;
 END;
 /
+DROP TABLE categories CASCADE CONSTRAINTS;
+/
+DROP SEQUENCE categories_seq;
+/
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE categories_seq
+                        START WITH 1
+                        INCREMENT BY 1
+                        NOCACHE
+                        NOCYCLE';
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL;
+END;
+/
+CREATE TABLE categories (
+    id            NUMBER PRIMARY KEY,
+    name          VARCHAR2(40) NOT NULL,
+    description   VARCHAR2(255),
+    creation_date DATE,
+    modify_date   DATE
+);
+/
+CREATE OR REPLACE TRIGGER categories_add BEFORE
+    INSERT ON categories
+    FOR EACH ROW
+BEGIN
+    :new.ID := categories_seq.NEXTVAL;
+    :new.creation_date := sysdate;
+END;
+/
+CREATE OR REPLACE TRIGGER categories_update BEFORE
+    UPDATE ON categories
+    FOR EACH ROW
+BEGIN
+    :new.modify_date := sysdate;
+END;
+/
 DROP TABLE campaigns CASCADE CONSTRAINTS;
 /
 DROP SEQUENCE campaigns_seq;
@@ -239,44 +277,6 @@ BEGIN
     :new.modify_date := sysdate;
 END;
 /
-DROP TABLE categories CASCADE CONSTRAINTS;
-/
-DROP SEQUENCE categories_seq;
-/
-BEGIN
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE categories_seq
-                        START WITH 1
-                        INCREMENT BY 1
-                        NOCACHE
-                        NOCYCLE';
-EXCEPTION
-    WHEN OTHERS THEN
-        NULL;
-END;
-/
-CREATE TABLE categories (
-    id            NUMBER PRIMARY KEY,
-    name          VARCHAR2(40) NOT NULL,
-    description   VARCHAR2(255),
-    creation_date DATE,
-    modify_date   DATE
-);
-/
-CREATE OR REPLACE TRIGGER categories_add BEFORE
-    INSERT ON categories
-    FOR EACH ROW
-BEGIN
-    :new.ID := categories_seq.NEXTVAL;
-    :new.creation_date := sysdate;
-END;
-/
-CREATE OR REPLACE TRIGGER categories_update BEFORE
-    UPDATE ON categories
-    FOR EACH ROW
-BEGIN
-    :new.modify_date := sysdate;
-END;
-/
 DROP TABLE favourites CASCADE CONSTRAINTS;
 /
 DROP SEQUENCE favourites_seq;
@@ -324,3 +324,104 @@ BEGIN
     :new.modify_date := sysdate;
 END;
 /
+-----------------------------UPDATE 10.03.2025----------------------------------
+DROP TABLE posts CASCADE CONSTRAINTS;
+/
+DROP SEQUENCE posts_seq;
+/
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE posts_seq
+                        START WITH 1
+                        INCREMENT BY 1
+                        NOCACHE
+                        NOCYCLE';
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL;
+END;
+/
+CREATE TABLE posts (
+    id                   NUMBER PRIMARY KEY,
+    title                VARCHAR2(50),
+    description          CLOB,
+    image_url            VARCHAR2(500),
+    user_id              NUMBER,
+    campaign_id          NUMBER,
+    creation_date        DATE,
+    modify_date          DATE
+);
+/
+ALTER TABLE posts
+    ADD CONSTRAINT fk_postscampaigns FOREIGN KEY ( campaign_id )
+        REFERENCES campaigns ( id ) ON DELETE CASCADE;
+/
+ALTER TABLE posts
+    ADD CONSTRAINT fk_postsusers FOREIGN KEY ( user_id )
+        REFERENCES users ( id ) ON DELETE CASCADE;
+/
+CREATE OR REPLACE TRIGGER posts_add BEFORE
+    INSERT ON posts
+    FOR EACH ROW
+BEGIN
+    :new.ID := posts_seq.NEXTVAL;
+    :new.creation_date := sysdate;
+END;
+/
+CREATE OR REPLACE TRIGGER posts_update BEFORE
+    UPDATE ON posts
+    FOR EACH ROW
+BEGIN
+    :new.modify_date := sysdate;
+END;
+/
+DROP TABLE notifications CASCADE CONSTRAINTS;
+/
+DROP SEQUENCE notifications_seq;
+/
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE notifications_seq
+                        START WITH 1
+                        INCREMENT BY 1
+                        NOCACHE
+                        NOCYCLE';
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL;
+END;
+/
+CREATE TABLE notifications (
+    id                   NUMBER PRIMARY KEY,
+    title                VARCHAR2(50),
+    description          CLOB,
+    image_url            VARCHAR2(500),
+    is_read              VARCHAR2(1),
+    user_id              NUMBER,
+    campaign_id          NUMBER,
+    creation_date        DATE,
+    modify_date          DATE
+);
+/
+ALTER TABLE notifications
+    ADD CONSTRAINT fk_notificationscampaigns FOREIGN KEY ( campaign_id )
+        REFERENCES campaigns ( id ) ON DELETE CASCADE;
+/
+ALTER TABLE notifications
+    ADD CONSTRAINT fk_notificationsusers FOREIGN KEY ( user_id )
+        REFERENCES users ( id ) ON DELETE CASCADE;
+/
+CREATE OR REPLACE TRIGGER notifications_add BEFORE
+    INSERT ON notifications
+    FOR EACH ROW
+BEGIN
+    :new.ID := notifications_seq.NEXTVAL;
+    :new.creation_date := sysdate;
+END;
+/
+CREATE OR REPLACE TRIGGER notifications_update BEFORE
+    UPDATE ON notifications
+    FOR EACH ROW
+BEGIN
+    :new.modify_date := sysdate;
+END;
+/
+------------------------------------------------------------------------------------------
