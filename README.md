@@ -1,5 +1,5 @@
 # Dawaj kase project
- Projekt na Inżynierie oprogramowania
+ Give me money project. This project is solely for education. We're learning Databases!
 
 # How to set up the project
 ## Update the database password
