@@ -1,0 +1,17 @@
+Panel admin: Kacper / Jakub
+	Pasek wyszukiwania użytkownikow i kampanii 
+	Lista skończona ze stronami
+	Przy zatwierdzaniu mozliwość przeglądania kampani aby zatwierdzić/odrzucić
+
+Wpłaty: Kacper / Jakub / Oskar
+	Przebudowa tierów wpłat (Uzywanie tabel rewards)
+	Możliwość wybierania tierów przy zakładaniu zbiorki
+	Wyswietlanie tierów dla kampanii
+
+Posty: Kacper / Oskar
+	Używanie tabeli posty	
+
+Strona główna: Jakub
+	Skończona lista ze stronami
+
+Generowanie raportów w bazie danych - Przemek / Pawel
