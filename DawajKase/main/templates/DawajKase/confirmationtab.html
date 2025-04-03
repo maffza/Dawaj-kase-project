@@ -100,6 +100,11 @@
         <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after capaign name for visuals [bro, margin-right exists XD])-->
         <div id="approvals" class="tab-content active">
             <h2>Approve Campaigns</h2>
+            <div class="search-container" style="margin-bottom: 20px;">
+                <input type="text" id="campaignSearch" placeholder="Search campaigns..." 
+                       style="padding: 10px; width: 100%; background-color: #1f1f1f; 
+                              color: #e0e0e0; border: 1px solid #383B4B; border-radius: 5px;">
+            </div>
             {% for campaign in campaigns %}
             <div class="approval-item">
                 <span>{{campaign.title}}</span>
@@ -110,6 +115,11 @@
         <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after user name for visuals [bro, margin-right exists XD])-->
         <div id="user-management" class="tab-content">
             <h2>Manage Users</h2>
+            <div class="search-container" style="margin-bottom: 20px;">
+                <input type="text" id="userSearch" placeholder="Search users..." 
+                       style="padding: 10px; width: 100%; background-color: #1f1f1f; 
+                              color: #e0e0e0; border: 1px solid #383B4B; border-radius: 5px;">
+            </div>
             {% for user in users %}
             <div class="user-status">
                 <span>{{user.firstName}} {{user.lastName}} {% if user.role == 'ToVerify' %}[verify me]{% endif %}</span>
@@ -125,9 +135,24 @@
     </div>
 
     <script>
+        // Campaign search functionality
+        document.getElementById('campaignSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const campaignItems = document.querySelectorAll('#approvals .approval-item');
+            
+            campaignItems.forEach(function(item) {
+                const campaignName = item.querySelector('span').textContent.toLowerCase();
+                if (campaignName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
         function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('#tabs button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(function(tab) { tab.classList.remove('active'); });
+            document.querySelectorAll('#tabs button').forEach(function(btn) { btn.classList.remove('active'); });
 
             document.getElementById(tabId).classList.add('active');
             document.querySelector(`#tabs button[onclick="showTab('${tabId}')"]`).classList.add('active');
@@ -142,7 +167,7 @@
                 },
                 body: JSON.stringify({ campaign_id: campaignID })
             })
-            .then(response => {
+            .then(function(response) {
                 if (response.ok) {
                     button.textContent = 'Approved';
                     button.classList.add('approved');
@@ -167,6 +192,21 @@
             }
             return cookieValue;
         }
+        // User search functionality
+        document.getElementById('userSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const userItems = document.querySelectorAll('#user-management .user-status');
+            
+            userItems.forEach(function(item) {
+                const userName = item.querySelector('span').textContent.toLowerCase();
+                if (userName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
         function changeUserStatus(select, userId) {
             const selectedRole = select.value;
 
@@ -178,15 +218,15 @@
                 },
                 body: JSON.stringify({ user_id: userId, role: selectedRole })
             })
-            .then(response => {
+            .then(function(response) {
                 // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
                 if (response.ok) {
                     if(select.value == 1 || select.value == 2){
                         const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
-                        alert(`User status changed to: ${roleName}`);
+                        alert('User status changed to: ' + roleName);
                     } 
                     else if(select.value == 3){
-                        alert(`User has been removed.`);
+                        alert('User has been removed.');
                     }
                 } else {
                     alert("Failed to update user role.");
