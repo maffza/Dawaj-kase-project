@@ -113,7 +113,7 @@ class CampaignManager:
         return campaigns
 
     @staticmethod
-    def get_campaigns_sorted(sort_by=None):
+    def get_campaigns_sorted(sort_by=None, limit=None, offset=None):
         campaigns = []
         query = "SELECT c.* FROM campaigns c WHERE status != 'ToApprove'"
         
@@ -122,6 +122,9 @@ class CampaignManager:
         elif sort_by == 'time':
             query += " ORDER BY c.end_date ASC"
             
+        if limit is not None:
+            query += f" OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY"
+            
         with connection.cursor() as cursor:
             cursor.execute(query)
             campaignsResult = cursor.fetchall()
@@ -129,6 +132,12 @@ class CampaignManager:
                 campaigns = [Campaign(*c).to_json() for c in campaignsResult]
                 
         return campaigns
+
+    @staticmethod
+    def count_campaigns():
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) FROM campaigns WHERE status != 'ToApprove'")
+            return cursor.fetchone()[0]
 
     @staticmethod
     def count_unique_donors(campaign_id):

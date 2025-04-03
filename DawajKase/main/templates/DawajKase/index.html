@@ -23,18 +23,42 @@
                 </div>
                 
                 {% if campaigns %}
-                    <div class="featured-projects">
-                        {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:":3" showDescription=True %}
-                    </div>
-                    <div class="other-projects">
-                        {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:"3:" showDescription=True %}
-                    </div>
+                    {% if current_page == 1 %}
+                        <div class="featured-projects">
+                            {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:":3" showDescription=True %}
+                        </div>
+                        <div class="other-projects">
+                            {% include 'DawajKase/campaign_list.html' with campaigns=campaigns|slice:"3:" showDescription=True %}
+                        </div>
+                    {% else %}
+                        <div class="all-projects">
+                            {% include 'DawajKase/campaign_list.html' with campaigns=campaigns showDescription=True %}
+                        </div>
+                    {% endif %}
                     <div id="search-results" style="display: none;"></div>
                 {% else %}
                     <p></p>
                 {% endif %}
-            </div>
-        </main>
+    </div>
+    </main>
+    </div>
+
+    <div class="pagination">
+        {% if current_page > 1 %}
+            <a href="?page={{ current_page|add:-1 }}">&laquo; Previous</a>
+        {% endif %}
+        
+        {% for page in page_range %}
+            {% if page == current_page %}
+                <span class="current">{{ page }}</span>
+            {% else %}
+                <a href="?page={{ page }}">{{ page }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if current_page < total_pages %}
+            <a href="?page={{ current_page|add:1 }}">Next &raquo;</a>
+        {% endif %}
     </div>
 
     <script>

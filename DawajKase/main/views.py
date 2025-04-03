@@ -12,7 +12,11 @@ def index(request):
     category_id = request.GET.get('category', None)
     sort_by = request.GET.get('sort', None)
     favorites = request.GET.get('favorites', None)
+    page = int(request.GET.get('page', 1))
     userData = request.session.get('userData', None)
+    
+    page_size = 20
+    offset = (page - 1) * page_size
     
     if favorites and userData:
         if category_id:
@@ -36,8 +40,12 @@ def index(request):
         )
     else:
         campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(
-            sort_by=sort_by
+            sort_by=sort_by,
+            limit=page_size,
+            offset=offset
         )
+        total_campaigns = ManagerFactory.get_campaign_manager().count_campaigns()
+        total_pages = (total_campaigns + page_size - 1) // page_size
         
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
@@ -47,7 +55,9 @@ def index(request):
         'query': query,
         'selected_category': category_id,
         'sort_by': sort_by,
-        'favorites': favorites
+        'favorites': favorites,
+        'current_page': page,
+        'total_pages': total_pages if not (favorites or category_id) else 1
     })
 
 def auth(request):
@@ -199,42 +209,68 @@ def search(request):
     query = request.GET.get('q', '').strip()
     reset = request.GET.get('reset', False)
     sort_by = request.GET.get('sort', None)
+    page = int(request.GET.get('page', 1))
+    
+    page_size = 19
+    offset = (page - 1) * page_size
 
     if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
     else:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(sort_by=sort_by)
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(
+            sort_by=sort_by,
+            limit=page_size,
+            offset=offset
+        )
+        total_campaigns = ManagerFactory.get_campaign_manager().count_campaigns()
+        total_pages = (total_campaigns + page_size - 1) // page_size
 
     if reset:
         campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(sort_by=sort_by)
         return render(request, 'DawajKase/campaign_list.html', {
             'campaigns': campaigns, 
             'showDescription': True,
-            'sort_by': sort_by
+            'sort_by': sort_by,
+            'current_page': page,
+            'total_pages': total_pages if not query else 1
         })
 
     return render(request, 'DawajKase/campaign_list.html', {
         'campaigns': campaigns, 
         'showDescription': True,
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'current_page': page,
+        'total_pages': total_pages if not query else 1
     })
 
 def search_bar(request):
     query = request.GET.get('q', '').strip()
     reset = request.GET.get('reset', False)
     sort_by = request.GET.get('sort', None)
+    page = int(request.GET.get('page', 1))
     request.session['query'] = query
+    
+    page_size = 20
+    offset = (page - 1) * page_size
 
     if query:
         campaigns = ManagerFactory.get_campaign_manager().search_campaigns(query)
     else:
-        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(sort_by=sort_by)
+        campaigns = ManagerFactory.get_campaign_manager().get_campaigns_sorted(
+            sort_by=sort_by,
+            limit=page_size,
+            offset=offset
+        )
+        total_campaigns = ManagerFactory.get_campaign_manager().count_campaigns()
+        total_pages = (total_campaigns + page_size - 1) // page_size
     
     return render(request, 'DawajKase/search.html', {
         'campaigns': campaigns, 
         'showDescription': True, 
         'query': query,
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'current_page': page,
+        'total_pages': total_pages if not query else 1
     })
     
 def campaign_create(request):
