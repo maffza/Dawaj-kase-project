@@ -88,6 +88,12 @@ class CampaignManager:
         with connection.cursor() as cursor:
             cursor.callproc("Crowdfunding_pkg.approve_campaign", [campaignID])
 
+   #//Dodać procedure reject_campaign do pkg
+    @staticmethod
+    def reject_campaign(campaignID):
+        with connection.cursor() as cursor:
+            cursor.callproc("Crowdfunding_pkg.reject_campaign", [campaignID])
+
     # it could be merged together with get_campaigns_sorted, 
     # to not break the DRY principle. It would also make its usage easier.
     @staticmethod

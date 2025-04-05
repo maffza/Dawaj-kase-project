@@ -80,13 +80,49 @@
             margin-bottom: 10px;
         }
 
-            .user-status select {
-                background-color: #1f1f1f;
-                color: #e0e0e0;
-                border: 1px solid #383B4B;
-                padding: 10px;
-                border-radius: 5px;
-            }
+        .user-status select {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            border: 1px solid #383B4B;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .campaign-preview {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            margin-right: 15px;
+        }
+
+        .campaign-thumbnail {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .campaign-details {
+            flex: 1;
+        }
+
+        .toggle-details {
+            background: none;
+            border: none;
+            color: #5E66D6;
+            cursor: pointer;
+            padding: 5px 0;
+            text-decoration: underline;
+        }
+
+        .reject-btn {
+            background-color: #f44336 !important;
+            margin-right: 10px;
+        }
+
+        .approval-actions {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -107,8 +143,28 @@
             </div>
             {% for campaign in campaigns %}
             <div class="approval-item">
-                <span>{{campaign.title}}</span>
-                <button onclick="approveCampaign(this, {{campaign.id}})">Approve</button>
+                <div class="campaign-preview">
+                    {% if campaign.imageURL %}
+                    <img src="{{ campaign.imageURL }}" alt="{{ campaign.title }}" class="campaign-thumbnail">
+                    {% endif %}
+                    <div class="campaign-details">
+                        <h3>{{ campaign.title }}</h3>
+                        <p class="short-description">{{ campaign.shortDescription }}</p>
+                        
+                        <div class="campaign-full-details" style="display: none;">
+                            <p>{{ campaign.description }}</p>
+                            <p>Category ID: {{ campaign.categoryID }}</p>
+                            <p>Organizer ID: {{ campaign.organizerID }}</p>
+                            <p>Required Amount: {{ campaign.targetMoneyAmount }}$</p>
+                            <p>End Date: {{ campaign.endDate }}</p>
+                        </div>
+                        <button class="toggle-details" onclick="toggleDetails(this)">Show Details</button>
+                    </div>
+                </div>
+                <div class="approval-actions">
+                    <button class="reject-btn" onclick="rejectCampaign(this, {{campaign.id}})">Reject</button>
+                    <button onclick="approveCampaign(this, {{campaign.id}})">Approve</button>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -123,8 +179,8 @@
             {% for user in users %}
             <div class="user-status">
                 <span>{{user.firstName}} {{user.lastName}} {% if user.role == 'ToVerify' %}[verify me]{% endif %}</span>
-                <select   onchange="changeUserStatus(this, {{user.id}})">
-                    <option  value="1" {% if user.role == 'Supporter' or user.role == 'ToVerify' %}selected{% endif %}>Supporter</option>
+                <select onchange="changeUserStatus(this, {{user.id}})">
+                    <option value="1" {% if user.role == 'Supporter' or user.role == 'ToVerify' %}selected{% endif %}>Supporter</option>
                     <option value="2" {% if user.role == 'Organizer' %}selected{% endif %}>Organizer</option>
                     <option value="3" {% if user.role == 'Organizer' %}selected{% endif %}>Delete account</option>
                     <option value="" selected disabled hidden>Manage user</option>
@@ -141,7 +197,7 @@
             const campaignItems = document.querySelectorAll('#approvals .approval-item');
             
             campaignItems.forEach(function(item) {
-                const campaignName = item.querySelector('span').textContent.toLowerCase();
+                const campaignName = item.querySelector('h3').textContent.toLowerCase();
                 if (campaignName.includes(searchTerm)) {
                     item.style.display = 'flex';
                 } else {
@@ -219,7 +275,6 @@
                 body: JSON.stringify({ user_id: userId, role: selectedRole })
             })
             .then(function(response) {
-                // CHANGE FROM ALERT TO NOTHING OR SOMETHING COOL, ADDED HERE JUST FOR VISUAL
                 if (response.ok) {
                     if(select.value == 1 || select.value == 2){
                         const roleName = select.value == 2 ? 'Organizer' : 'Supporter';
@@ -233,6 +288,38 @@
                 }
             });
         }
+
+        function toggleDetails(button) {
+            const detailsDiv = button.parentElement.querySelector('.campaign-full-details');
+            if (detailsDiv.style.display === 'none') {
+                detailsDiv.style.display = 'block';
+                button.textContent = 'Hide Details';
+            } else {
+                detailsDiv.style.display = 'none';
+                button.textContent = 'Show Details';
+            }
+        }
+        //Dodać procedure reject_campaign do pkg
+        function rejectCampaign(button, campaignID) {
+            fetch('/reject_campaign', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ campaign_id: campaignID })
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    button.textContent = 'Rejected';
+                    button.disabled = true;
+                    button.nextElementSibling.disabled = true;
+                } else {
+                    button.textContent = 'Error';
+                }
+            });
+        }
+
     </script>
 
     {% include 'DawajKase/footer.html' %}
