@@ -20,6 +20,7 @@ CREATE OR REPLACE PACKAGE Crowdfunding_pkg AS
     PROCEDURE donate_anonymously (p_campaign_id IN NUMBER, p_amount IN NUMBER, p_message IN VARCHAR2);
     FUNCTION check_if_user_exists (p_email IN VARCHAR2) RETURN NUMBER;
     FUNCTION get_user_by_id (p_id IN NUMBER) RETURN SYS_REFCURSOR;
+    PROCEDURE reject_campaign (p_campaign_id IN NUMBER);
     -- BRAK register_user
     -- BRAK log_user_in
     
@@ -300,6 +301,13 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
 
         RETURN result_cursor;
     END get_user_by_id;
+
+    PROCEDURE reject_campaign (p_campaign_id IN NUMBER)
+    IS
+    
+    BEGIN
+        DELETE FROM campaigns WHERE id = p_campaign_id;
+    END reject_campaign;
 
 END Crowdfunding_pkg;
 /
