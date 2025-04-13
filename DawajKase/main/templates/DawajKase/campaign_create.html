@@ -6,13 +6,11 @@
     <title>Create a Campaign</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
-
-    
 </head>
 <body>
     <!-- Header -->
     {% include 'DawajKase/header.html' %}
-    
+
     <!-- Main Form -->
     <main>
         <div class="container">
@@ -32,23 +30,31 @@
                 <input type="number" id="target_money_amount" name="targetMoneyAmount" required min="0">
 
                 <label for="end_date">End Date:</label>
-    <input type="date" id="endDate" name="endDate" required min="{{ tomorrow }}">
+                <input type="date" id="endDate" name="endDate" required min="{{ tomorrow }}">
 
                 <label for="image">Campaign Image:</label>
                 <input type="file" id="image" name="image" accept="image/*" required>
 
                 <label for="category">Category:</label>
-    <select id="category" name="category" required>
-        <option value="" disabled selected>Select a category</option>
-        <option value="Technology">Technology</option>
-        <option value="Health">Health</option>
-        <option value="Technology">Education</option>
-        <option value="Health">Animals</option>
-        <option value="Health">Community</option>
-        <option value="Health">Environment</option>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>Select a category</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Health">Health</option>
+                    <option value="Technology">Education</option>
+                    <option value="Health">Animals</option>
+                    <option value="Health">Community</option>
+                    <option value="Health">Environment</option>
+                </select>
 
 
-    </select>
+                <!-- TU DODALEM TIERY -->
+                <div id="support-tiers-section">
+                    <h3>Dodaj Tiery Wsparcia</h3>
+                    <div id="support-tiers-container">
+
+                    </div>
+                    <button type="button" id="addTierBtn">+ Dodaj tier</button>
+                </div>
 
                 <button id="createCampaignBtn" type="submit">Create Campaign</button>
             </form>
@@ -66,5 +72,43 @@
             </div>
         </div>
     </footer>
+
+
+    <!-- TU JEST DODAWNIE TIEROW SCRIPT BO NWM CZY MY TO ROBIMY W CZYM INNYM, ofc nigdzie do backendu nie idzie bo jest to zrobione tylko dla pokazania jak ma być -->
+    <script>
+        document.getElementById('addTierBtn').addEventListener('click', function () {
+            // Utworzenie nowego elementu zawierającego dane tier-a
+            var tierDiv = document.createElement('div');
+            tierDiv.className = 'tier-entry';
+
+            // Pole do wprowadzenia kwoty
+            var amountLabel = document.createElement('label');
+            amountLabel.textContent = "Kwota:";
+            var amountInput = document.createElement('input');
+            amountInput.type = 'number';
+            amountInput.name = 'tierAmount[]';  // zapisywane jako tablica
+            amountInput.required = true;
+            amountInput.min = 0;
+            amountInput.placeholder = "Wpisz kwotę";
+
+            // Pole do wprowadzenia opisu nagrody
+            var descLabel = document.createElement('label');
+            descLabel.textContent = "Opis nagrody:";
+            var descInput = document.createElement('textarea');
+            descInput.name = 'tierDescription[]';  // zapisywane jako tablica
+            descInput.required = true;
+            descInput.rows = 3;
+            descInput.placeholder = "Wpisz opis nagrody";
+
+            // Dodajemy elementy do kontenera tier-a
+            tierDiv.appendChild(amountLabel);
+            tierDiv.appendChild(amountInput);
+            tierDiv.appendChild(descLabel);
+            tierDiv.appendChild(descInput);
+
+            // Dołączamy nowy blok tier-a do kontenera
+            document.getElementById('support-tiers-container').appendChild(tierDiv);
+        });
+    </script>
 </body>
 </html>
