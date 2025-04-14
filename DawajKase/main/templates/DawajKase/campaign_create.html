@@ -38,12 +38,10 @@
                 <label for="category">Category:</label>
                 <select id="category" name="category" required>
                     <option value="" disabled selected>Select a category</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Health">Health</option>
-                    <option value="Technology">Education</option>
-                    <option value="Health">Animals</option>
-                    <option value="Health">Community</option>
-                    <option value="Health">Environment</option>
+                    
+                    {% for c in categories %}
+                        <option value="{{c.name}}">{{c.name}}</option>
+                    {% endfor %}
                 </select>
 
 

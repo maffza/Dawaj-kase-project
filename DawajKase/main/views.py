@@ -280,10 +280,13 @@ def campaign_create(request):
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
     tomorrow = date.today() + timedelta(days=1)
+    categories = ManagerFactory.get_category_manager().get_all_categories()
+
     return render(request, 'DawajKase/campaign_create.html', {
         'userData': userData,
         'query': query,
-        'tomorrow': tomorrow.isoformat()
+        'tomorrow': tomorrow.isoformat(),
+        'categories': categories
     })
 
 def insert_campaign(request):
