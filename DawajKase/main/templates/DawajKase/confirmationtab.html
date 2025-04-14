@@ -145,10 +145,10 @@
             <div class="approval-item">
                 <div class="campaign-preview">
                     {% if campaign.imageURL %}
-                    <img src="{{ campaign.imageURL }}" alt="{{ campaign.title }}" class="campaign-thumbnail">
+                    <img src="{% static campaign.imageURL %}" alt="{{ campaign.title }}" class="campaign-thumbnail">
                     {% endif %}
                     <div class="campaign-details">
-                        <h3>{{ campaign.title }}</h3>
+                        <h3><a href="project/{{campaign.id}}">{{ campaign.title }}</a></h3>
                         <p class="short-description">{{ campaign.shortDescription }}</p>
                         
                         <div class="campaign-full-details" style="display: none;">

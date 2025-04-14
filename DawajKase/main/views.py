@@ -139,7 +139,8 @@ def project(request, slug):
     isFavourited = ManagerFactory.get_favourite_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
     donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
     donors_count = ManagerFactory.get_campaign_manager().count_unique_donors(campaign.id)
-    posts = ManagerFactory.get_post_manager().get_posts(campaign.id)
+    posts = ManagerFactory.get_post_manager().get_campaign_posts(campaign.id)
+    tiers = ManagerFactory.get_reward_manager().get_campaign_tiers(campaign.id)
 
     return render(request, 'DawajKase/project.html', {
         'userData': userData,
@@ -149,7 +150,8 @@ def project(request, slug):
         'comments': comments,
         'donations': donations,
         'donors_count': donors_count,
-        'posts': posts
+        'posts': posts,
+        'tiers': tiers
     })
 
 def confirmation_tab(request):
@@ -290,34 +292,42 @@ def campaign_create(request):
     })
 
 def insert_campaign(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        shortDescription = request.POST.get('shortDescription')
-        description = request.POST.get('description')
-        targetMoneyAmount = request.POST.get('targetMoneyAmount')
-        endDate = request.POST.get('endDate')
-        image = request.FILES.get('image')
+    # Check if POST request
+    if request.method != 'POST':
+        return redirect('campaign_create')
 
-        if image:
-            imagePath = f'media/campaign_thumbnails/' + generate_random_string(16)
-            with open(f'static/{imagePath}', 'wb+') as destination:
-                for chunk in image.chunks():
-                    destination.write(chunk)
-        
-            userData = request.session.get('userData', None)
-            campaignManager = ManagerFactory.get_campaign_manager()
-            category_name = request.POST.get('category')
-            category_id = ManagerFactory.get_category_manager().get_category_id_by_name(category_name)
+    # Check if user is logged in
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect('campaign_create')
 
-            if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id):
-                pass
-            else:
-                pass
+    # Insert the campaign
+    title = request.POST.get('title')
+    shortDescription = request.POST.get('shortDescription')
+    description = request.POST.get('description')
+    targetMoneyAmount = request.POST.get('targetMoneyAmount')
+    endDate = request.POST.get('endDate')
+    image = request.FILES.get('image')
+    tierAmounts = request.POST.getlist('tierAmount[]')
+    tierDescriptions = request.POST.getlist('tierDescription[]')
 
-        else:
-            pass
+    if image:
+        imagePath = f'media/campaign_thumbnails/' + generate_random_string(16)
+        with open(f'static/{imagePath}', 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+    
+        campaignManager = ManagerFactory.get_campaign_manager()
+        category_name = request.POST.get('category')
+        category_id = ManagerFactory.get_category_manager().get_category_id_by_name(category_name)
+
+        campaignID = campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id)
+
+        if tierAmounts and len(tierAmounts) > 0:
+            ManagerFactory.get_reward_manager().insert_tiers(tierAmounts, tierDescriptions, campaignID)
 
     else:
+        # no pic
         pass
 
     return redirect('index')
@@ -388,9 +398,6 @@ def delete_campaign(request, id):
     
     ManagerFactory.get_campaign_manager().delete_campaign(id)
     return redirect('index')
-
-
-# Only the creator can create posts
 
 
 def insert_post(request):

@@ -74,23 +74,16 @@
                     <p>{{ campaign.description }}</p>
                 </div>
                 <!-- A TU MASZ TIERY (OFC przykladowe dane bo nie ma ich w backend) -->
+                <!-- ty man ty keep it up -->
                 <div id="support-tiers-display">
                     <h2>Tiery wsparcia</h2>
+                    {% for tier in tiers %}
                     <div class="tier-display-entry">
-                        <h3>Tier 1</h3>
-                        <p><strong>Kwota:</strong> $10</p>
-                        <p><strong>Opis:</strong> Podstawowa nagroda - podziękowanie w formie cyfrowej.</p>
+                        <h3>Tier {{ forloop.counter }}</h3>
+                        <p><strong>Kwota:</strong> ${{tier.amount}}</p>
+                        <p><strong>Opis:</strong> {{tier.description}}</p>
                     </div>
-                    <div class="tier-display-entry">
-                        <h3>Tier 2</h3>
-                        <p><strong>Kwota:</strong> $50</p>
-                        <p><strong>Opis:</strong> Nagroda premium - koszulka i podziękowanie.</p>
-                    </div>
-                    <div class="tier-display-entry">
-                        <h3>Tier 3</h3>
-                        <p><strong>Kwota:</strong> $100</p>
-                        <p><strong>Opis:</strong> Nagroda VIP - spotkanie z twórcą projektu i unikalny gadżet.</p>
-                    </div>
+                    {% endfor %}
                 </div>
 
                 <br /><br />

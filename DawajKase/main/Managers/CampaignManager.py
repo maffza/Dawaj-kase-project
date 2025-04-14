@@ -26,7 +26,10 @@ class CampaignManager:
         with connection.cursor() as cursor:
             ref_cursor = cursor.callfunc("Crowdfunding_pkg.get_campaign_by_id", oracledb.CURSOR, [int(id)])
             campaignResult = ref_cursor.fetchone()
-            campaign = Campaign(*campaignResult)
+            if campaignResult:
+                campaign = Campaign(*campaignResult)
+            else:
+                return None
 
         return campaign
     
@@ -54,9 +57,12 @@ class CampaignManager:
     
     @staticmethod
     def insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imageURL, organizerID, categoryID):
+        returnID = -1
         with connection.cursor() as cursor:
-            cursor.callproc("Crowdfunding_pkg.insert_campaign",
+            returnID = cursor.callfunc("Crowdfunding_pkg.insert_campaign", oracledb.DB_TYPE_NUMBER,
                         [title, shortDescription, description, int(targetMoneyAmount), endDate, imageURL, int(organizerID), int(categoryID)])
+            
+        return int(returnID)
             
     @staticmethod
     def get_donations(campaignID):

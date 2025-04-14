@@ -9,7 +9,7 @@ class PostManager:
                            [title, description, imagePath, userID, campaignID])
 
     @staticmethod 
-    def get_posts(campaignID):
+    def get_campaign_posts(campaignID):
         posts = None
         with connection.cursor() as cursor:
             cursor.execute("SELECT id, title, description, image_url, user_id, campaign_id FROM posts WHERE campaign_id=%s ORDER BY creation_date DESC",
