@@ -138,11 +138,11 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-if not os.path.exists(BASE_DIR / 'static/media'):
-    os.makedirs(BASE_DIR / 'static/media')
+def make_dir(path):
+    if not os.path.exists(BASE_DIR / path):
+        os.makedirs(BASE_DIR / path)
 
-if not os.path.exists(BASE_DIR / 'static/media/campaign_thumbnails'):
-    os.makedirs(BASE_DIR / 'static/media/campaign_thumbnails')
-
-if not os.path.exists(BASE_DIR / 'static/media/profile_pictures'):
-    os.makedirs(BASE_DIR / 'static/media/profile_pictures')
+make_dir('static/media')
+make_dir('static/media/campaign_thumbnails')
+make_dir('static/media/profile_pictures')
+make_dir('static/media/post_images')

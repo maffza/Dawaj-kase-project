@@ -4,6 +4,7 @@ from .CommentManager import CommentManager
 from .PaymentManager import PaymentManager
 from .FavouriteManager import FavouriteManager
 from .CategoryManager import CategoryManager
+from .PostManager import PostManager 
 
 class ManagerFactory:
     @staticmethod
@@ -29,3 +30,7 @@ class ManagerFactory:
     @staticmethod
     def get_category_manager():
         return CategoryManager()
+    
+    @staticmethod
+    def get_post_manager():
+        return PostManager()

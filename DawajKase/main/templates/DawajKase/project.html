@@ -61,6 +61,7 @@
             </div>
 
             <!-- ZROBILEM NOWE SEKCJE NA TO< STRONA WYGLADA TAK SAMO PO PROSTU MA TERAZ 2 DODATKOWE PRZYCISKI -->
+            <!-- ty man, good job -->
             <div class="tab-container">
                 <button class="tablinks active" onclick="openTab(event, 'campaignInfo')">Informacje</button>
                 <button class="tablinks" onclick="openTab(event, 'postsTab')">Posty</button>
@@ -120,25 +121,36 @@
             <div id="postsTab" class="tabcontent">
                 <h2>Posty</h2>
                 <!-- Przykładowe posty -->
+                <!-- ZDJECIA SA ZROBUIONE TAK ZE JAK DO POSTA ICH NIE WSTAWISZ TO SIE ROZMIAR DOSTOSUJE, a przynajmniej tak powinno być bo nie miałem jak tego sprawdzić bez backendu... -->
+                {% for post in posts %}
                 <div class="post">
-                    <!-- ZDJECIA SA ZROBUIONE TAK ZE JAK DO POSTA ICH NIE WSTAWISZ TO SIE ROZMIAR DOSTOSUJE, a przynajmniej tak powinno być bo nie miałem jak tego sprawdzić bez backendu... -->
-                    <img src="https://media.cnn.com/api/v1/images/stellar/prod/rev-1-mcr-t3-0093-high-res-jpeg.jpg?c=16x9&q=h_833,w_1480,c_fill" alt="Post Image">
-                    <p>Przykładowy post 1: CHICKEN JOCKEY.</p>
+                    <h3>{{post.title}}</h3>
+                    <p>{{post.description}}</p>
+                    {% if post.image_url %}
+                        <img src="{% static post.image_url %}" alt="Post Image">
+                    {% endif %}
                 </div>
-                <div class="post">
-                    <img src="https://www.odjechanekoszulki.com/userdata/public/gfx/f834a65fd0b1869f5d28d75c29568fbd.jpg" alt="Post Image">
-                    <p>Przykładowy post 2: Aktualizacja kampanii – nowa nagroda dla naszych backerów!</p>
-                </div>
-                <hr>
+                {% endfor %}
                 <!-- Formularz dodawania posta -->
+                {% if userData.id == campaign.organizerID %}
+                <hr>
                 <h3>Dodaj nowy post</h3>
-                <form id="postForm">
+                <form id="postForm" method="POST" action="/insert_post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+
                     <label for="postImage">Wybierz zdjęcie:</label>
                     <input type="file" id="postImage" name="postImage" accept="image/*">
+
+                    <label for="postTitle">Tytuł posta:</label>
+                    <textarea id="postTitle" name="postTitle" rows="1" placeholder="Wpisz tytuł posta"></textarea>
+
                     <label for="postContent">Treść posta:</label>
                     <textarea id="postContent" name="postContent" rows="4" placeholder="Wpisz treść posta"></textarea>
+
                     <button type="submit">Dodaj post</button>
                 </form>
+                {% endif %}
             </div>
 
         </div>
