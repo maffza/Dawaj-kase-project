@@ -4,9 +4,9 @@ CREATE OR REPLACE PACKAGE Crowdfunding_pkg AS
     FUNCTION get_campaign_by_id(p_id IN NUMBER) RETURN SYS_REFCURSOR;
     FUNCTION get_campaigns_by_limit (p_amount IN NUMBER, p_sort_by IN VARCHAR2 DEFAULT NULL) RETURN SYS_REFCURSOR;
     FUNCTION search_campaigns (p_query IN VARCHAR2) RETURN SYS_REFCURSOR;
-    PROCEDURE insert_campaign (p_title IN VARCHAR2, p_short_description IN VARCHAR2, p_description IN CLOB,
+    FUNCTION insert_campaign (p_title IN VARCHAR2, p_short_description IN VARCHAR2, p_description IN CLOB,
                             p_target_money_amount IN NUMBER, p_end_date IN DATE, p_image_url IN VARCHAR2,
-                            p_organizer_id IN NUMBER, p_category_id IN NUMBER);
+                            p_organizer_id IN NUMBER, p_category_id IN NUMBER) RETURN NUMBER;
     PROCEDURE add_campaign_to_favourites (p_campaign_id IN NUMBER, p_user_id IN NUMBER);
     FUNCTION is_favourited_by_user_with_id (p_campaign_id IN NUMBER, p_user_id IN NUMBER) RETURN BOOLEAN;
     PROCEDURE remove_campaign_from_favourites (p_campaign_id IN NUMBER , p_user_id IN NUMBER);
@@ -62,13 +62,11 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
     BEGIN
       OPEN ref_cursor FOR
         SELECT 
-            * 
+            *
         FROM 
             campaigns 
         WHERE 
-            id = p_id
-        AND
-            status != 'ToApprove';
+            id = p_id;
       RETURN ref_cursor;
     END get_campaign_by_id;
 
@@ -113,16 +111,19 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
         RETURN result_cursor;
     END search_campaigns;
     
-    PROCEDURE insert_campaign (p_title IN VARCHAR2, p_short_description IN VARCHAR2, p_description IN CLOB,
+    FUNCTION insert_campaign (p_title IN VARCHAR2, p_short_description IN VARCHAR2, p_description IN CLOB,
                             p_target_money_amount IN NUMBER, p_end_date IN DATE, p_image_url IN VARCHAR2,
-                            p_organizer_id IN NUMBER, p_category_id IN NUMBER)
+                            p_organizer_id IN NUMBER, p_category_id IN NUMBER) RETURN NUMBER
     IS
-    
+        v_campaign_id NUMBER;
     BEGIN
         INSERT INTO campaigns (title, short_description, description, current_money_amount, target_money_amount, 
         end_date, image_url, organizer_id, category_id, status) 
         VALUES (p_title, p_short_description, p_description, 0, p_target_money_amount, p_end_date, 
-        p_image_url, p_organizer_id, p_category_id, 'ToApprove');
+        p_image_url, p_organizer_id, p_category_id, 'ToApprove')
+        RETURNING id INTO v_campaign_id;
+
+        RETURN v_campaign_id;
     END insert_campaign;
     
     PROCEDURE add_campaign_to_favourites (p_campaign_id IN NUMBER, p_user_id IN NUMBER)

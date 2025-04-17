@@ -139,6 +139,8 @@ def project(request, slug):
     isFavourited = ManagerFactory.get_favourite_manager().is_favourited_by_user_with_id(slug, userData['id']) if userData else None
     donations = ManagerFactory.get_campaign_manager().get_donations(campaign.id)
     donors_count = ManagerFactory.get_campaign_manager().count_unique_donors(campaign.id)
+    posts = ManagerFactory.get_post_manager().get_campaign_posts(campaign.id)
+    tiers = ManagerFactory.get_reward_manager().get_campaign_tiers(campaign.id)
 
     return render(request, 'DawajKase/project.html', {
         'userData': userData,
@@ -147,7 +149,9 @@ def project(request, slug):
         'creator': creator.to_json(),
         'comments': comments,
         'donations': donations,
-        'donors_count': donors_count
+        'donors_count': donors_count,
+        'posts': posts,
+        'tiers': tiers
     })
 
 def confirmation_tab(request):
@@ -196,7 +200,7 @@ def become_creator(request):
     if request.method == 'POST':
         phoneNumber = request.POST.get('phone')
         bankNumber = request.POST.get('bank')
-        # documentPhoto = request.FILES['image'] # Disabled to not enter a file each time the during development
+        # documentPhoto = request.FILES.get('image') # Disabled to not enter a file each time the during development
 
         ManagerFactory().get_user_manager().send_verification_request(userData['id'], phoneNumber, bankNumber, '')
 
@@ -278,42 +282,52 @@ def campaign_create(request):
     userData = request.session.get('userData', None)
     query = request.session.get('query', None)
     tomorrow = date.today() + timedelta(days=1)
+    categories = ManagerFactory.get_category_manager().get_all_categories()
+
     return render(request, 'DawajKase/campaign_create.html', {
         'userData': userData,
         'query': query,
-        'tomorrow': tomorrow.isoformat()
+        'tomorrow': tomorrow.isoformat(),
+        'categories': categories
     })
 
 def insert_campaign(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        shortDescription = request.POST.get('shortDescription')
-        description = request.POST.get('description')
-        targetMoneyAmount = request.POST.get('targetMoneyAmount')
-        endDate = request.POST.get('endDate')
-        image = request.FILES['image']
+    # Check if POST request
+    if request.method != 'POST':
+        return redirect('campaign_create')
 
-        if image:
-            imagePath = f'media/campaign_thumbnails/' + generate_random_string(16)
-            with open(f'static/{imagePath}', 'wb+') as destination:
-                for chunk in image.chunks():
-                    destination.write(chunk)
-        
-            userData = request.session.get('userData', None)
-            campaignManager = ManagerFactory.get_campaign_manager()
-            category_name = request.POST.get('category')
-            category_id = ManagerFactory.get_category_manager().get_category_id_by_name(category_name)
+    # Check if user is logged in
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect('campaign_create')
 
-            print(userData['id'], category_id)
-            if campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id):
-                pass
-            else:
-                pass
+    # Insert the campaign
+    title = request.POST.get('title')
+    shortDescription = request.POST.get('shortDescription')
+    description = request.POST.get('description')
+    targetMoneyAmount = request.POST.get('targetMoneyAmount')
+    endDate = request.POST.get('endDate')
+    image = request.FILES.get('image')
+    tierAmounts = request.POST.getlist('tierAmount[]')
+    tierDescriptions = request.POST.getlist('tierDescription[]')
 
-        else:
-            pass
+    if image:
+        imagePath = f'media/campaign_thumbnails/' + generate_random_string(16)
+        with open(f'static/{imagePath}', 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+    
+        campaignManager = ManagerFactory.get_campaign_manager()
+        category_name = request.POST.get('category')
+        category_id = ManagerFactory.get_category_manager().get_category_id_by_name(category_name)
+
+        campaignID = campaignManager.insert_campaign(title, shortDescription, description, targetMoneyAmount, endDate, imagePath, userData['id'], category_id)
+
+        if tierAmounts and len(tierAmounts) > 0:
+            ManagerFactory.get_reward_manager().insert_tiers(tierAmounts, tierDescriptions, campaignID)
 
     else:
+        # no pic
         pass
 
     return redirect('index')
@@ -384,3 +398,45 @@ def delete_campaign(request, id):
     
     ManagerFactory.get_campaign_manager().delete_campaign(id)
     return redirect('index')
+
+
+def insert_post(request):
+    campaignID = request.POST.get('campaign_id')
+
+    # Check if POST request
+    if request.method != 'POST':
+        return redirect(f'project/{campaignID}')
+
+    # Check if the campaign exists
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(campaignID)
+
+    if not campaign:
+        return redirect(f'project/{campaignID}')
+
+    # Check if user is logged in
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect(f'project/{campaignID}')
+    
+    # Check if the user is allowed to insert a post
+    userID = userData['id']
+
+    if campaign.organizerID != userID:
+        return redirect(f'project/{campaignID}')
+
+    # Insert the post
+    title = request.POST.get('postTitle')
+    description = request.POST.get('postContent')
+    image = request.FILES.get('postImage')
+
+    if image:
+        imagePath = f'media/post_images/' + generate_random_string(16)
+        with open(f'static/{imagePath}', 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+    else:
+        imagePath = None
+
+    ManagerFactory.get_post_manager().add_post(title, description, imagePath, userID, campaignID)
+
+    return redirect(f'project/{campaignID}')

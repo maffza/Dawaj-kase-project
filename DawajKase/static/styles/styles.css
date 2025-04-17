@@ -911,7 +911,7 @@ h1 {
     font-weight: bold;
 }
 
-/* Donate */
+
 .donation-form {
     display: flex;
     width: 35%;
@@ -1099,3 +1099,153 @@ h1 {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+
+
+#support-tiers-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: rgba(31, 31, 31, 0.95);
+    border: 1px solid rgba(56, 59, 75, 0.3);
+    border-radius: 12px;
+}
+
+    #support-tiers-section h3 {
+        margin-bottom: 10px;
+        color: #e0e0e0;
+    }
+
+#support-tiers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.tier-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    background-color: rgba(18, 18, 18, 0.9);
+    border: 1px solid rgba(56, 59, 75, 0.5);
+    border-radius: 8px;
+}
+
+#addTierBtn {
+    background-color: #5E66D6;
+    color: #e0e0e0;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+
+#support-tiers-display {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: rgba(31, 31, 31, 0.95);
+    border: 1px solid rgba(56, 59, 75, 0.3);
+    border-radius: 12px;
+}
+
+    #support-tiers-display h2 {
+        margin-bottom: 15px;
+        color: #e0e0e0;
+    }
+
+.tier-display-entry {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: rgba(18, 18, 18, 0.9);
+    border: 1px solid rgba(56, 59, 75, 0.5);
+    border-radius: 8px;
+}
+
+    .tier-display-entry h3 {
+        margin-bottom: 8px;
+        color: #e0e0e0;
+    }
+
+    .tier-display-entry p {
+        margin: 5px 0;
+        color: #e0e0e0;
+    }
+
+
+.tab-container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+    .tab-container button {
+        padding: 10px 20px;
+        background-color: #1f1f1f;
+        color: #e0e0e0;
+        border: 1px solid #383B4B;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .tab-container button.active {
+            background-color: #5E66D6;
+            border-color: #5E66D6;
+        }
+
+.tabcontent {
+    display: none;
+}
+
+    .tabcontent.active {
+        display: block;
+    }
+
+.post {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(18, 18, 18, 0.9);
+    border: 1px solid rgba(56, 59, 75, 0.5);
+    border-radius: 8px;
+}
+
+    .post img {
+        display: block;
+        margin: 0 auto 10px auto;
+        max-width: 100%;
+        height: auto;
+    }
+
+#postForm {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: rgba(18, 18, 18, 0.9);
+    border: 1px solid rgba(56, 59, 75, 0.5);
+    border-radius: 8px;
+}
+
+    #postForm label {
+        display: block;
+        margin-bottom: 5px;
+        color: #e0e0e0;
+    }
+
+    #postForm input, #postForm textarea, #postForm button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #383B4B;
+        border-radius: 8px;
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    #postForm button {
+        background-color: #5E66D6;
+        border: none;
+        cursor: pointer;
+    }
+

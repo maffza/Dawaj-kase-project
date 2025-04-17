@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
     <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
-
+ 
 </head>
 <body>
-    <!-- Header (Same as main page) -->
+    <!-- Header  -->
     {% include 'DawajKase/header.html' %}
 
     <!-- Project Content -->
@@ -20,79 +20,136 @@
                 <div class="project-image">
                     <div class="image-placeholder">
                         {% if campaign.imageURL %}
-                            <img style="object-fit: contain; object-position: center; width: 100%; height: 100%;" src={% static campaign.imageURL %}/>
+                        <img style="object-fit: contain; object-position: center; width: 100%; height: 100%;" src="{% static campaign.imageURL %}" />
                         {% endif %}
                     </div>
                 </div>
                 <div class="project-info">
                     <div id="qrcode" style="float: right;"></div>
                     <h1>{{ campaign.title }}</h1>
-                    <p>by <a href="#">{% if creator %} {{creator.firstName}} {{creator.lastName}} {% endif %}</a></p>
+                    <p>by <a href="#">{% if creator %}{{ creator.firstName }} {{ creator.lastName }}{% endif %}</a></p>
                     <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
-                        <p><strong>${{campaign.currentMoneyAmount}} pledged</strong> of ${{campaign.targetMoneyAmount}} goal</p>
+                        <p><strong>${{ campaign.currentMoneyAmount }} pledged</strong> of ${{ campaign.targetMoneyAmount }} goal</p>
                         <div class="progress-container">
                             <div class="progress-bar" style="width: {% widthratio campaign.currentMoneyAmount campaign.targetMoneyAmount 100 %}%"></div>
                         </div>
                         <p><strong>{{ donors_count }} backers</strong></p>
-                        <p ><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
+                        <p><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     {% if userData %}
-                        {% if userData.role != 'Admin' and userData.id != campaign.organizerID %}
-                            <a href="/donate/{{campaign.id}}">
-                                <button class="back-project">Back this project</button>
-                            </a>
-                            <a href="/favourite/{{campaign.id}}">
-                                <button class="back-project">
-                                    {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
-                                </button>
-                            </a>
-                        {% else %}
-                            <a href="/delete_campaign/{{campaign.id}}">
-                                <button class="back-project" style="color:red;">
-                                    Delete campaign
-                                </button>
-                            </a>
-                        {% endif %}
+                    {% if userData.role != 'Admin' and userData.id != campaign.organizerID %}
+                    <a href="/donate/{{ campaign.id }}">
+                        <button class="back-project">Back this project</button>
+                    </a>
+                    <a href="/favourite/{{ campaign.id }}">
+                        <button class="back-project">
+                            {% if isFavourited %} Unfavourite {% else %} Favourite {% endif %}
+                        </button>
+                    </a>
                     {% else %}
-                        <a href="/donate/{{campaign.id}}">
-                            <button class="back-project">Back this project</button>
-                        </a>
+                    <a href="/delete_campaign/{{ campaign.id }}">
+                        <button class="back-project" style="color:red;">Delete campaign</button>
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <a href="/donate/{{ campaign.id }}">
+                        <button class="back-project">Back this project</button>
+                    </a>
                     {% endif %}
                 </div>
             </div>
-            <div class="project-description">
-                <h2>About</h2>
-                <p>{{ campaign.description }}</p>
+
+            <!-- ZROBILEM NOWE SEKCJE NA TO< STRONA WYGLADA TAK SAMO PO PROSTU MA TERAZ 2 DODATKOWE PRZYCISKI -->
+            <!-- ty man, good job -->
+            <div class="tab-container">
+                <button class="tablinks active" onclick="openTab(event, 'campaignInfo')">Informacje</button>
+                <button class="tablinks" onclick="openTab(event, 'postsTab')">Posty</button>
             </div>
 
-            <br/><br/>
-            <h2>Donations</h2>
-            <br/>
-            {% for donation in donations %}
-                <div class="donation-card 
-                    {% if donation.amount >= 250 %}tier-250
+
+            <div id="campaignInfo" class="tabcontent active">
+                <div class="project-description">
+                    <h2>About</h2>
+                    <p>{{ campaign.description }}</p>
+                </div>
+                <!-- A TU MASZ TIERY (OFC przykladowe dane bo nie ma ich w backend) -->
+                <!-- ty man ty keep it up -->
+                <div id="support-tiers-display">
+                    <h2>Tiery wsparcia</h2>
+                    {% for tier in tiers %}
+                    <div class="tier-display-entry">
+                        <h3>Tier {{ forloop.counter }}</h3>
+                        <p><strong>Kwota:</strong> ${{tier.amount}}</p>
+                        <p><strong>Opis:</strong> {{tier.description}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <br /><br />
+                <h2>Donations</h2>
+                <br />
+                {% for donation in donations %}
+                <div class="donation-card
+                     {% if donation.amount >= 250 %}tier-250
                     {% elif donation.amount >= 100 %}tier-100
                     {% elif donation.amount >= 25 %}tier-25
                     {% else %}tier-1{% endif %}">
-                    <strong class="donation-username">{{donation.username}}</strong>
-                    <p class="donation-message">{{donation.message}}</p>
-                    <p class="donation-amount">${{donation.amount}}</p>
+                    <strong class="donation-username">{{ donation.username }}</strong>
+                    <p class="donation-message">{{ donation.message }}</p>
+                    <p class="donation-amount">${{ donation.amount }}</p>
                 </div>
-            {% endfor %}
-            <h2>Comments</h2>
-            <br/><br/>
-            <br/>
-            {% for comment in comments %}
+                {% endfor %}
+                <h2>Comments</h2>
+                <br /><br />
+                {% for comment in comments %}
                 <div class="comment-card">
-                    <strong class="comment-username">{{comment.username}}</strong>
-                    <p class="comment-text">{{comment.commentText}}</p>
+                    <strong class="comment-username">{{ comment.username }}</strong>
+                    <p class="comment-text">{{ comment.commentText }}</p>
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+
+            <!-- Treść zakładki "Posty" -->
+            <div id="postsTab" class="tabcontent">
+                <h2>Posty</h2>
+                <!-- Przykładowe posty -->
+                <!-- ZDJECIA SA ZROBUIONE TAK ZE JAK DO POSTA ICH NIE WSTAWISZ TO SIE ROZMIAR DOSTOSUJE, a przynajmniej tak powinno być bo nie miałem jak tego sprawdzić bez backendu... -->
+                {% for post in posts %}
+                <div class="post">
+                    <h3>{{post.title}}</h3>
+                    <p>{{post.description}}</p>
+                    {% if post.image_url %}
+                        <img src="{% static post.image_url %}" alt="Post Image">
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <!-- Formularz dodawania posta -->
+                {% if userData.id == campaign.organizerID %}
+                <hr>
+                <h3>Dodaj nowy post</h3>
+                <form id="postForm" method="POST" action="/insert_post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+
+                    <label for="postImage">Wybierz zdjęcie:</label>
+                    <input type="file" id="postImage" name="postImage" accept="image/*">
+
+                    <label for="postTitle">Tytuł posta:</label>
+                    <textarea id="postTitle" name="postTitle" rows="1" placeholder="Wpisz tytuł posta"></textarea>
+
+                    <label for="postContent">Treść posta:</label>
+                    <textarea id="postContent" name="postContent" rows="4" placeholder="Wpisz treść posta"></textarea>
+
+                    <button type="submit">Dodaj post</button>
+                </form>
+                {% endif %}
+            </div>
+
         </div>
     </main>
 
-    <!-- Footer (Same as main page) -->
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-links">
@@ -105,9 +162,10 @@
     </footer>
 
     <script>
+        
         const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}T12:00:00");
-        const currentAmount = "{{campaign.currentMoneyAmount}}";
-        const targetAmount = "{{campaign.targetMoneyAmount}}";
+        const currentAmount = "{{ campaign.currentMoneyAmount }}";
+        const targetAmount = "{{ campaign.targetMoneyAmount }}";
 
         function updateTimer() {
             if (parseFloat(currentAmount) >= parseFloat(targetAmount)) {
@@ -132,15 +190,14 @@
             const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 
-            document.getElementById("daysLeft").textContent = 
-                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById("daysLeft").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
 
         updateTimer();
         setInterval(updateTimer, 1000);
 
-        if( parseFloat(currentAmount) >= parseFloat(targetAmount)){
-            document.getElementById("daysLeft").textContent = "All funds collected"; 
+        if (parseFloat(currentAmount) >= parseFloat(targetAmount)) {
+            document.getElementById("daysLeft").textContent = "All funds collected";
             document.getElementById("clear").textContent = "";
             document.querySelector(".back-project").disabled = true;
             const buttons = document.querySelectorAll(".back-project");
@@ -150,13 +207,27 @@
         }
 
         new QRCode(document.getElementById("qrcode"), {
-            text: "https://dawajkase.net/project/{{campaign.id}}",
+            text: "https://dawajkase.net/project/{{ campaign.id }}",
             width: 128,
             height: 128,
             colorDark: "#000000",
-            colorLight: "#ffffff",       
+            colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
-          });
+        });
+
+        // Funkcja przełączająca zakładki
+        function openTab(evt, tabName) {
+            const tabcontents = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontents.length; i++) {
+                tabcontents[i].classList.remove("active");
+            }
+            const tablinks = document.getElementsByClassName("tablinks");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
     </script>
 </body>
 </html>
