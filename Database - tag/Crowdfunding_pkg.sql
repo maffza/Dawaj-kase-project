@@ -21,6 +21,8 @@ CREATE OR REPLACE PACKAGE Crowdfunding_pkg AS
     FUNCTION check_if_user_exists (p_email IN VARCHAR2) RETURN NUMBER;
     FUNCTION get_user_by_id (p_id IN NUMBER) RETURN SYS_REFCURSOR;
     PROCEDURE reject_campaign (p_campaign_id IN NUMBER);
+    FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE) RETURN SYS_REFCURSOR;
+    FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR;
     -- BRAK register_user
     -- BRAK log_user_in
     
@@ -308,6 +310,53 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
     BEGIN
         DELETE FROM campaigns WHERE id = p_campaign_id;
     END reject_campaign;
+
+    FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE) RETURN SYS_REFCURSOR
+    IS
+        result_cursor SYS_REFCURSOR;
+    BEGIN
+        OPEN result_cursor FOR
+            SELECT
+                c.id AS campaign_id,
+                c.title AS campaign_name,
+                u.first_name || ' ' || u.last_name AS organizer_name,
+                SUM(d.amount) AS total_raised,
+                c.end_date,
+                cat.name AS category_name,
+                ROUND(AVG(d.amount), 2) AS average_donation
+            FROM campaigns c
+            JOIN users u ON c.organizer_id = u.id
+            JOIN categories cat ON c.category_id = cat.id
+            JOIN donations d ON c.id = d.campaign_id
+            WHERE c.end_date BETWEEN p_start_date AND p_end_date
+            AND c.current_money_amount >= c.target_money_amount
+            GROUP BY c.id, c.title, u.first_name, u.last_name, c.end_date, cat.name;
+    
+        RETURN result_cursor;
+    END;
+
+    FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR
+    IS
+        result_cursor SYS_REFCURSOR;
+    BEGIN
+        OPEN result_cursor FOR
+            SELECT
+                c.id AS campaign_id,
+                c.title AS campaign_name,
+                u.first_name || ' ' || u.last_name AS organizer_name,
+                COUNT(DISTINCT d.user_id) AS supporter_count,
+                MAX(d.amount) AS highest_donation,
+                cat.name AS category_name,
+                c.status
+            FROM campaigns c
+            JOIN users u ON c.organizer_id = u.id
+            JOIN categories cat ON c.category_id = cat.id
+            LEFT JOIN donations d ON c.id = d.campaign_id
+            WHERE u.document_photo IS NOT NULL
+            GROUP BY c.id, c.title, u.first_name, u.last_name, cat.name, c.status;
+    
+        RETURN result_cursor;
+    END;
 
 END Crowdfunding_pkg;
 /
