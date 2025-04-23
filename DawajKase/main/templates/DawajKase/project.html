@@ -95,15 +95,7 @@
                 <br />
           {% for donation in donations %}
             {% with "tier-default" as tier_class %}
-                {% for tier in tiers %}
-                    {% if donation.amount >= tier.amount %}
-                        {% with "tier-"|add:forloop.counter as tier_class %}
-                            <p>Tier class: {{ tier_class }}</p>
-                        {% endwith %}
-                    {% endif %}
-                {% endfor %}
-                
-                <div class="donation-card {{ tier_class }}">
+                <div class="donation-card tier-{{ donation.tier }}">
                     <strong class="donation-username">{{ donation.username }}</strong>
                     <p class="donation-message">{{ donation.message }}</p>
                     <p class="donation-amount">${{ donation.amount }}</p>
