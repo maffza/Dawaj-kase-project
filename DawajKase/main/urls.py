@@ -10,6 +10,7 @@ urlpatterns = [
     path("register", register, name="register"),
     path("search", search, name="search"),
     path("search_bar", search_bar, name="search_bar"),
+    path("add_comment", add_comment, name="add_comment"),
     path("campaign_create", campaign_create, name="campaign_create"),
     path("insert_campaign", insert_campaign, name="insert_campaign"),
     path("favourite/<id>", favourite_campaign, name="favourite_campaign"),

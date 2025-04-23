@@ -455,6 +455,37 @@ def insert_post(request):
     return redirect(f'project/{campaignID}')
 
 
+def add_comment(request):
+    campaignID = request.POST.get('campaign_id')
+
+    # Check if POST request
+    if request.method != 'POST':
+        return redirect(f'project/{campaignID}')
+
+    # Check if the campaign exists
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(campaignID)
+
+    if not campaign:
+        return redirect(f'project/{campaignID}')
+
+    # Check if user is logged in
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect(f'project/{campaignID}')
+
+    # Add the comment
+    text = request.POST.get('text')
+    
+    if text:
+        ManagerFactory.get_comment_manager().insert_comment(text, campaignID, userData['id'])
+
+    return redirect(f'project/{campaignID}')
+
+
+
+
+
+
 def chart_button_view(request):
     return render(request, 'campaigns/button.html')
 

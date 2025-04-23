@@ -102,9 +102,18 @@
                 </div>
             {% endwith %}
         {% endfor %}
-
+                {% if userData %}
                 <h2>Comments</h2>
+                <form action="/add_comment" method="POST" class="donation-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                    <input type="text" name="text" placeholder="Add a comment" class="donation-input" id="message" required>
+                    <div class="amount-buttons">
+                        <button type="submit" class="donation-button amount-button">Comment</button>
+                    </div>
+                </form>
                 <br /><br />
+                {% endif %}
                 {% for comment in comments %}
                 <div class="comment-card">
                     <strong class="comment-username">{{ comment.username }}</strong>
