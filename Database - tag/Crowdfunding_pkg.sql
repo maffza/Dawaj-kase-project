@@ -311,29 +311,42 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
         DELETE FROM campaigns WHERE id = p_campaign_id;
     END reject_campaign;
 
-    FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE) RETURN SYS_REFCURSOR
-    IS
-        result_cursor SYS_REFCURSOR;
-    BEGIN
-        OPEN result_cursor FOR
-            SELECT
-                c.id AS campaign_id,
-                c.title AS campaign_name,
-                u.first_name || ' ' || u.last_name AS organizer_name,
-                SUM(d.amount) AS total_raised,
-                c.end_date,
-                cat.name AS category_name,
-                ROUND(AVG(d.amount), 2) AS average_donation
-            FROM campaigns c
-            JOIN users u ON c.organizer_id = u.id
-            JOIN categories cat ON c.category_id = cat.id
-            JOIN donations d ON c.id = d.campaign_id
-            WHERE c.end_date BETWEEN p_start_date AND p_end_date
-            AND c.current_money_amount >= c.target_money_amount
-            GROUP BY c.id, c.title, u.first_name, u.last_name, c.end_date, cat.name;
-    
-        RETURN result_cursor;
-    END;
+    FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE)
+RETURN SYS_REFCURSOR
+IS
+    result_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN result_cursor FOR
+        SELECT
+            c.id AS campaign_id,
+            c.title AS campaign_name,
+            u.first_name || ' ' || u.last_name AS organizer_name,
+            (
+                SELECT u2.first_name || ' ' || u2.last_name
+                FROM donations d2
+                JOIN users u2 ON d2.user_id = u2.id
+                WHERE d2.campaign_id = c.id
+                  AND d2.amount = (
+                      SELECT MAX(d3.amount)
+                      FROM donations d3
+                      WHERE d3.campaign_id = c.id
+                  )
+                FETCH FIRST 1 ROWS ONLY
+            ) AS top_donor_name,
+            COALESCE(SUM(d.amount), 0) AS total_raised,
+            c.end_date,
+            cat.name AS category_name,
+            COALESCE(ROUND(AVG(d.amount), 2), 0) AS average_donation
+        FROM campaigns c
+        JOIN users u ON c.organizer_id = u.id
+        JOIN categories cat ON c.category_id = cat.id
+        LEFT JOIN donations d ON c.id = d.campaign_id
+        WHERE c.end_date BETWEEN p_start_date AND p_end_date
+          AND c.current_money_amount >= c.target_money_amount
+        GROUP BY c.id, c.title, u.first_name, u.last_name, c.end_date, cat.name;
+
+    RETURN result_cursor;
+END;
 
     FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR
     IS

@@ -4,8 +4,13 @@ from django.http import HttpResponse
 from django.contrib import messages
 from .Managers.ManagerFactory import ManagerFactory
 from .Campaign import Campaign
+from main.models import Campaign, Donation
+from django.db.models import Count, Max, Sum, F, FloatField, ExpressionWrapper
 from .Util import generate_random_string
 import json
+import plotly.graph_objs as go
+import plotly.offline as opy
+from datetime import date
 
 # Create your views here.
 def index(request):
@@ -440,3 +445,117 @@ def insert_post(request):
     ManagerFactory.get_post_manager().add_post(title, description, imagePath, userID, campaignID)
 
     return redirect(f'project/{campaignID}')
+
+
+def chart_button_view(request):
+    return render(request, 'campaigns/button.html')
+
+def donation_stats_table(request):
+    campaigns = Campaign.objects.annotate(
+        num_donations=Count('donation'),
+        max_donation=Max('donation__amount'),
+        percent_funded=ExpressionWrapper(
+            100 * F('current_money_amount') / F('target_money_amount'),
+            output_field=FloatField()
+        )
+    )
+
+    titles = [c.title for c in campaigns]
+    num_donations = [c.num_donations for c in campaigns]
+    max_donations = [f"${c.max_donation:.2f}" if c.max_donation else "$0.00" for c in campaigns]
+    percent_funded = [f"{c.percent_funded:.1f}%" if c.percent_funded else "0%" for c in campaigns]
+
+    table = go.Figure(data=[
+        go.Table(
+            header=dict(values=["Campaign", "Number of Donations", "Highest Donation", "Percent Funded"]),
+            cells=dict(values=[titles, num_donations, max_donations, percent_funded])
+        )
+    ])
+
+    chart_div = opy.plot(table, auto_open=False, output_type='div')
+    return render(request, 'DawajKase/chart.html', {'chart_div': chart_div})
+
+
+def fetch_successful_campaigns(start_date, end_date):
+    # Use the raw Oracle connection directly (cx_Oracle or oracledb)
+    django_cursor = connection.cursor()
+    raw_conn = django_cursor.connection
+    raw_cursor = raw_conn.cursor()  # actual Oracle cursor for execution
+    output_cursor = raw_conn.cursor()  # for the returned SYS_REFCURSOR
+
+    # Run the anonymous PL/SQL block
+    raw_cursor.execute("""
+        BEGIN
+            :1 := CROWDFUNDING_PKG.get_successful_campaigns(:2, :3);
+        END;
+    """, [output_cursor, start_date, end_date])
+
+    results = output_cursor.fetchall()
+    columns = [col[0].lower() for col in output_cursor.description]
+
+    return results, columns
+
+
+def successful_campaigns_chart(request):
+    rows, columns = fetch_successful_campaigns(
+        date(2020, 1, 1),  # ✅ real date, not string
+        date(2030, 1, 1)
+    )
+
+    if not rows:
+        return render(request, 'DawajKase/chart.html', {
+            'message': 'No successful campaigns found in the given time range.'
+        })
+
+    data_by_column = list(zip(*rows))  # Transpose rows to columns
+
+    fig = go.Figure(data=[
+        go.Table(
+            header=dict(values=[col.replace('_', ' ').title() for col in columns]),
+            cells=dict(values=data_by_column)
+        )
+    ])
+
+    chart_div = opy.plot(fig, auto_open=False, output_type='div')
+    return render(request, 'DawajKase/chart.html', {'chart_div': chart_div})
+
+
+def fetch_verified_user_campaigns():
+    django_cursor = connection.cursor()
+    raw_conn = django_cursor.connection
+    raw_cursor = raw_conn.cursor()
+    output_cursor = raw_conn.cursor()
+
+    raw_cursor.execute("""
+        BEGIN
+            :1 := CROWDFUNDING_PKG.get_verified_user_campaigns;
+        END;
+    """, [output_cursor])
+
+    results = output_cursor.fetchall()
+    columns = [col[0].lower() for col in output_cursor.description]
+
+    return results, columns
+
+def verified_user_campaigns_view(request):
+    rows, columns = fetch_verified_user_campaigns()
+
+    print("COLUMNS:", columns)
+    print("ROWS:", rows)
+    
+    if not rows:
+        return render(request, 'DawajKase/chart.html', {
+            'message': 'No campaigns found for verified users.'
+        })
+
+    data_by_column = list(zip(*rows))
+
+    fig = go.Figure(data=[
+        go.Table(
+            header=dict(values=[col.replace('_', ' ').title() for col in columns]),
+            cells=dict(values=data_by_column)
+        )
+    ])
+
+    chart_div = opy.plot(fig, auto_open=False, output_type='div')
+    return render(request, 'DawajKase/chart.html', {'chart_div': chart_div})

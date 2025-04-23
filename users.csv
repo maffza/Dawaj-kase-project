@@ -1,0 +1,6 @@
+id,first_name,last_name,address,city,email,password_hash,role,document_photo
+1001,Alice,Green,123 Green St,Greenville,alice@example.com,hash123,Organizer,id.jpg
+1002,Bob,Supporter,456 Oak St,Oakville,bob@example.com,hash456,Supporter,
+1003,Clara,Verified,789 Pine Rd,Pinetown,clara@example.com,hash789,Organizer,passport.png
+1004,Dan,Helper,101 Maple Ave,Mapleton,dan@example.com,hash321,Supporter,
+

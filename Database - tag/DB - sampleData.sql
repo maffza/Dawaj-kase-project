@@ -33,7 +33,7 @@ VALUES ('Clean Oceans Project', 'An initiative to remove plastic waste from ocea
 INSERT INTO campaigns (title, description, short_description, target_money_amount, current_money_amount, start_date, end_date, status, image_url, organizer_id, category_id) 
 VALUES ('Animal Shelter Renovation', 'Renovating the local animal shelter to improve living conditions for rescued animals', 'Better homes for rescued animals', 8000, 1500, SYSDATE, SYSDATE + 45, 'Active', '', 1, 5);
 INSERT INTO campaigns (title, description, short_description, target_money_amount, current_money_amount, start_date, end_date, status, image_url, organizer_id, category_id) 
-VALUES ('Library for Everyone', 'Creating a public library in a rural community to promote literacy', 'Books for all ages', 12000, 4000, SYSDATE, SYSDATE + 90, 'Active', '', 2, 3);
+VALUES ('test', 'test', 'test', 1000, 2000, SYSDATE, SYSDATE + 90, 'Active', '', 2, 3);
 
 INSERT INTO donations (amount, message, campaign_id, user_id) 
 VALUES (100, 'Great initiative!', 1, 3);

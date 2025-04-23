@@ -20,4 +20,9 @@ urlpatterns = [
     path("approve_campaign", approve_campaign, name="approve_campaign"),
     path("delete_campaign/<id>", delete_campaign, name="delete_campaign"),
     path("insert_post", insert_post, name="insert_post"),
+    #path('progress/', campaign_progress_view, name='campaign-progress'),
+    path('donation-stats/', donation_stats_table, name='donation-stats'),
+    path('successful-campaigns/', successful_campaigns_chart, name='successful-campaigns'),
+    path('verified-campaigns/', verified_user_campaigns_view, name='verified-campaigns'),
+    
 ]

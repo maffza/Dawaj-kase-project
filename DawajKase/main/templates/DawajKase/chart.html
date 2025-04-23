@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campaign Reports</title>
+    <style>
+        .nav-buttons {
+            margin-bottom: 20px;
+        }
+        .nav-buttons a {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-right: 10px;
+        }
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Campaign Reports</h1>
+
+    <div class="nav-buttons">
+        <a href="{% url 'successful-campaigns' %}">Successful Campaigns</a>
+        <a href="{% url 'verified-campaigns' %}">Verified User Campaigns</a>
+    </div>
+
+    {% if chart_div %}
+        {{ chart_div|safe }}
+    {% elif message %}
+        <p>{{ message }}</p>
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+</body>
+</html>

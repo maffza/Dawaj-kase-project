@@ -78,6 +78,7 @@ WSGI_APPLICATION = "DawajKase.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+print(BASE_DIR)
 with open(BASE_DIR / 'DawajKase/secrets.json') as f:
     secrets = json.load(f)
 
