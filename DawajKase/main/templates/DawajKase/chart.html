@@ -1,6 +1,8 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <title>Campaign Reports</title>
     <style>
         .nav-buttons {
@@ -24,6 +26,7 @@
     </style>
 </head>
 <body>
+    {% include 'DawajKase/header.html' %}
     <h1>Campaign Reports</h1>
 
     <div class="nav-buttons">
