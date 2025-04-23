@@ -383,7 +383,7 @@ FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR
             JOIN users u ON c.organizer_id = u.id
             JOIN categories cat ON c.category_id = cat.id
             LEFT JOIN donations d ON c.id = d.campaign_id
-            WHERE u.role != 'ToVerify'
+            WHERE c.status != 'ToApprove'
             GROUP BY c.id, c.title, u.first_name, u.last_name, cat.name, c.status;
     
         RETURN result_cursor;
