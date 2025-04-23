@@ -498,6 +498,7 @@ def fetch_successful_campaigns(start_date, end_date):
 
 
 def successful_campaigns_chart(request):
+    userData = request.session.get('userData', None)
     rows, columns = fetch_successful_campaigns(
         date(2020, 1, 1),  # ✅ real date, not string
         date(2030, 1, 1)
@@ -505,6 +506,7 @@ def successful_campaigns_chart(request):
 
     if not rows:
         return render(request, 'DawajKase/chart.html', {
+            'userData': userData,
             'message': 'No successful campaigns found in the given time range.'
         })
 
@@ -518,7 +520,10 @@ def successful_campaigns_chart(request):
     ])
 
     chart_div = opy.plot(fig, auto_open=False, output_type='div')
-    return render(request, 'DawajKase/chart.html', {'chart_div': chart_div})
+    return render(request, 'DawajKase/chart.html', {
+        'userData': userData,
+        'chart_div': chart_div
+    })
 
 
 def fetch_verified_user_campaigns():
@@ -539,6 +544,7 @@ def fetch_verified_user_campaigns():
     return results, columns
 
 def verified_user_campaigns_view(request):
+    userData = request.session.get('userData', None)
     rows, columns = fetch_verified_user_campaigns()
 
     print("COLUMNS:", columns)
@@ -546,6 +552,7 @@ def verified_user_campaigns_view(request):
     
     if not rows:
         return render(request, 'DawajKase/chart.html', {
+            'userData': userData,
             'message': 'No campaigns found for verified users.'
         })
 
@@ -559,4 +566,7 @@ def verified_user_campaigns_view(request):
     ])
 
     chart_div = opy.plot(fig, auto_open=False, output_type='div')
-    return render(request, 'DawajKase/chart.html', {'chart_div': chart_div})
+    return render(request, 'DawajKase/chart.html', {
+        'userData': userData,
+        'chart_div': chart_div
+    })

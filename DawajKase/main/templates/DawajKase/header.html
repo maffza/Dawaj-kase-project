@@ -2,7 +2,7 @@
    
     <div class="container">
         <a href="/"><img src="/static/images/logo.png" style="width:250px; height:50px; margin-right: 20px; margin-top: 10px;"></a>
-        {% if not request.path == '/confirmation_tab' %}
+        {% if request.path != '/confirmation_tab' and request.path != '/successful-campaigns/' and request.path != '/verified-campaigns/' %}
         <!-- Search Bar -->
         <div class="search-bar">
             <form method="GET" action="/search_bar">

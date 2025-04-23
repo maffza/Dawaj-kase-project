@@ -2,44 +2,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <title>Campaign Reports</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
     <style>
         .nav-buttons {
             margin-bottom: 20px;
         }
         .nav-buttons a {
             padding: 10px 20px;
-            background-color: #007bff;
             color: white;
+            background-color: #5E66D6;
             text-decoration: none;
             border-radius: 6px;
             margin-right: 10px;
         }
         .nav-buttons a:hover {
-            background-color: #0056b3;
+            background-color: #616ae7;
+            transform: translateY(-1px);
         }
-        body {
-            font-family: Arial, sans-serif;
-            padding: 40px;
-        }
+      
     </style>
 </head>
 <body>
+    <div class="wrapper">
     {% include 'DawajKase/header.html' %}
-    <h1>Campaign Reports</h1>
+        <main>
+            <div class="container">
 
-    <div class="nav-buttons">
-        <a href="{% url 'successful-campaigns' %}">Successful Campaigns</a>
-        <a href="{% url 'verified-campaigns' %}">Verified User Campaigns</a>
+                <h1>Campaign Reports</h1>
+                
+                <div class="nav-buttons">
+                    <a href="{% url 'successful-campaigns' %}">Successful Campaigns</a>
+                    <a href="{% url 'verified-campaigns' %}">Verified User Campaigns</a>
+                </div>
+                
+                {% if chart_div %}
+                    {{ chart_div|safe }}
+                {% elif message %}
+                    <p>{{ message }}</p>
+                {% else %}
+                    <p>No data available.</p>
+                {% endif %}
+            </div>
+        </main>
     </div>
-
-    {% if chart_div %}
-        {{ chart_div|safe }}
-    {% elif message %}
-        <p>{{ message }}</p>
-    {% else %}
-        <p>No data available.</p>
-    {% endif %}
+     {% include 'DawajKase/footer.html' %}
 </body>
 </html>
