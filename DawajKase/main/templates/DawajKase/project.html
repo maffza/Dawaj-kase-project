@@ -30,11 +30,13 @@
                     <p>by <a href="#">{% if creator %}{{ creator.firstName }} {{ creator.lastName }}{% endif %}</a></p>
                     <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
+                        {% if campaign.status != "Completed" %}
                         <p><strong>${{ campaign.currentMoneyAmount }} pledged</strong> of ${{ campaign.targetMoneyAmount }} goal</p>
                         <div class="progress-container">
                             <div class="progress-bar" style="width: {% widthratio campaign.currentMoneyAmount campaign.targetMoneyAmount 100 %}%"></div>
                         </div>
                         <p><strong>{{ donors_count }} backers</strong></p>
+                        {% endif %}
                         <p><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     {% if userData %}
@@ -66,7 +68,8 @@
                 <button class="tablinks active" onclick="openTab(event, 'campaignInfo')">Informacje</button>
                 <button class="tablinks" onclick="openTab(event, 'postsTab')">Posty</button>
             </div>
-
+            
+                <!-- <div>Ilość tierów: {{ tiers|length }}</div> -->
 
             <div id="campaignInfo" class="tabcontent active">
                 <div class="project-description">
@@ -87,21 +90,30 @@
                 </div>
 
                 <br /><br />
+                
                 <h2>Donations</h2>
                 <br />
-                {% for donation in donations %}
-                <div class="donation-card
-                     {% if donation.amount >= 250 %}tier-250
-                    {% elif donation.amount >= 100 %}tier-100
-                    {% elif donation.amount >= 25 %}tier-25
-                    {% else %}tier-1{% endif %}">
+          {% for donation in donations %}
+            {% with "tier-default" as tier_class %}
+                <div class="donation-card tier-{{ donation.tier }}">
                     <strong class="donation-username">{{ donation.username }}</strong>
                     <p class="donation-message">{{ donation.message }}</p>
                     <p class="donation-amount">${{ donation.amount }}</p>
                 </div>
-                {% endfor %}
+            {% endwith %}
+        {% endfor %}
+                {% if userData %}
                 <h2>Comments</h2>
+                <form action="/add_comment" method="POST" class="donation-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                    <input type="text" name="text" placeholder="Add a comment" class="donation-input" id="message" required>
+                    <div class="amount-buttons">
+                        <button type="submit" class="donation-button amount-button">Comment</button>
+                    </div>
+                </form>
                 <br /><br />
+                {% endif %}
                 {% for comment in comments %}
                 <div class="comment-card">
                     <strong class="comment-username">{{ comment.username }}</strong>
@@ -183,7 +195,7 @@
                 buttons.forEach(button => {
                     button.style.display = "none";
                 });
-                if(statis !== "Completed"){
+                if(status != "Completed"){
                     location.reload();
                 }
                 return;
@@ -209,7 +221,7 @@
                 button.style.display = "none";
             });
 
-            if(statis !== "Completed"){
+            if(status != "Completed"){
                 location.reload();
             }
         }

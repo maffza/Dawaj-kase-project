@@ -147,6 +147,13 @@ def project(request, slug):
     donors_count = ManagerFactory.get_campaign_manager().count_unique_donors(campaign.id)
     posts = ManagerFactory.get_post_manager().get_campaign_posts(campaign.id)
     tiers = ManagerFactory.get_reward_manager().get_campaign_tiers(campaign.id)
+    
+    for donation in donations:
+        donation['tier'] = 1
+        for i, tier in enumerate(reversed(tiers)):
+            if donation['amount'] >= tier.amount:
+                donation['tier'] = int(float(len(tiers) - i - 1) / (len(tiers) - 1) * 9 + 1)
+                break
 
     return render(request, 'DawajKase/project.html', {
         'userData': userData,
@@ -446,6 +453,37 @@ def insert_post(request):
     ManagerFactory.get_post_manager().add_post(title, description, imagePath, userID, campaignID)
 
     return redirect(f'project/{campaignID}')
+
+
+def add_comment(request):
+    campaignID = request.POST.get('campaign_id')
+
+    # Check if POST request
+    if request.method != 'POST':
+        return redirect(f'project/{campaignID}')
+
+    # Check if the campaign exists
+    campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(campaignID)
+
+    if not campaign:
+        return redirect(f'project/{campaignID}')
+
+    # Check if user is logged in
+    userData = request.session.get('userData', None)
+    if not userData:
+        return redirect(f'project/{campaignID}')
+
+    # Add the comment
+    text = request.POST.get('text')
+    
+    if text:
+        ManagerFactory.get_comment_manager().insert_comment(text, campaignID, userData['id'])
+
+    return redirect(f'project/{campaignID}')
+
+
+
+
 
 
 def chart_button_view(request):

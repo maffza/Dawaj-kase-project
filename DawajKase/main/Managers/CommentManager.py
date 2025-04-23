@@ -16,3 +16,9 @@ class CommentManager:
                 comments = [Comment(*c).to_json() for c in commentsResult]
 
         return comments
+    
+    @staticmethod 
+    def insert_comment(text, campaignID, userID):
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO comments(comment_text, campaign_id, user_id) VALUES (%s, %s, %s)",
+                           [text, campaignID, userID])

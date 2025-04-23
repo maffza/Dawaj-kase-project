@@ -20,16 +20,14 @@
             {% csrf_token %}
             <input type="text" name="message" placeholder="Enter the message (optional)" class="donation-input" id="message">
             <div class="amount-buttons">
-                <button type="submit" name="amount" value="1" class="donation-button amount-button">$1</button>
-                <button type="submit" name="amount" value="25" class="donation-button amount-button">$25</button>
-                <button type="submit" name="amount" value="100" class="donation-button amount-button">$100</button>
-                <button type="submit" name="amount" value="250" class="donation-button amount-button">$250</button>
+                <input type="number" name="amount" placeholder="Enter donation amount" class="donation-input" id="amount" min="1">
+                <button type="submit" class="donation-button amount-button">Back the project</button>
             </div>
          </form>
         {% if error %}
           <center>
             {{error}}
-        </center>
+            </center>
         {% endif %}
             </div>
         </main>

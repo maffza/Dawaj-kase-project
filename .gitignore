@@ -2,4 +2,6 @@ env/
 __pycache__/
 secrets.json
 .idea/
-DawajKase/static/media
+DawajKase/static/media/campaign_thumbnails
+DawajKase/static/media/post_images
+DawajKase/static/media/profile_pictures
