@@ -68,7 +68,8 @@
                 <button class="tablinks active" onclick="openTab(event, 'campaignInfo')">Informacje</button>
                 <button class="tablinks" onclick="openTab(event, 'postsTab')">Posty</button>
             </div>
-
+            
+                <!-- <div>Ilość tierów: {{ tiers|length }}</div> -->
 
             <div id="campaignInfo" class="tabcontent active">
                 <div class="project-description">
@@ -89,19 +90,27 @@
                 </div>
 
                 <br /><br />
+                
                 <h2>Donations</h2>
                 <br />
-                {% for donation in donations %}
-                <div class="donation-card
-                     {% if donation.amount >= 250 %}tier-250
-                    {% elif donation.amount >= 100 %}tier-100
-                    {% elif donation.amount >= 25 %}tier-25
-                    {% else %}tier-1{% endif %}">
+          {% for donation in donations %}
+            {% with "tier-default" as tier_class %}
+                {% for tier in tiers %}
+                    {% if donation.amount >= tier.amount %}
+                        {% with "tier-"|add:forloop.counter as tier_class %}
+                            <p>Tier class: {{ tier_class }}</p>
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+                
+                <div class="donation-card {{ tier_class }}">
                     <strong class="donation-username">{{ donation.username }}</strong>
                     <p class="donation-message">{{ donation.message }}</p>
                     <p class="donation-amount">${{ donation.amount }}</p>
                 </div>
-                {% endfor %}
+            {% endwith %}
+        {% endfor %}
+
                 <h2>Comments</h2>
                 <br /><br />
                 {% for comment in comments %}

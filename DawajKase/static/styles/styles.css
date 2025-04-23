@@ -678,6 +678,7 @@ h1 {
 
 .donation-card.tier-1 {
     /* No effects for $1 tier */
+    box-shadow: 0 0 20px rgba(27, 27, 177, 0.6);
 }
 
 .donation-card.tier-25 {
@@ -725,6 +726,49 @@ h1 {
     to {
         box-shadow: 0 0 35px rgba(212, 175, 55, 0.8);
     }
+}
+
+/* Support Tiers */
+.donation-card.tier-1 {
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+.donation-card.tier-2 {
+    border-color: #5CB85C;
+    box-shadow: 0 0 10px rgba(92, 184, 92, 0.3);
+}
+.donation-card.tier-3 {
+    border-color: #7CB342;
+    box-shadow: 0 0 10px rgba(124, 179, 66, 0.3);
+}
+.donation-card.tier-4 {
+    border-color: #9CCC65;
+    box-shadow: 0 0 10px rgba(156, 204, 101, 0.3);
+}
+.donation-card.tier-5 {
+    border-color: #CDDC39;
+    box-shadow: 0 0 10px rgba(205, 220, 57, 0.3);
+}
+.donation-card.tier-6 {
+    border-color: #FFEB3B;
+    box-shadow: 0 0 10px rgba(255, 235, 59, 0.3);
+}
+.donation-card.tier-7 {
+    border-color: #FFC107;
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+}
+.donation-card.tier-8 {
+    border-color: #FF9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+}
+.donation-card.tier-9 {
+    border-color: #FF5722;
+    box-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+}
+.donation-card.tier-10 {
+    border-color: #D4AF37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    animation: glow-golden 2s infinite alternate;
 }
 
 .comment-username, .donation-username {
