@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Campaign:
     def __init(eslf):
         pass
@@ -38,3 +40,11 @@ class Campaign:
             'creationDate': self.creationDate,
             'modifyDate': self.modifyDate
         }
+    
+    def has_finished(self):
+        if isinstance(self.endDate, str):
+            end_date = datetime.fromisoformat(self.endDate)
+        else:
+            end_date = self.endDate
+
+        return datetime.now() > end_date or self.targetMoneyAmount <= self.currentMoneyAmount

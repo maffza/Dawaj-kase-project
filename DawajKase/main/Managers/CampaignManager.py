@@ -19,6 +19,12 @@ class CampaignManager:
 
         return campaigns
     
+    @staticmethod 
+    def end_campaign(id):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE campaigns SET status='Completed' WHERE id = %s", 
+                    [id])
+
     @staticmethod
     def get_campaign_by_id(id):
         campaign = None

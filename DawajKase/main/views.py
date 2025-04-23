@@ -130,12 +130,13 @@ def logout(request):
 
 def project(request, slug):
     campaign = ManagerFactory.get_campaign_manager().get_campaign_by_id(slug)
-
     if not campaign:
         return render(request, 'DawajKase/404.html')
     
+    if campaign.has_finished():
+        ManagerFactory.get_campaign_manager().end_campaign(campaign.id)
+    
     creator = ManagerFactory.get_user_manager().get_user_by_id(campaign.organizerID)
-
     if not creator:
         return render(request, 'DawajKase/404.html')
     

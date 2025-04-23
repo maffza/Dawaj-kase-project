@@ -166,6 +166,7 @@
         const endDate = new Date("{{ campaign.endDate|date:'Y-m-d' }}T12:00:00");
         const currentAmount = "{{ campaign.currentMoneyAmount }}";
         const targetAmount = "{{ campaign.targetMoneyAmount }}";
+        const status = "{{ campaign.status }}";
 
         function updateTimer() {
             if (parseFloat(currentAmount) >= parseFloat(targetAmount)) {
@@ -182,6 +183,9 @@
                 buttons.forEach(button => {
                     button.style.display = "none";
                 });
+                if(statis !== "Completed"){
+                    location.reload();
+                }
                 return;
             }
 
@@ -204,6 +208,10 @@
             buttons.forEach(button => {
                 button.style.display = "none";
             });
+
+            if(statis !== "Completed"){
+                location.reload();
+            }
         }
 
         new QRCode(document.getElementById("qrcode"), {
