@@ -30,11 +30,13 @@
                     <p>by <a href="#">{% if creator %}{{ creator.firstName }} {{ creator.lastName }}{% endif %}</a></p>
                     <p>{{ campaign.shortDescription }}</p>
                     <div class="funding-info">
+                        {% if campaign.status != "Completed" %}
                         <p><strong>${{ campaign.currentMoneyAmount }} pledged</strong> of ${{ campaign.targetMoneyAmount }} goal</p>
                         <div class="progress-container">
                             <div class="progress-bar" style="width: {% widthratio campaign.currentMoneyAmount campaign.targetMoneyAmount 100 %}%"></div>
                         </div>
                         <p><strong>{{ donors_count }} backers</strong></p>
+                        {% endif %}
                         <p><strong id="daysLeft"></strong><span id="clear"> to go</span></p>
                     </div>
                     {% if userData %}
@@ -183,7 +185,7 @@
                 buttons.forEach(button => {
                     button.style.display = "none";
                 });
-                if(statis !== "Completed"){
+                if(status != "Completed"){
                     location.reload();
                 }
                 return;
@@ -209,7 +211,7 @@
                 button.style.display = "none";
             });
 
-            if(statis !== "Completed"){
+            if(status != "Completed"){
                 location.reload();
             }
         }
