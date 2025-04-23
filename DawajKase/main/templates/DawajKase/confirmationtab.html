@@ -132,6 +132,7 @@
         <div id="tabs">
             <button class="active" onclick="showTab('approvals')">Approve Campaigns</button>
             <button onclick="showTab('user-management')">Manage Users</button>
+            <button onclick="showTab('reports')">Campaign Reports</button>
         </div>
         <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after capaign name for visuals [bro, margin-right exists XD])-->
         <div id="approvals" class="tab-content active">
@@ -187,6 +188,12 @@
                 </select>
             </div>
             {% endfor %}
+        </div>
+
+        <div id="reports" class="tab-content">
+            <form action="{% url 'successful-campaigns' %}" method="get">
+                <center><button class="reportBtn" type="submit">Show Funding Chart</button></form></center>
+            </form>
         </div>
     </div>
 

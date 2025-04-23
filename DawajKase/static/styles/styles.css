@@ -1243,9 +1243,39 @@ h1 {
         color: #e0e0e0;
     }
 
-    #postForm button {
+#postForm button {
         background-color: #5E66D6;
         border: none;
         cursor: pointer;
     }
 
+/* Report Button */
+.reportBtn {
+    padding: 10px 20px;
+    background-color: #5E66D6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.reportBtn:hover {
+    background-color: #4944ce;
+    transform: translateY(-1px);
+}
+
+.reportBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reportBtn i {
+    font-size: 16px;
+}
