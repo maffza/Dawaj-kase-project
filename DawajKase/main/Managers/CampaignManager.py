@@ -50,7 +50,7 @@ class CampaignManager:
         sql = """
             SELECT * FROM campaigns 
             WHERE (title LIKE %s OR description LIKE %s)
-            AND status != 'ToApprove'
+            AND status != 'ToApprove' AND status != 'Completed'
         """
 
         with connection.cursor() as cursor:
@@ -114,7 +114,7 @@ class CampaignManager:
         query = """
             SELECT c.* 
             FROM campaigns c
-            WHERE c.category_id = %s AND status != 'ToApprove'
+            WHERE c.category_id = %s AND status != 'ToApprove' AND status != 'Completed'
         """
         
         if sort_by == 'amount':
@@ -133,7 +133,7 @@ class CampaignManager:
     @staticmethod
     def get_campaigns_sorted(sort_by=None, limit=None, offset=None):
         campaigns = []
-        query = "SELECT c.* FROM campaigns c WHERE status != 'ToApprove'"
+        query = "SELECT c.* FROM campaigns c WHERE status != 'ToApprove' AND status != 'Completed'"
         
         if sort_by == 'amount':
             query += " ORDER BY c.current_money_amount DESC"
@@ -154,7 +154,7 @@ class CampaignManager:
     @staticmethod
     def count_campaigns():
         with connection.cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM campaigns WHERE status != 'ToApprove'")
+            cursor.execute("SELECT COUNT(*) FROM campaigns WHERE status != 'ToApprove' AND status != 'Completed'")
             return cursor.fetchone()[0]
 
     @staticmethod
