@@ -478,13 +478,11 @@ def donation_stats_table(request):
 
 
 def fetch_successful_campaigns(start_date, end_date):
-    # Use the raw Oracle connection directly (cx_Oracle or oracledb)
     django_cursor = connection.cursor()
     raw_conn = django_cursor.connection
-    raw_cursor = raw_conn.cursor()  # actual Oracle cursor for execution
-    output_cursor = raw_conn.cursor()  # for the returned SYS_REFCURSOR
+    raw_cursor = raw_conn.cursor() 
+    output_cursor = raw_conn.cursor()
 
-    # Run the anonymous PL/SQL block
     raw_cursor.execute("""
         BEGIN
             :1 := CROWDFUNDING_PKG.get_successful_campaigns(:2, :3);
@@ -500,7 +498,7 @@ def fetch_successful_campaigns(start_date, end_date):
 def successful_campaigns_chart(request):
     userData = request.session.get('userData', None)
     rows, columns = fetch_successful_campaigns(
-        date(2020, 1, 1),  # ✅ real date, not string
+        date(2020, 1, 1),
         date(2030, 1, 1)
     )
 
@@ -510,7 +508,7 @@ def successful_campaigns_chart(request):
             'message': 'No successful campaigns found in the given time range.'
         })
 
-    data_by_column = list(zip(*rows))  # Transpose rows to columns
+    data_by_column = list(zip(*rows))
 
     fig = go.Figure(data=[
         go.Table(
