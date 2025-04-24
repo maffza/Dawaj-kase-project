@@ -148,12 +148,13 @@ def project(request, slug):
     posts = ManagerFactory.get_post_manager().get_campaign_posts(campaign.id)
     tiers = ManagerFactory.get_reward_manager().get_campaign_tiers(campaign.id)
     
-    for donation in donations:
-        donation['tier'] = 1
-        for i, tier in enumerate(reversed(tiers)):
-            if donation['amount'] >= tier.amount:
-                donation['tier'] = int(float(len(tiers) - i - 1) / (len(tiers) - 1) * 9 + 1)
-                break
+    if donations:
+        for donation in donations:
+            donation['tier'] = 1
+            for i, tier in enumerate(reversed(tiers)):
+                if donation['amount'] >= tier.amount:
+                    donation['tier'] = int(float(len(tiers) - i - 1) / (len(tiers) - 1) * 9 + 1)
+                    break
 
     return render(request, 'DawajKase/project.html', {
         'userData': userData,
