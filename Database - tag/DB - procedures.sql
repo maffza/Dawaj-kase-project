@@ -351,10 +351,13 @@ BEGIN
                   )
                 FETCH FIRST 1 ROWS ONLY
             ) AS top_donor_name,
+            MAX(d.amount) AS highest_donation,
+            SUM(d.amount) AS total_collected,
+            AVG(d.amount) AS average_donation,
+            COUNT(DISTINCT d.user_id) AS supporter_count,
             COALESCE(SUM(d.amount), 0) AS total_raised,
             c.end_date,
-            cat.name AS category_name,
-            COALESCE(ROUND(AVG(d.amount), 2), 0) AS average_donation
+            cat.name AS category_name
         FROM campaigns c
         JOIN users u ON c.organizer_id = u.id
         JOIN categories cat ON c.category_id = cat.id
@@ -377,6 +380,8 @@ FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR
                 u.first_name || ' ' || u.last_name AS organizer_name,
                 COUNT(DISTINCT d.user_id) AS supporter_count,
                 MAX(d.amount) AS highest_donation,
+                SUM(d.amount) AS total_collected,
+                AVG(d.amount) AS average_donation,
                 cat.name AS category_name,
                 c.status
             FROM campaigns c
@@ -384,7 +389,7 @@ FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR
             JOIN categories cat ON c.category_id = cat.id
             LEFT JOIN donations d ON c.id = d.campaign_id
             WHERE c.status != 'ToApprove'
-            GROUP BY c.id, c.title, u.first_name, u.last_name, cat.name, c.status;
+            GROUP BY u.first_name, u.last_name, c.id, c.title,  cat.name, c.status;
     
         RETURN result_cursor;
     END;
