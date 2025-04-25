@@ -557,9 +557,32 @@ def successful_campaigns_chart(request):
     ])
 
     chart_div = opy.plot(fig, auto_open=False, output_type='div')
+
+
+
+
+    campaign_count = len(rows)
+
+    column_indices = {col: idx for idx, col in enumerate(columns)}
+    donation_values = [row[column_indices['average_donation']] for row in rows if row[column_indices['average_donation']] is not None]
+    total_collected_values = [row[column_indices['total_collected']] for row in rows if row[column_indices['total_collected']] is not None]
+
+
+    avg_donation = round(sum(donation_values) / len(donation_values), 2) if donation_values else 0
+    total_collected = round(sum(total_collected_values), 2) if total_collected_values else 0
+    highest_donation = max([row[column_indices['highest_donation']] for row in rows if row[column_indices['highest_donation']] is not None])
+
+    aggregation_text = (
+        f"Liczba wyświetlonych kampanii: {campaign_count} | "
+        f"Suma wpłat: {total_collected} $ | "
+        f"Średnia kwota wpłaty: {avg_donation} $ | "
+        f"Najwyższa wpłata: {highest_donation} $"
+    )
+
     return render(request, 'DawajKase/chart.html', {
         'userData': userData,
-        'chart_div': chart_div
+        'chart_div': chart_div,
+        'aggregation_text': aggregation_text
     })
 
 
@@ -603,7 +626,27 @@ def verified_user_campaigns_view(request):
     ])
 
     chart_div = opy.plot(fig, auto_open=False, output_type='div')
+
+    campaign_count = len(rows)
+
+    column_indices = {col: idx for idx, col in enumerate(columns)}
+    donation_values = [row[column_indices['average_donation']] for row in rows if row[column_indices['average_donation']] is not None]
+    total_collected_values = [row[column_indices['total_collected']] for row in rows if row[column_indices['total_collected']] is not None]
+
+
+    avg_donation = round(sum(donation_values) / len(donation_values), 2) if donation_values else 0
+    total_collected = round(sum(total_collected_values), 2) if total_collected_values else 0
+    highest_donation = max(row[column_indices['highest_donation']] for row in rows if row[column_indices['highest_donation']] is not None)
+
+    aggregation_text = (
+        f"Liczba wyświetlonych kampanii: {campaign_count} | "
+        f"Suma wpłat: {total_collected} $ | "
+        f"Średnia kwota wpłaty: {avg_donation} $ | "
+        f"Najwyższa wpłata: {highest_donation} $"
+    )
+
     return render(request, 'DawajKase/chart.html', {
         'userData': userData,
-        'chart_div': chart_div
+        'chart_div': chart_div,
+        'aggregation_text': aggregation_text
     })
