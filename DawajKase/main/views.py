@@ -11,6 +11,7 @@ import json
 import plotly.graph_objs as go
 import plotly.offline as opy
 from datetime import date
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -169,13 +170,14 @@ def project(request, slug):
     })
 
 def confirmation_tab(request):
+    categories = get_all_categories()
     userData = request.session.get('userData', None)
     if not userData or userData['role'] != 'Admin':
         return redirect('index')
     campaigns = ManagerFactory.get_campaign_manager().get_campaigns_to_be_approved()
     query = request.session.get('query', None)
     users = ManagerFactory.get_user_manager().get_all_users()
-    return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query, 'users': users})
+    return render(request, 'DawajKase/confirmationtab.html', {'userData': userData, 'campaigns': campaigns, 'query': query, 'users': users, 'categories': categories})
 
 def approve_campaign(request):
     if request.method == 'POST':
@@ -513,36 +515,36 @@ def donation_stats_table(request):
     ])
 
     chart_div = opy.plot(table, auto_open=False, output_type='div')
-    return render(request, 'DawajKase/chart.html', {'chart_div': chart_div})
+    return render(request, 'DawajKase/successful-chart.html', {'chart_div': chart_div})
 
 
-def fetch_successful_campaigns(start_date, end_date):
+def fetch_successful_campaigns(start_date, end_date, min_target, max_target):
     django_cursor = connection.cursor()
     raw_conn = django_cursor.connection
-    raw_cursor = raw_conn.cursor() 
+    raw_cursor = raw_conn.cursor()
     output_cursor = raw_conn.cursor()
 
     raw_cursor.execute("""
         BEGIN
-            :1 := CROWDFUNDING_PKG.get_successful_campaigns(:2, :3);
+            :1 := CROWDFUNDING_PKG.get_successful_campaigns(:2, :3, :4, :5);
         END;
-    """, [output_cursor, start_date, end_date])
+    """, [output_cursor, start_date, end_date, min_target, max_target])
 
     results = output_cursor.fetchall()
     columns = [col[0].lower() for col in output_cursor.description]
-
     return results, columns
 
 
 def successful_campaigns_chart(request):
     userData = request.session.get('userData', None)
     rows, columns = fetch_successful_campaigns(
-        date(2020, 1, 1),
-        date(2030, 1, 1)
-    )
+        request.GET.get("start_date"),
+        request.GET.get("end_date"),
+        request.GET.get("min_target"),
+        request.GET.get("max_target"))
 
     if not rows:
-        return render(request, 'DawajKase/chart.html', {
+        return render(request, 'DawajKase/successful-chart.html', {
             'userData': userData,
             'message': 'No successful campaigns found in the given time range.'
         })
@@ -579,74 +581,117 @@ def successful_campaigns_chart(request):
         f"Najwyższa wpłata: {highest_donation} $"
     )
 
-    return render(request, 'DawajKase/chart.html', {
+    return render(request, 'DawajKase/successful-chart.html', {
         'userData': userData,
         'chart_div': chart_div,
         'aggregation_text': aggregation_text
     })
 
-
-def fetch_verified_user_campaigns():
+def fetch_verified_user_campaigns(category_name, start_date, end_date, min_target, max_target):
     django_cursor = connection.cursor()
     raw_conn = django_cursor.connection
     raw_cursor = raw_conn.cursor()
     output_cursor = raw_conn.cursor()
 
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    if min_target:
+        min_target = float(min_target)
+    if max_target:
+        max_target = float(max_target)
+
     raw_cursor.execute("""
         BEGIN
-            :1 := CROWDFUNDING_PKG.get_verified_user_campaigns;
+            :1 := CROWDFUNDING_PKG.get_verified_user_campaigns(:2, :3, :4, :5, :6);
         END;
-    """, [output_cursor])
+    """, [
+        output_cursor,
+        category_name,
+        start_date,
+        end_date,
+        min_target,
+        max_target
+    ])
 
     results = output_cursor.fetchall()
     columns = [col[0].lower() for col in output_cursor.description]
 
     return results, columns
 
+def get_all_categories():
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DISTINCT name FROM categories")
+        rows = cursor.fetchall()
+        return [row[0] for row in rows]
+
+
 def verified_user_campaigns_view(request):
     userData = request.session.get('userData', None)
-    rows, columns = fetch_verified_user_campaigns()
 
-    print("COLUMNS:", columns)
-    print("ROWS:", rows)
-    
+    categories = get_all_categories()
+
+    category = request.GET.get("category") or None
+    start_date_raw = request.GET.get("start_date")
+    end_date_raw = request.GET.get("end_date")
+    min_target_raw = request.GET.get("min_target")
+    max_target_raw = request.GET.get("max_target")
+
+    try:
+        start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date() if start_date_raw else None
+    except ValueError:
+        start_date = None
+
+    try:
+        end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date() if end_date_raw else None
+    except ValueError:
+        end_date = None
+
+    min_target = float(min_target_raw) if min_target_raw else None
+    max_target = float(max_target_raw) if max_target_raw else None
+
+    rows, columns = fetch_verified_user_campaigns(
+        category, start_date, end_date, min_target, max_target
+    )
+
     if not rows:
-        return render(request, 'DawajKase/chart.html', {
+        return render(request, 'DawajKase/verified-chart.html', {
             'userData': userData,
             'message': 'No campaigns found for verified users.'
         })
 
     data_by_column = list(zip(*rows))
-
     fig = go.Figure(data=[
         go.Table(
             header=dict(values=[col.replace('_', ' ').title() for col in columns]),
             cells=dict(values=data_by_column)
         )
     ])
-
     chart_div = opy.plot(fig, auto_open=False, output_type='div')
 
     campaign_count = len(rows)
+    col_index = {col: idx for idx, col in enumerate(columns)}
+    avg_donations = [row[col_index['average_donation']] for row in rows if row[col_index['average_donation']] is not None]
+    total_collected = [row[col_index['total_collected']] for row in rows if row[col_index['total_collected']] is not None]
+    highest_donations = [row[col_index['highest_donation']] for row in rows if row[col_index['highest_donation']] is not None]
 
-    column_indices = {col: idx for idx, col in enumerate(columns)}
-    donation_values = [row[column_indices['average_donation']] for row in rows if row[column_indices['average_donation']] is not None]
-    total_collected_values = [row[column_indices['total_collected']] for row in rows if row[column_indices['total_collected']] is not None]
-
-
-    avg_donation = round(sum(donation_values) / len(donation_values), 2) if donation_values else 0
-    total_collected = round(sum(total_collected_values), 2) if total_collected_values else 0
-    highest_donation = max(row[column_indices['highest_donation']] for row in rows if row[column_indices['highest_donation']] is not None)
+    avg_donation = round(sum(avg_donations) / len(avg_donations), 2) if avg_donations else 0
+    total_sum = round(sum(total_collected), 2) if total_collected else 0
+    max_donation = max(highest_donations) if highest_donations else 0
 
     aggregation_text = (
         f"Liczba wyświetlonych kampanii: {campaign_count} | "
-        f"Suma wpłat: {total_collected} $ | "
+        f"Suma wpłat: {total_sum} $ | "
         f"Średnia kwota wpłaty: {avg_donation} $ | "
-        f"Najwyższa wpłata: {highest_donation} $"
+        f"Najwyższa wpłata: {max_donation} $"
     )
 
-    return render(request, 'DawajKase/chart.html', {
-        'userData': userData,
-        'chart_div': chart_div,
-        'aggregation_text': aggregation_text
-    })
+    return render(request, 'DawajKase/verified-chart.html', {
+    'userData': userData,
+    'chart_div': chart_div,
+    'aggregation_text': aggregation_text,
+    'categories': categories
+})
+

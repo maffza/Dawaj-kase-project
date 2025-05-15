@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verified Campaigns Report</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="icon" href="{% static 'media/logo.png' %}" type="image/png">
+    <style>
+        form.filter-form {
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        form.filter-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        form.filter-form input,
+        form.filter-form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form.filter-form button {
+            padding: 10px 20px;
+            background-color: #5E66D6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        form.filter-form button:hover {
+            background-color: #616ae7;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        {% include 'DawajKase/header.html' %}
+        <main>
+            <div class="container">
+
+                <h1 style="text-align: center;">Verified User Campaigns</h1>
+
+                <!-- ✅ Filter Form -->
+                <form method="get" action="{% url 'verified-campaigns' %}" class="filter-form">
+                    <label for="category">Category:</label>
+                    <select name="category">
+                        <option value="">All</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}" {% if request.GET.category == category %}selected{% endif %}>{{ category }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ request.GET.start_date }}">
+
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ request.GET.end_date }}">
+
+                    <label for="min_target">Min Target Amount:</label>
+                    <input type="number" name="min_target" id="min_target" step="0.01" value="{{ request.GET.min_target }}">
+
+                    <label for="max_target">Max Target Amount:</label>
+                    <input type="number" name="max_target" id="max_target" step="0.01" value="{{ request.GET.max_target }}">
+
+                    <button type="submit">Apply Filters</button>
+                </form>
+
+                <!-- ✅ Chart + Aggregation -->
+                {% if chart_div %}
+                    {{ chart_div|safe }}
+                {% elif message %}
+                    <p>{{ message }}</p>
+                {% else %}
+                    <p>No data available.</p>
+                {% endif %}
+
+                {% if aggregation_text %}
+                    <div class="chart-summary" style="margin-top: 20px; font-weight: bold;">
+                        {{ aggregation_text }}
+                    </div>
+                {% endif %}
+
+            </div>
+        </main>
+        {% include 'DawajKase/footer.html' %}
+    </div>
+</body>
+</html>
