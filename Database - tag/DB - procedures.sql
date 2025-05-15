@@ -21,8 +21,12 @@ CREATE OR REPLACE PACKAGE Crowdfunding_pkg AS
     PROCEDURE donate_anonymously (p_campaign_id IN NUMBER, p_amount IN NUMBER, p_message IN VARCHAR2);
     FUNCTION check_if_user_exists (p_email IN VARCHAR2) RETURN NUMBER;
     FUNCTION get_user_by_id (p_id IN NUMBER) RETURN SYS_REFCURSOR;
-    FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE) RETURN SYS_REFCURSOR;
-     FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR;
+    FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE, p_min_target NUMBER, p_max_target NUMBER) RETURN SYS_REFCURSOR;
+     FUNCTION get_verified_user_campaigns(p_category_name IN VARCHAR2,
+    p_start_date    IN DATE,
+    p_end_date      IN DATE,
+    p_min_target    IN NUMBER,
+    p_max_target    IN NUMBER) RETURN SYS_REFCURSOR;
     -- BRAK register_user
     -- BRAK log_user_in
     
@@ -329,8 +333,12 @@ CREATE OR REPLACE PACKAGE BODY Crowdfunding_pkg AS
         RETURN result_cursor;
     END get_user_by_id;
 
-FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE)
-RETURN SYS_REFCURSOR
+FUNCTION get_successful_campaigns (
+    p_start_date   DATE,
+    p_end_date     DATE,
+    p_min_target   NUMBER,
+    p_max_target   NUMBER
+) RETURN SYS_REFCURSOR
 IS
     result_cursor SYS_REFCURSOR;
 BEGIN
@@ -364,35 +372,50 @@ BEGIN
         LEFT JOIN donations d ON c.id = d.campaign_id
         WHERE c.end_date BETWEEN p_start_date AND p_end_date
           AND c.current_money_amount >= c.target_money_amount
+          AND (p_min_target IS NULL OR c.target_money_amount >= p_min_target)
+          AND (p_max_target IS NULL OR c.target_money_amount <= p_max_target)
         GROUP BY c.id, c.title, u.first_name, u.last_name, c.end_date, cat.name;
 
     RETURN result_cursor;
 END;
 
-FUNCTION get_verified_user_campaigns RETURN SYS_REFCURSOR
-    IS
-        result_cursor SYS_REFCURSOR;
-    BEGIN
-        OPEN result_cursor FOR
-            SELECT
-                c.id AS campaign_id,
-                c.title AS campaign_name,
-                u.first_name || ' ' || u.last_name AS organizer_name,
-                COUNT(DISTINCT d.user_id) AS supporter_count,
-                MAX(d.amount) AS highest_donation,
-                SUM(d.amount) AS total_collected,
-                AVG(d.amount) AS average_donation,
-                cat.name AS category_name,
-                c.status
-            FROM campaigns c
-            JOIN users u ON c.organizer_id = u.id
-            JOIN categories cat ON c.category_id = cat.id
-            LEFT JOIN donations d ON c.id = d.campaign_id
-            WHERE c.status != 'ToApprove'
-            GROUP BY u.first_name, u.last_name, c.id, c.title,  cat.name, c.status;
-    
-        RETURN result_cursor;
-    END;
+
+FUNCTION get_verified_user_campaigns (
+    p_category_name IN VARCHAR2,
+    p_start_date    IN DATE,
+    p_end_date      IN DATE,
+    p_min_target    IN NUMBER,
+    p_max_target    IN NUMBER
+) RETURN SYS_REFCURSOR
+IS
+    result_cursor SYS_REFCURSOR;
+BEGIN
+    OPEN result_cursor FOR
+        SELECT
+            c.id AS campaign_id,
+            c.title AS campaign_name,
+            u.first_name || ' ' || u.last_name AS organizer_name,
+            COUNT(DISTINCT d.user_id) AS supporter_count,
+            MAX(d.amount) AS highest_donation,
+            SUM(d.amount) AS total_collected,
+            AVG(d.amount) AS average_donation,
+            cat.name AS category_name,
+            c.status
+        FROM campaigns c
+        JOIN users u ON c.organizer_id = u.id
+        JOIN categories cat ON c.category_id = cat.id
+        LEFT JOIN donations d ON c.id = d.campaign_id
+        WHERE u.document_photo IS NOT NULL
+          AND (p_category_name IS NULL OR LOWER(cat.name) = LOWER(p_category_name))
+          AND (p_start_date IS NULL OR c.end_date >= p_start_date)
+          AND (p_end_date IS NULL OR c.end_date <= p_end_date)
+          AND (p_min_target IS NULL OR c.target_money_amount >= p_min_target)
+          AND (p_max_target IS NULL OR c.target_money_amount <= p_max_target)
+        GROUP BY c.id, c.title, u.first_name, u.last_name, cat.name, c.status;
+
+    RETURN result_cursor;
+END;
+
 
 END Crowdfunding_pkg;
 /
