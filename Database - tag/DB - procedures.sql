@@ -22,7 +22,7 @@ CREATE OR REPLACE PACKAGE Crowdfunding_pkg AS
     FUNCTION check_if_user_exists (p_email IN VARCHAR2) RETURN NUMBER;
     FUNCTION get_user_by_id (p_id IN NUMBER) RETURN SYS_REFCURSOR;
     FUNCTION get_successful_campaigns (p_start_date DATE, p_end_date DATE, p_min_target NUMBER, p_max_target NUMBER) RETURN SYS_REFCURSOR;
-     FUNCTION get_verified_user_campaigns(p_category_name IN VARCHAR2,
+     FUNCTION get_verified_user_campaigns( p_category_name IN VARCHAR2,
     p_start_date    IN DATE,
     p_end_date      IN DATE,
     p_min_target    IN NUMBER,
@@ -341,6 +341,8 @@ FUNCTION get_successful_campaigns (
 ) RETURN SYS_REFCURSOR
 IS
     result_cursor SYS_REFCURSOR;
+    v_start_date  DATE := NVL(p_start_date, SYSDATE - 30); -- Default to 30 days ago
+    v_end_date    DATE := NVL(p_end_date, SYSDATE);        -- Default to today
 BEGIN
     OPEN result_cursor FOR
         SELECT
@@ -370,7 +372,8 @@ BEGIN
         JOIN users u ON c.organizer_id = u.id
         JOIN categories cat ON c.category_id = cat.id
         LEFT JOIN donations d ON c.id = d.campaign_id
-        WHERE c.end_date BETWEEN p_start_date AND p_end_date
+        WHERE (p_start_date IS NULL OR c.end_date >= p_start_date)
+  AND (p_end_date IS NULL OR c.end_date <= p_end_date)
           AND c.current_money_amount >= c.target_money_amount
           AND (p_min_target IS NULL OR c.target_money_amount >= p_min_target)
           AND (p_max_target IS NULL OR c.target_money_amount <= p_max_target)
@@ -389,6 +392,8 @@ FUNCTION get_verified_user_campaigns (
 ) RETURN SYS_REFCURSOR
 IS
     result_cursor SYS_REFCURSOR;
+    v_start_date  DATE := NVL(p_start_date, SYSDATE - 30); -- Default to 30 days ago
+    v_end_date    DATE := NVL(p_end_date, SYSDATE);        -- Default to today
 BEGIN
     OPEN result_cursor FOR
         SELECT
@@ -405,7 +410,7 @@ BEGIN
         JOIN users u ON c.organizer_id = u.id
         JOIN categories cat ON c.category_id = cat.id
         LEFT JOIN donations d ON c.id = d.campaign_id
-        WHERE u.document_photo IS NOT NULL
+        WHERE c.status != 'ToApprove'
           AND (p_category_name IS NULL OR LOWER(cat.name) = LOWER(p_category_name))
           AND (p_start_date IS NULL OR c.end_date >= p_start_date)
           AND (p_end_date IS NULL OR c.end_date <= p_end_date)
