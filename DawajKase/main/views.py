@@ -537,28 +537,61 @@ def fetch_successful_campaigns(start_date, end_date, min_target, max_target):
 
 def successful_campaigns_chart(request):
     userData = request.session.get('userData', None)
-    rows, columns = fetch_successful_campaigns(
-        request.GET.get("start_date"),
-        request.GET.get("end_date"),
-        request.GET.get("min_target"),
-        request.GET.get("max_target"))
+    
+    # Only fetch data if form was submitted (has any filter parameters)
+    if any(param in request.GET for param in ['start_date', 'end_date', 'min_target', 'max_target']):
+        rows, columns = fetch_successful_campaigns(
+            request.GET.get("start_date"),
+            request.GET.get("end_date"),
+            request.GET.get("min_target"),
+            request.GET.get("max_target"))
 
-    if not rows:
+        if not rows:
+            return render(request, 'DawajKase/successful-chart.html', {
+                'userData': userData,
+                'message': 'No successful campaigns found in the given time range.'
+            })
+
+        data_by_column = list(zip(*rows))
+
+        fig = go.Figure(data=[
+            go.Table(
+                header=dict(values=[col.replace('_', ' ').title() for col in columns]),
+                cells=dict(values=data_by_column)
+            )
+        ])
+
+        chart_div = opy.plot(fig, auto_open=False, output_type='div')
+
+        campaign_count = len(rows)
+
+        column_indices = {col: idx for idx, col in enumerate(columns)}
+        donation_values = [row[column_indices['average_donation']] for row in rows if row[column_indices['average_donation']] is not None]
+        total_collected_values = [row[column_indices['total_collected']] for row in rows if row[column_indices['total_collected']] is not None]
+
+        avg_donation = round(sum(donation_values) / len(donation_values), 2) if donation_values else 0
+        total_collected = round(sum(total_collected_values), 2) if total_collected_values else 0
+        highest_donation = max([row[column_indices['highest_donation']] for row in rows if row[column_indices['highest_donation']] is not None])
+
+        aggregation_text = (
+            f"Liczba wyświetlonych kampanii: {campaign_count} | "
+            f"Suma wpłat: {total_collected} $ | "
+            f"Średnia kwota wpłaty: {avg_donation} $ | "
+            f"Najwyższa wpłata: {highest_donation} $"
+        )
+
         return render(request, 'DawajKase/successful-chart.html', {
             'userData': userData,
-            'message': 'No successful campaigns found in the given time range.'
+            'chart_div': chart_div,
+            'aggregation_text': aggregation_text,
+            'form_submitted': True
         })
-
-    data_by_column = list(zip(*rows))
-
-    fig = go.Figure(data=[
-        go.Table(
-            header=dict(values=[col.replace('_', ' ').title() for col in columns]),
-            cells=dict(values=data_by_column)
-        )
-    ])
-
-    chart_div = opy.plot(fig, auto_open=False, output_type='div')
+    
+    # Initial page load - no form submission
+    return render(request, 'DawajKase/successful-chart.html', {
+        'userData': userData,
+        'form_submitted': False
+    })
 
 
 
@@ -630,68 +663,78 @@ def get_all_categories():
 
 def verified_user_campaigns_view(request):
     userData = request.session.get('userData', None)
-
     categories = get_all_categories()
 
-    category = request.GET.get("category") or None
-    start_date_raw = request.GET.get("start_date")
-    end_date_raw = request.GET.get("end_date")
-    min_target_raw = request.GET.get("min_target")
-    max_target_raw = request.GET.get("max_target")
+    # Only fetch data if form was submitted (has any filter parameters)
+    if any(param in request.GET for param in ['category', 'start_date', 'end_date', 'min_target', 'max_target']):
+        category = request.GET.get("category") or None
+        start_date_raw = request.GET.get("start_date")
+        end_date_raw = request.GET.get("end_date")
+        min_target_raw = request.GET.get("min_target")
+        max_target_raw = request.GET.get("max_target")
 
-    try:
-        start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date() if start_date_raw else None
-    except ValueError:
-        start_date = None
+        try:
+            start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date() if start_date_raw else None
+        except ValueError:
+            start_date = None
 
-    try:
-        end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date() if end_date_raw else None
-    except ValueError:
-        end_date = None
+        try:
+            end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date() if end_date_raw else None
+        except ValueError:
+            end_date = None
 
-    min_target = float(min_target_raw) if min_target_raw else None
-    max_target = float(max_target_raw) if max_target_raw else None
+        min_target = float(min_target_raw) if min_target_raw else None
+        max_target = float(max_target_raw) if max_target_raw else None
 
-    rows, columns = fetch_verified_user_campaigns(
-        category, start_date, end_date, min_target, max_target
-    )
+        rows, columns = fetch_verified_user_campaigns(
+            category, start_date, end_date, min_target, max_target
+        )
 
-    if not rows:
+        if not rows:
+            return render(request, 'DawajKase/verified-chart.html', {
+                'userData': userData,
+                'message': 'No campaigns found for verified users.',
+                'categories': categories,
+                'form_submitted': True
+            })
+
+        data_by_column = list(zip(*rows))
+        fig = go.Figure(data=[
+            go.Table(
+                header=dict(values=[col.replace('_', ' ').title() for col in columns]),
+                cells=dict(values=data_by_column)
+            )
+        ])
+        chart_div = opy.plot(fig, auto_open=False, output_type='div')
+
+        campaign_count = len(rows)
+        col_index = {col: idx for idx, col in enumerate(columns)}
+        avg_donations = [row[col_index['average_donation']] for row in rows if row[col_index['average_donation']] is not None]
+        total_collected = [row[col_index['total_collected']] for row in rows if row[col_index['total_collected']] is not None]
+        highest_donations = [row[col_index['highest_donation']] for row in rows if row[col_index['highest_donation']] is not None]
+
+        avg_donation = round(sum(avg_donations) / len(avg_donations), 2) if avg_donations else 0
+        total_sum = round(sum(total_collected), 2) if total_collected else 0
+        max_donation = max(highest_donations) if highest_donations else 0
+
+        aggregation_text = (
+            f"Liczba wyświetlonych kampanii: {campaign_count} | "
+            f"Suma wpłat: {total_sum} $ | "
+            f"Średnia kwota wpłaty: {avg_donation} $ | "
+            f"Najwyższa wpłata: {max_donation} $"
+        )
+
         return render(request, 'DawajKase/verified-chart.html', {
             'userData': userData,
-            'message': 'No campaigns found for verified users.'
+            'chart_div': chart_div,
+            'aggregation_text': aggregation_text,
+            'categories': categories,
+            'form_submitted': True
         })
-
-    data_by_column = list(zip(*rows))
-    fig = go.Figure(data=[
-        go.Table(
-            header=dict(values=[col.replace('_', ' ').title() for col in columns]),
-            cells=dict(values=data_by_column)
-        )
-    ])
-    chart_div = opy.plot(fig, auto_open=False, output_type='div')
-
-    campaign_count = len(rows)
-    col_index = {col: idx for idx, col in enumerate(columns)}
-    avg_donations = [row[col_index['average_donation']] for row in rows if row[col_index['average_donation']] is not None]
-    total_collected = [row[col_index['total_collected']] for row in rows if row[col_index['total_collected']] is not None]
-    highest_donations = [row[col_index['highest_donation']] for row in rows if row[col_index['highest_donation']] is not None]
-
-    avg_donation = round(sum(avg_donations) / len(avg_donations), 2) if avg_donations else 0
-    total_sum = round(sum(total_collected), 2) if total_collected else 0
-    max_donation = max(highest_donations) if highest_donations else 0
-
-    aggregation_text = (
-        f"Liczba wyświetlonych kampanii: {campaign_count} | "
-        f"Suma wpłat: {total_sum} $ | "
-        f"Średnia kwota wpłaty: {avg_donation} $ | "
-        f"Najwyższa wpłata: {max_donation} $"
-    )
-
+    
+    # Initial page load - no form submission
     return render(request, 'DawajKase/verified-chart.html', {
-    'userData': userData,
-    'chart_div': chart_div,
-    'aggregation_text': aggregation_text,
-    'categories': categories
-})
-
+        'userData': userData,
+        'categories': categories,
+        'form_submitted': False
+    })

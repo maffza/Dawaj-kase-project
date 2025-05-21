@@ -37,6 +37,11 @@
         form.filter-form button:hover {
             background-color: #616ae7;
         }
+        .report-results {
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -47,7 +52,6 @@
 
                 <h1 style="text-align: center;">Verified User Campaigns</h1>
 
-                <!-- ✅ Filter Form -->
                 <form method="get" action="{% url 'verified-campaigns' %}" class="filter-form">
                     <label for="category">Category:</label>
                     <select name="category">
@@ -72,20 +76,21 @@
                     <button type="submit">Apply Filters</button>
                 </form>
 
-                <!-- ✅ Chart + Aggregation -->
-                {% if chart_div %}
-                    {{ chart_div|safe }}
-                {% elif message %}
-                    <p>{{ message }}</p>
-                {% else %}
-                    <p>No data available.</p>
-                {% endif %}
+                <div class="report-results" {% if chart_div %}style="background-color: white;"{% endif %}>
+                    {% if chart_div %}
+                        {{ chart_div|safe }}
+                    {% elif message %}
+                        <p>{{ message }}</p>
+                    {% else %}
+                        <p></p>
+                    {% endif %}
 
-                {% if aggregation_text %}
-                    <div class="chart-summary" style="margin-top: 20px; font-weight: bold;">
-                        {{ aggregation_text }}
-                    </div>
-                {% endif %}
+                    {% if aggregation_text %}
+                        <div class="chart-summary" style="margin-top: 20px; font-weight: bold; color:black">
+                            {{ aggregation_text }}
+                        </div>
+                    {% endif %}
+                </div>
 
             </div>
         </main>

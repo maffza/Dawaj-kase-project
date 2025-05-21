@@ -132,9 +132,14 @@
         <div id="tabs">
             <button class="active" onclick="showTab('approvals')">Approve Campaigns</button>
             <button onclick="showTab('user-management')">Manage Users</button>
-            <button onclick="showTab('successful-campaigns')">Successful Campaigns Report</button>
-            <button onclick="showTab('verified-campaigns')">Verified Campaigns Report</button>
+            <a href="{% url 'successful-campaigns' %}">
+                <button type="button">Successful Campaigns Report</button>
+            </a>
+            <a href="{% url 'verified-campaigns' %}">
+                <button type="button">Verified Campaigns Report</button>
+            </a>
         </div>
+
         <!-- Artificial data, TO BE REPLACED BY REAL BACKED (also add a few spaces after capaign name for visuals [bro, margin-right exists XD])-->
         <div id="approvals" class="tab-content active">
             <h2>Approve Campaigns</h2>
